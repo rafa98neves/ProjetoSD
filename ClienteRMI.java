@@ -23,16 +23,16 @@ class User{
     }
 }
 
-public class ClienteRMI { /*extends UnicastRemoteObject implements DropMusic_C_I {
+public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I {
 	
 	ClienteRMI() throws RemoteException {
 		super();
 	}
 
-	public void print_on_client(String s) throws RemoteException {
+	public void NewUser(String s) throws RemoteException {
 		System.out.println("> " + s);
 	}
-	*/
+	
 	public static void main(String args[]) {
             boolean exit=false;
             String a;
@@ -43,22 +43,12 @@ public class ClienteRMI { /*extends UnicastRemoteObject implements DropMusic_C_I
             InputStreamReader input = new InputStreamReader(System.in);
             BufferedReader reader = new BufferedReader(input);
             try {
-                    //User user = new User();
                     DropMusic_S_I h = (DropMusic_S_I) Naming.lookup("Drop");
                     ClienteRMI c = new ClienteRMI();
-                    h.subscribe(args[0], (DropMusic_C_I) c);
-                    System.out.println("Client sent subscription to server");
-                    while (true) {
-                            System.out.print("> ");
-                            a = reader.readLine();
-                            h.print_on_server(a);
-                    }
-
+                    h.NewUser(args[0]);
             } catch (Exception e) {
                     System.out.println("Exception in main: " + e);
             }
-            
-            System.out.println("YO");
             
             while(!exit){
                 int opcao = MainScreen();
@@ -89,28 +79,57 @@ public class ClienteRMI { /*extends UnicastRemoteObject implements DropMusic_C_I
 	}
 	
 	public static void Registo(){
+		InputStreamReader input = new InputStreamReader(System.in);
+		BufferedReader reader = new BufferedReader(input);
 		String nome = new String();
 		String password = new String();
 		Scanner sc = new Scanner(System.in);
-		System.out.printf("\nNome de utlizador: ");
-		nome = sc.nextLine();
-		System.out.printf("Password: ");
-		password = sc.nextLine();
-		System.out.println("Registo efectuado com sucesso!");
+		while(true){
+			System.out.printf("\nNome de utlizador: ");
+			nome = sc.nextLine();
+			System.out.printf("Password: ");
+			password = sc.nextLine();
+			try {
+				DropMusic_S_I h = (DropMusic_S_I) Naming.lookup("Drop");
+				ClienteRMI c = new ClienteRMI();
+				if(h.RegistUser(nome,password)){
+					System.out.println("Registo efectuado com sucesso!");
+					break;
+				}
+			} catch (Exception e) {
+				System.out.println("Exception in main: " + e);
+			}
+			System.out.println("Username ja esta em uso, escolha outro");
+		}
+		
 		User online = new User(nome, password, 0);
 		if(online.GetTipo()==0) DropMusicUser(online);
 		else DropMusicEditor(online);
 	}
 	
 	public static void Login(){
+		InputStreamReader input = new InputStreamReader(System.in);
+		BufferedReader reader = new BufferedReader(input);
 		String nome = new String();
 		String password = new String();
 		Scanner sc = new Scanner(System.in);
-		System.out.printf("\nNome de utlizador: ");
-		nome = sc.nextLine();
-		System.out.printf("Password: ");
-		password = sc.nextLine();
-		System.out.println("Login efectuado com sucesso!");
+		while(true){
+			System.out.printf("\nNome de utlizador: ");
+			nome = sc.nextLine();
+			System.out.printf("Password: ");
+			password = sc.nextLine();
+			try {
+				DropMusic_S_I h = (DropMusic_S_I) Naming.lookup("Drop");
+				ClienteRMI c = new ClienteRMI();
+				if(h.CheckUser(nome,password)){
+					System.out.println("Login efectuado com sucesso!");
+					break;
+				}
+			} catch (Exception e) {
+				System.out.println("Exception in main: " + e);
+			}
+			System.out.println("Username ou password errados tente outra vez!");
+		}
 		// Procurar user na BD
 		User online = new User(nome, password, 0);
 		if(online.GetTipo()==0) DropMusicUser(online);

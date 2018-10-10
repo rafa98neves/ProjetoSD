@@ -10,14 +10,36 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I {
 		super();
 	}
 
-	public void print_on_server(String s) throws RemoteException {
+	public void NewUser(String s) throws RemoteException {
 		System.out.println("> " + s);
 	}
-
-	public void subscribe(String name, DropMusic_C_I c) throws RemoteException {
-		System.out.println("Subscribing " + name);
-		System.out.print("> ");
-		client = c;
+	
+	public boolean RegistUser(String name, String password) throws RemoteException{
+		//Ver se o username esta a ser usado
+		return false;
+	}
+	public boolean CheckUser(String name, String password) throws RemoteException{
+		//Ver se o user esta na BD
+		return false;
+	}
+	public void FindMusic(String name) throws RemoteException{
+		
+	}
+	public void Get(String name, DropMusic_C_I client) throws RemoteException{
+		
+	}
+	public void Write(String critica) throws RemoteException{
+		
+	}
+	public void ShareMusic(String NAOSEI) throws RemoteException{
+		
+	}
+	public void TransferMusic(String NAOSEI) throws RemoteException{
+		
+	}
+	
+	public void GivePriv(DropMusic_C_I user) throws RemoteException{
+		
 	}
 
 	// =======================================================
@@ -32,15 +54,10 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I {
 		BufferedReader reader = new BufferedReader(input);
 
 		try {
-			//User user = new User();
 			ServidorRMI s = new ServidorRMI();
-			System.setProperty("java.rmi.server.hostname","192.168.1.2");
 			Naming.bind("Drop", s);
 			System.out.println("DropMusic RMI Server ready.");
 			while (true) {
-				System.out.print("> ");
-				a = reader.readLine();
-				client.print_on_client(a);
 				}
 		} catch (Exception re) {
 			System.out.println("Exception in DropMusicImpl.main: " + re);
