@@ -3,7 +3,8 @@ import java.rmi.server.*;
 import java.net.*;
 import java.io.*;
 
-public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I {
+
+public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	static DropMusic_C_I client;
 
 	public ServidorRMI() throws RemoteException {
@@ -18,9 +19,9 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I {
 		//Ver se o username esta a ser usado
 		return false;
 	}
-	public boolean CheckUser(String name, String password) throws RemoteException{
+	public boolean CheckUser(String name, String password,  DropMusic_C_I c) throws RemoteException{
 		//Ver se o user esta na BD
-		return false;
+		return true;
 	}
 	public void FindMusic(String name) throws RemoteException{
 		
@@ -38,7 +39,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I {
 		
 	}
 	
-	public void GivePriv(DropMusic_C_I user) throws RemoteException{
+	public void GivePriv(String username) throws RemoteException{
 		
 	}
 

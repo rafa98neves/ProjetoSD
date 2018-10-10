@@ -8,61 +8,68 @@ import java.io.*;
 class User{
     private String nome;
     protected String password;
-    // tipo 0 = Utilizador normal | tipo 1 = Editor | tipo 2 = admin
-    private int tipo;
-    User(String nome,String password, int tipo){
+    private boolean editor;
+    User(String nome,String password){
         this.nome = nome;
         this.password = password;
-        this.tipo = tipo;
+        this.editor = false;
     }
-    public int GetTipo(){
-        return tipo;
+    public boolean IsEditor(){
+        return editor;
+    }
+	public void ChangeUserToEditor(boolean change){
+        this.editor = change;
     }
     public String GetNome(){
         return nome;
     }
 }
 
-public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I {
+
+
+public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
+	
+	private static User online;
+
 	
 	ClienteRMI() throws RemoteException {
 		super();
 	}
-
-	public void NewUser(String s) throws RemoteException {
-		System.out.println("> " + s);
+	
+	public void ChangeUserToEditor(){
+		online.ChangeUserToEditor(true);
 	}
 	
 	public static void main(String args[]) {
-            boolean exit=false;
-            String a;
+		boolean exit=false;
+		String a;
 
-            System.getProperties().put("java.security.policy", "policy.all");
-            System.setSecurityManager(new RMISecurityManager());
+		System.getProperties().put("java.security.policy", "policy.all");
+		System.setSecurityManager(new RMISecurityManager());
 
-            InputStreamReader input = new InputStreamReader(System.in);
-            BufferedReader reader = new BufferedReader(input);
-            try {
-                    DropMusic_S_I h = (DropMusic_S_I) Naming.lookup("Drop");
-                    ClienteRMI c = new ClienteRMI();
-                    h.NewUser(args[0]);
-            } catch (Exception e) {
-                    System.out.println("Exception in main: " + e);
-            }
-            
-            while(!exit){
-                int opcao = MainScreen();
-                switch(opcao){
-                        case 1: Login();
-                                break;
-                        case 2: Registo();
-                                break;
-                        case 0: exit = true;
-                                break;
-                        default:
-                                break;
-                }
-            }
+		InputStreamReader input = new InputStreamReader(System.in);
+		BufferedReader reader = new BufferedReader(input);
+		try {
+			DropMusic_S_I h = (DropMusic_S_I) Naming.lookup("Drop");
+			ClienteRMI c = new ClienteRMI();
+			h.NewUser(args[0]);
+		}catch (Exception e) {
+			System.out.println("Exception in main: " + e);
+		}
+		
+		while(!exit){
+			int opcao = MainScreen();
+			switch(opcao){
+				case 1: Login();
+						break;
+				case 2: Registo();
+						break;
+				case 0: exit = true;
+						break;
+				default:
+						break;
+			}
+		}
 	}
         
 	public static int MainScreen(){
@@ -72,8 +79,8 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I {
 		Scanner sc = new Scanner(System.in);
 		int opcao = sc.nextInt();
 		while(opcao!=1 & opcao!=2 & opcao!=0){
-                    System.out.println("Opção Inválida");
-                    opcao = sc.nextInt();
+			System.out.println("Opção Inválida");
+			opcao = sc.nextInt();
 		} 
 		return opcao;
 	}
@@ -101,10 +108,8 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I {
 			}
 			System.out.println("Username ja esta em uso, escolha outro");
 		}
-		
-		User online = new User(nome, password, 0);
-		if(online.GetTipo()==0) DropMusicUser(online);
-		else DropMusicEditor(online);
+		online = new User(nome, password);
+		DropMusic();
 	}
 	
 	public static void Login(){
@@ -121,77 +126,135 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I {
 			try {
 				DropMusic_S_I h = (DropMusic_S_I) Naming.lookup("Drop");
 				ClienteRMI c = new ClienteRMI();
-				if(h.CheckUser(nome,password)){
+				online = new User(nome,password);
+				if(h.CheckUser(nome, password,c)){
 					System.out.println("Login efectuado com sucesso!");
 					break;
 				}
 			} catch (Exception e) {
-				System.out.println("Exception in main: " + e);
+				System.out.println("Exception in Login: " + e);
 			}
 			System.out.println("Username ou password errados tente outra vez!");
 		}
 		// Procurar user na BD
-		User online = new User(nome, password, 0);
-		if(online.GetTipo()==0) DropMusicUser(online);
-		else DropMusicEditor(online);
+		DropMusic();
 	}
 	
-	public static void DropMusicUser(User online){
-            int opcao;
-            boolean exit = false;
-            System.out.println("\n\n\n\n\t\t >>DropMusic<<");
-            Scanner sc = new Scanner(System.in);
-            System.out.println("\n1.Pesquisar Musicas\n2.Pesquisar artistas, álbuns e músicas\n3.Upload de músicas\n4.Partilhar músicas\n5.Donwload de músicas\n0.Log Out");
-            opcao = sc.nextInt();
-            while(!exit){
-                switch(opcao){
-                    case 1:
-                            break;
-                    case 2:
-                            break;
-                    case 3:
-                            break;
-                    case 4:
-                            break;
-                    case 5:
-                            break;
-                    case 0: exit = true;
-                            break;
-                    default: System.out.println("Opção Inválida");
-                }
-            }
+	public static void DropMusic(){
+		int opcao;
+		boolean exit = false;
+		System.out.println("\n\n\n\n\t\t >>DropMusic<<");
+		Scanner sc = new Scanner(System.in);
+		if(online.IsEditor()){
+			System.out.println("\n1.Pesquisar Musicas\n2.Consultar detalhes\n3.Upload de músicas\n4.Partilhar músicas\n5.Donwload de músicas\n6.Dar previlégios\n0.Log Out");
+			while(!exit){
+				opcao = sc.nextInt();
+				switch(opcao){
+					case 1:	Pesquisar();
+							break;
+					case 2: Consultar();
+							break;
+					case 3: Upload();
+							break;
+					case 4: Partilhar();
+							break;
+					case 5: Donwload();
+							break;
+					case 6: GivePrev();
+							break;    
+					case 0: exit=true;
+							break;
+					default: System.out.println("Opção Inválida");
+				}
+			}
+		}
+		else{
+			System.out.println("\n1.Pesquisar Musicas\n2.Consultar detalhes\n3.Upload de músicas\n4.Partilhar músicas\n5.Donwload de músicas\n0.Log Out");
+			opcao = sc.nextInt();
+			while(!exit){
+				switch(opcao){
+					case 1: Pesquisar();
+							break;
+					case 2: Consultar();
+							break;
+					case 3: Upload();
+							break;
+					case 4: Partilhar();
+							break;
+					case 5: Donwload();
+							break;
+					case 0: exit = true;
+							break;
+					default: System.out.println("Opção Inválida");
+				}
+			}
+		}
+		Login();
 	}
 	
-	public static void DropMusicEditor(User online){
-            int opcao;
-            boolean exit = false;
-            System.out.println("\n\n\n\n\t\t >>DropMusic<<");
-            Scanner sc = new Scanner(System.in);
-            System.out.println("\n1.Pesquisar Musicas\n2.Pesquisar artistas, álbuns e músicas\n3.Upload de músicas\n4.Partilhar músicas\n5.Donwload de músicas\n6.Dar previlégios\n0.Log Out");
-            while(!exit){
-                opcao = sc.nextInt();
-                switch(opcao){
-                    case 1:
-                            break;
-                    case 2:
-                            break;
-                    case 3:
-                            break;
-                    case 4:
-                            break;
-                    case 5:
-                            break;
-                    case 6:
-                            break;    
-                    case 0: exit=true;
-                            break;
-                    default: System.out.println("Opção Inválida");
-                }
-            }
+	public static void Pesquisar(){
+		int opcao;
+		boolean exit = false;
+		System.out.println("\n\n\t\t >>Pesquisar Musica<<");
+		Scanner sc = new Scanner(System.in);
+		System.out.println("\n1.Pesquisar por nome da musica\n2.Pesquisar por album\n3.Pesquisar por genero\n4.Pesquisar por artista\n0.Back");
+		opcao = sc.nextInt();
+		switch(opcao){
+			case 1:	
+					break;
+			case 2:
+					break;
+			case 3:
+					break;
+			case 4:
+					break;
+			case 0: DropMusic();
+					break;
+			default: System.out.println("Opção Inválida");
+		}	
 	}
-        
-        
-        
-        
-        
+	
+	public static void Consultar(){
+		int opcao;
+		boolean exit = false;
+		System.out.println("\n\n\n\n\t\t >>Consultar detalhes sobre álbum e sobre artista<<");
+		Scanner sc = new Scanner(System.in);
+		System.out.println("\n1.Detalhes de um album\n2.Detalhes de um artista\n0.Back");
+		while(!exit){
+			opcao = sc.nextInt();
+			switch(opcao){
+				case 1:	
+						break;
+				case 2:
+						break;
+				case 0: DropMusic();
+						break;
+				default: System.out.println("Opção Inválida");
+			}
+		}
+	}
+	
+	public static void Upload(){
+		System.out.println("\n\n\t\t >>Upload de musica<<");
+	}
+	
+	public static void Partilhar(){
+		System.out.println("\n\n\t\t >>Partilha de musica<<");
+	}
+	
+	public static void Donwload(){
+		System.out.println("\n\n\t\t >>Download de musica<<");
+	}
+	
+	public static void GivePrev(){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("\n\n\t\t >>Dar previlegios<<");
+		System.out.printf("\nNome do utilizador a dar previlegios: ");
+		String user = sc.nextLine();
+		
+	}
+	
+	
+
+	
 }
