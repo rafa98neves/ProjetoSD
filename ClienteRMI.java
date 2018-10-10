@@ -30,8 +30,8 @@ class User{
 public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	
 	private static User online;
-
-	
+	private static DropMusic_S_I h;
+	private static ClienteRMI c;
 	ClienteRMI() throws RemoteException {
 		super();
 	}
@@ -39,7 +39,9 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	public void ChangeUserToEditor(){
 		online.ChangeUserToEditor(true);
 	}
-	
+	public void Print(String s){
+		System.out.println(s);
+	}
 	public static void main(String args[]) {
 		boolean exit=false;
 		String a;
@@ -50,39 +52,34 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		InputStreamReader input = new InputStreamReader(System.in);
 		BufferedReader reader = new BufferedReader(input);
 		try {
-			DropMusic_S_I h = (DropMusic_S_I) Naming.lookup("Drop");
-			ClienteRMI c = new ClienteRMI();
+			h = (DropMusic_S_I) Naming.lookup("Drop");
+			c = new ClienteRMI();
 			h.NewUser(args[0]);
 		}catch (Exception e) {
 			System.out.println("Exception in main: " + e);
 		}
-		
-		while(!exit){
-			int opcao = MainScreen();
-			switch(opcao){
-				case 1: Login();
-						break;
-				case 2: Registo();
-						break;
-				case 0: exit = true;
-						break;
-				default:
-						break;
-			}
-		}
+		MainScreen();
 	}
         
-	public static int MainScreen(){
+	public static void MainScreen(){
 		System.out.println("\t\t\t >>DropMusic<< ");
 		System.out.println("\n");
 		System.out.printf("Pretende:\n\t1.Login\n\t2.Registo\n\t0.Exit\n");
 		Scanner sc = new Scanner(System.in);
-		int opcao = sc.nextInt();
-		while(opcao!=1 & opcao!=2 & opcao!=0){
-			System.out.println("Opção Inválida");
-			opcao = sc.nextInt();
-		} 
-		return opcao;
+		
+		while(true){
+			int opcao = sc.nextInt();
+			switch(opcao){
+				case 1: Login();
+					break;
+				case 2: Registo();
+					break;
+				case 0: System.exit(0);
+					break;
+				default: System.out.println("Opção Inválida");
+					break;
+			}
+		}
 	}
 	
 	public static void Registo(){
@@ -97,8 +94,6 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			System.out.printf("Password: ");
 			password = sc.nextLine();
 			try {
-				DropMusic_S_I h = (DropMusic_S_I) Naming.lookup("Drop");
-				ClienteRMI c = new ClienteRMI();
 				if(h.RegistUser(nome,password)){
 					System.out.println("Registo efectuado com sucesso!");
 					break;
@@ -123,10 +118,8 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			nome = sc.nextLine();
 			System.out.printf("Password: ");
 			password = sc.nextLine();
+			online = new User(nome,password);
 			try {
-				DropMusic_S_I h = (DropMusic_S_I) Naming.lookup("Drop");
-				ClienteRMI c = new ClienteRMI();
-				online = new User(nome,password);
 				if(h.CheckUser(nome, password,c)){
 					System.out.println("Login efectuado com sucesso!");
 					break;
@@ -189,7 +182,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				}
 			}
 		}
-		Login();
+		MainScreen();
 	}
 	
 	public static void Pesquisar(){
@@ -217,16 +210,32 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	public static void Consultar(){
 		int opcao;
 		boolean exit = false;
-		System.out.println("\n\n\n\n\t\t >>Consultar detalhes sobre álbum e sobre artista<<");
+		String search;
 		Scanner sc = new Scanner(System.in);
-		System.out.println("\n1.Detalhes de um album\n2.Detalhes de um artista\n0.Back");
+		
+		System.out.println("\n\n\n\n\t\t >>Consultar detalhes sobre álbum e sobre artista<<");
 		while(!exit){
+			System.out.println("\n1.Detalhes de um album\n2.Detalhes de um artista\n0.Back");
 			opcao = sc.nextInt();
 			switch(opcao){
 				case 1:	
-						break;
-				case 2:
-						break;
+					System.out.printf("\nNome do album:");
+					search = sc.next(); //Só funciona para uma palavra, resolver!!
+					try{
+						h.Find(search,"album",c);
+					} catch (Exception re) {
+						System.out.println("Exception in Consulta: " + re);
+					} 
+					break;
+				case 2: 
+					System.out.printf("\nNome do artista:");
+					search = sc.next();
+					try{
+						h.Find(search,"album",c);
+					} catch (Exception re) {
+						System.out.println("Exception in Consulta: " + re);
+					} 
+					break;
 				case 0: DropMusic();
 						break;
 				default: System.out.println("Opção Inválida");
@@ -251,7 +260,11 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		System.out.println("\n\n\t\t >>Dar previlegios<<");
 		System.out.printf("\nNome do utilizador a dar previlegios: ");
 		String user = sc.nextLine();
-		
+		try{
+			h.GivePriv(user);
+		} catch (Exception re) {
+			System.out.println("Exception in Consulta: " + re);
+		} 
 	}
 	
 	

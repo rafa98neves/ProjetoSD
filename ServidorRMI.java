@@ -5,7 +5,6 @@ import java.io.*;
 
 
 public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
-	static DropMusic_C_I client;
 
 	public ServidorRMI() throws RemoteException {
 		super();
@@ -23,10 +22,15 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		//Ver se o user esta na BD
 		return true;
 	}
-	public void FindMusic(String name) throws RemoteException{
-		
+	public void Find(String name, String tipo, DropMusic_C_I c) throws RemoteException{
+		String aux = new String("Temos esse " + tipo + " sim");
+		try {
+			c.Print(aux);
+		} catch (Exception re) {
+			System.out.println("Exception in DropMusicImpl.main: " + re);
+		} 
 	}
-	public void Get(String name, DropMusic_C_I client) throws RemoteException{
+	public void Get(String name) throws RemoteException{
 		
 	}
 	public void Write(String critica) throws RemoteException{
@@ -59,6 +63,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			Naming.bind("Drop", s);
 			System.out.println("DropMusic RMI Server ready.");
 			while (true) {
+				
 				}
 		} catch (Exception re) {
 			System.out.println("Exception in DropMusicImpl.main: " + re);
