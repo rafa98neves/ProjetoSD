@@ -23,18 +23,17 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		return true;
 	}
 	public void Find(String name, String tipo, DropMusic_C_I c) throws RemoteException{
+		//Receber da BD toda a informação relatica ao album, artista ou musica.
 		String aux = new String("Temos esse " + tipo + " sim");
 		try {
 			c.Print(aux);
 		} catch (Exception re) {
-			System.out.println("Exception in DropMusicImpl.main: " + re);
+			System.out.println("Exception in Find(): " + re);
 		} 
 	}
-	public void Get(String name) throws RemoteException{
-		
-	}
-	public void Write(String critica) throws RemoteException{
-		
+	public void Write(String critica, String album) throws RemoteException{
+		//find album
+		//escreve critica
 	}
 	public void ShareMusic(String NAOSEI) throws RemoteException{
 		
@@ -44,7 +43,8 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	}
 	
 	public void GivePriv(String username) throws RemoteException{
-		
+		//Receber da BD o ID do Client c com este username
+		// c.ChangeUserToEditor()
 	}
 
 	// =======================================================

@@ -12,7 +12,7 @@ class User{
     User(String nome,String password){
         this.nome = nome;
         this.password = password;
-        this.editor = false;
+        this.editor = true;
     }
     public boolean IsEditor(){
         return editor;
@@ -134,6 +134,12 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	}
 	
 	public static void DropMusic(){
+            try{
+		Thread.sleep(1000);
+            }catch(Exception c){
+                System.out.println("Exception in Loading: "+c);
+            }
+			
 		int opcao;
 		boolean exit = false;
 		System.out.println("\n\n\n\n\t\t >>DropMusic<<");
@@ -193,24 +199,37 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		System.out.println("\n1.Pesquisar por nome da musica\n2.Pesquisar por album\n3.Pesquisar por genero\n4.Pesquisar por artista\n0.Back");
 		opcao = sc.nextInt();
 		switch(opcao){
-			case 1:	
+			case 1:	Pesquisar("musica");
 					break;
-			case 2:
+			case 2: Pesquisar("album");
 					break;
-			case 3:
+			case 3: Pesquisar("genero");
 					break;
-			case 4:
+			case 4: Pesquisar("artista");
 					break;
 			case 0: DropMusic();
 					break;
 			default: System.out.println("Opção Inválida");
 		}	
 	}
+	public static void Pesquisar(String escolha){
+		String search;
+		Scanner sc = new Scanner(System.in);
+		
+		System.out.printf("\nNome:");
+		search = sc.nextLine();
+		try{
+			h.Find(search,escolha,c);
+		} catch (Exception re) {
+			System.out.println("Exception in Pesquisa(): " + re);
+		}
+		//O que fazer a seguir?
+	}
+	
 	
 	public static void Consultar(){
 		int opcao;
 		boolean exit = false;
-		String search;
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("\n\n\n\n\t\t >>Consultar detalhes sobre álbum e sobre artista<<");
@@ -218,27 +237,39 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			System.out.println("\n1.Detalhes de um album\n2.Detalhes de um artista\n0.Back");
 			opcao = sc.nextInt();
 			switch(opcao){
-				case 1:	
-					System.out.printf("\nNome do album:");
-					search = sc.next(); //Só funciona para uma palavra, resolver!!
-					try{
-						h.Find(search,"album",c);
-					} catch (Exception re) {
-						System.out.println("Exception in Consulta: " + re);
-					} 
+				case 1:	Consultar("album");
 					break;
-				case 2: 
-					System.out.printf("\nNome do artista:");
-					search = sc.next();
-					try{
-						h.Find(search,"album",c);
-					} catch (Exception re) {
-						System.out.println("Exception in Consulta: " + re);
-					} 
+				case 2: Consultar("artista");
 					break;
 				case 0: DropMusic();
 						break;
 				default: System.out.println("Opção Inválida");
+			}
+		}
+	}
+	public static void Consultar(String escolha){
+		String search;
+		Scanner sc = new Scanner(System.in);
+		System.out.printf("\nNome:");
+		search = sc.nextLine(); //Só funciona para uma palavra, resolver!!
+		try{
+			h.Find(search,escolha,c);
+		} catch (Exception re) {
+			System.out.println("Exception in Consulta: " + re);
+		} 
+		if(online.IsEditor()){
+			System.out.printf("Pretende fazer alterações?[y/n]");
+			search = sc.nextLine();
+			if(search.compareTo("y")==0){
+				String alterado, alteracao; 
+				System.out.printf("Para sair escreva <exit>\n");
+				while(true){
+					System.out.printf("O que quer alterar?[Ex. artistas]: ");
+					alterado = sc.nextLine().toLowerCase();
+					if(alterado.compareTo("exit")==0) break;
+					System.out.printf("\n>>> ");
+					alteracao = sc.nextLine();
+				}				
 			}
 		}
 	}
@@ -263,7 +294,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		try{
 			h.GivePriv(user);
 		} catch (Exception re) {
-			System.out.println("Exception in Consulta: " + re);
+			System.out.println("Exception in Function Consulta(): " + re);
 		} 
 	}
 	
