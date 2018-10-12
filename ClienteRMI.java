@@ -116,13 +116,13 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		System.out.println("\n\n\n\n\t\t >>DropMusic<<");
 		try{
 			h.CheckNotifications(online.GetNome(), c); 
-			Thread.sleep(1000);
+			Thread.sleep(500);
 		}catch(Exception c){
 			System.out.println("Exception in Loading: "+c);
 		}
 		Scanner sc = new Scanner(System.in);
 		if(online.IsEditor()){
-			System.out.println("\n1.Pesquisar Musicas\n2.Consultar detalhes\n3.Upload de músicas\n4.Partilhar músicas\n5.Donwload de músicas\n6.Dar previlégios\n0.Log Out");
+			System.out.println("\n1.Pesquisar Musicas\n2.Consultar detalhes\n3.Criar Playlist\n4.Partilhar músicas\n5.Donwload de músicas\n6.Upload de músicas\n7.Dar previlégios\n0.Log Out");
 			while(!exit){
 				opcao = sc.nextInt();
 				switch(opcao){
@@ -130,13 +130,15 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 							break;
 					case 2: Consultar();
 							break;
-					case 3: Upload();
+					case 3: Playlist();
 							break;
 					case 4: Partilhar();
 							break;
-					case 5: Donwload();
+					case 5: Download();
 							break;
-					case 6: GivePrev();
+					case 6: Upload();
+							break;
+					case 7: GivePrev();
 							break;    
 					case 0: exit=true;
 							break;
@@ -145,7 +147,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			}
 		}
 		else{
-			System.out.println("\n1.Pesquisar Musicas\n2.Consultar detalhes\n3.Upload de músicas\n4.Partilhar músicas\n5.Donwload de músicas\n0.Log Out");
+			System.out.println("\n1.Pesquisar Musicas\n2.Consultar detalhes\n3.Criar Playlist\n4.Partilhar músicas\n5.Donwload de músicas\n6.Upload de músicas\n0.Log Out");
 			opcao = sc.nextInt();
 			while(!exit){
 				switch(opcao){
@@ -153,11 +155,13 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 							break;
 					case 2: Consultar();
 							break;
-					case 3: Upload();
+					case 3: Playlist();
 							break;
 					case 4: Partilhar();
 							break;
-					case 5: Donwload();
+					case 5: Download();
+							break;
+					case 6: Upload();
 							break;
 					case 0: exit = true;
 							break;
@@ -208,9 +212,12 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				search = reader.readLine();
 				if(search.compareTo("y")==0){
 					String critica;
-					System.out.printf(">>> ");
+					int pontuacao;
+					System.out.printf("Pontuacao [0 a 10]: ");
+					pontuacao = sc.nextInt();
+					System.out.printf("\nComentario >>> ");
 					while ((critica = reader.readLine()) != null){
-						h.Write(online.GetNome(), critica,search);
+						h.Write(online.GetNome(), pontuacao, critica,search);
 						break;
 					}
 				}
@@ -219,7 +226,6 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			}
 		}
 	}
-	
 	
 	public static void Consultar(){
 		int opcao;
@@ -267,7 +273,11 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			}
 		}
 	}
-	
+	public static void Playlist(){
+		System.out.println("\n\n\n\n\t\t >>Consultar detalhes sobre álbum e sobre artista<<");
+		Pesquisar("musica");
+		//?
+	}
 	public static void Upload(){
 		System.out.println("\n\n\t\t >>Upload de musica<<");
 	}
@@ -276,7 +286,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		System.out.println("\n\n\t\t >>Partilha de musica<<");
 	}
 	
-	public static void Donwload(){
+	public static void Download(){
 		System.out.println("\n\n\t\t >>Download de musica<<");
 	}
 	
@@ -287,7 +297,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		String user = sc.nextLine();
 		try{
 			h.GivePriv(user, c);
-			Thread.sleep(1000);
+			Thread.sleep(500);
 		} catch (Exception re) {
 			System.out.println("Exception in Function Consulta(): " + re);
 		} 

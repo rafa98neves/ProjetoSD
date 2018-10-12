@@ -57,11 +57,12 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		} 
 	}
 	
-	public void Write(String username, String critica, String album) throws RemoteException{
+	public void Write(String username, int pont, String critica, String album) throws RemoteException{
 		Map<String, String> protocolo = new HashMap<String, String>();
 		protocolo.put("type", new String("critic"));
 		protocolo.put("username", username);
 		protocolo.put("album", album);
+		protocolo.put("score", Integer.toString(pont));
 		protocolo.put("write", critica);		
 		//find album
 		//escreve critica
