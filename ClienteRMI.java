@@ -5,28 +5,6 @@ import java.net.*;
 import java.io.*;
 
 
-class User{
-    private String nome;
-    protected String password;
-    private boolean editor;
-    User(String nome,String password){
-        this.nome = nome;
-        this.password = password;
-        this.editor = true;
-    }
-    public boolean IsEditor(){
-        return editor;
-    }
-	public void ChangeUserToEditor(boolean change){
-        this.editor = change;
-    }
-    public String GetNome(){
-        return nome;
-    }
-}
-
-
-
 public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	
 	private static User online;
@@ -83,16 +61,14 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	}
 	
 	public static void Registo(){
-		InputStreamReader input = new InputStreamReader(System.in);
-		BufferedReader reader = new BufferedReader(input);
 		String nome = new String();
 		String password = new String();
 		Scanner sc = new Scanner(System.in);
 		while(true){
-			System.out.printf("\nNome de utlizador: ");
-			nome = sc.nextLine();
+			System.out.printf("\nNome de utlizador (sem espaços ou caracteres especiais): ");
+			nome = sc.next();
 			System.out.printf("Password: ");
-			password = sc.nextLine();
+			password = sc.next();
 			try {
 				if(h.RegistUser(nome,password)){
 					System.out.println("Registo efectuado com sucesso!");
@@ -102,23 +78,22 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				System.out.println("Exception in main: " + e);
 			}
 			System.out.println("Username ja esta em uso, escolha outro");
+			System.out.printf("Pretende:\n1.Tentar outra vez\n2.Fazer Login\n");
+			if(sc.nextInt()==2) Login();
 		}
 		online = new User(nome, password);
 		DropMusic();
 	}
 	
 	public static void Login(){
-		InputStreamReader input = new InputStreamReader(System.in);
-		BufferedReader reader = new BufferedReader(input);
 		String nome = new String();
 		String password = new String();
 		Scanner sc = new Scanner(System.in);
 		while(true){
 			System.out.printf("\nNome de utlizador: ");
-			nome = sc.nextLine();
+			nome = sc.next();
 			System.out.printf("Password: ");
-			password = sc.nextLine();
-			online = new User(nome,password);
+			password = sc.next();
 			try {
 				if(h.CheckUser(nome, password,c)){
 					System.out.println("Login efectuado com sucesso!");
@@ -127,22 +102,24 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			} catch (Exception e) {
 				System.out.println("Exception in Login: " + e);
 			}
-			System.out.println("Username ou password errados tente outra vez!");
+			System.out.println("Username ou password errados!");
+			System.out.printf("Pretende:\n1.Tentar outra vez\n2.Registar\n");
+			if(sc.nextInt()==2) Registo();
 		}
-		// Procurar user na BD
+		online = new User(nome,password);
 		DropMusic();
 	}
 	
-	public static void DropMusic(){
-            try{
-		Thread.sleep(1000);
-            }catch(Exception c){
-                System.out.println("Exception in Loading: "+c);
-            }
-			
+	public static void DropMusic(){			
 		int opcao;
 		boolean exit = false;
 		System.out.println("\n\n\n\n\t\t >>DropMusic<<");
+		try{
+			h.CheckNotifications(online.GetNome(), c); 
+			Thread.sleep(1000);
+		}catch(Exception c){
+			System.out.println("Exception in Loading: "+c);
+		}
 		Scanner sc = new Scanner(System.in);
 		if(online.IsEditor()){
 			System.out.println("\n1.Pesquisar Musicas\n2.Consultar detalhes\n3.Upload de músicas\n4.Partilhar músicas\n5.Donwload de músicas\n6.Dar previlégios\n0.Log Out");
@@ -223,7 +200,24 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		} catch (Exception re) {
 			System.out.println("Exception in Pesquisa(): " + re);
 		}
-		//O que fazer a seguir?
+		if(escolha.compareTo("album")==0){
+			InputStreamReader input = new InputStreamReader(System.in);
+			BufferedReader reader = new BufferedReader(input);
+			System.out.println("Prentende fazer um critica [y/n]?");
+			try{
+				search = reader.readLine();
+				if(search.compareTo("y")==0){
+					String critica;
+					System.out.printf(">>> ");
+					while ((critica = reader.readLine()) != null){
+						h.Write(online.GetNome(), critica,search);
+						break;
+					}
+				}
+			}catch (Exception re) {
+				System.out.println("Exception in Pesquisa(): " + re);
+			}
+		}
 	}
 	
 	
@@ -292,10 +286,12 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		System.out.printf("\nNome do utilizador a dar previlegios: ");
 		String user = sc.nextLine();
 		try{
-			h.GivePriv(user);
+			h.GivePriv(user, c);
+			Thread.sleep(1000);
 		} catch (Exception re) {
 			System.out.println("Exception in Function Consulta(): " + re);
 		} 
+		MainScreen();
 	}
 	
 	

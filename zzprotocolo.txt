@@ -1,0 +1,30 @@
+<<Protocolo a enviar pelo Servidor RMI:>>
+
+Fazer registo -> type | registo ; username | tintin* ; password | unicorn* 
+Fazer login -> type | login ; username | tintin* ; password | unicorn*
+Ver se o utilizador tem notificacoes pendentes -> type | notifications ; username | tintin*
+encontrar musica/album/artista/genero -> type | search ; name | zeca afonso* ; from | [album/music/genre/artist] 
+detalhes musica/album/artista/genero -> type | details ; name | zeca afonso* ; from | [album/music/artist]
+escrever critica a um album -> type | critic ; username | tintin* ; album | Example* ; write | blablabla*
+dar/tirar previlegios -> type | privileges ; username | ze* ; editor | [true/false]
+partilhar musica -> type | share ; username | tintin* ; (...)
+upload musica -> type | upload ; username | tintin* ; (...)
+download musica -> type | download ; username | tintin* ; (...)
+
+
+
+
+<<Protocolo a enviar pelo Servidor Multicast:>>
+
+Fazer registo -> type | registo ; confirmation | [true/false]
+Fazer login -> type | login ; confirmation | [true/false]
+Ver se o utilizador tem notificacoes pendentes -> 	type | notifications ; username | tintin* ; notification_1 | blabla* ; notification_2 | blablabla*
+							type | notifications ; username | tintin* ; notification_1 | noone
+encontrar musica/album/artista/genero -> type | search ; possibility_1 | zeca ; possibility_2
+detalhes musica/album/artista/genero -> type | details ; detail_1 | moreno* ; detail_2 | Nasceu a ..*
+escrever critica a um album -> type | critic ; confirmation | [escrito/negado]
+
+
+
+(Faltam muitas coisa que vamos com o tempo, todos os comandos entre RMI - Multicast têm de estar aqui)
+(*) - exemplo de comando
