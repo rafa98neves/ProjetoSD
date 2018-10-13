@@ -10,39 +10,12 @@ import java.net.InetAddress;
 import java.io.IOException;
 
 
-class MulticastConection extends Thread {
-    private String MULTICAST_ADDRESS = "224.3.2.1";
-    private int PORT = 4321;
-
-    public static void MulticastConection(){
-		MulticastConection client = new MulticastConection();
-        client.start();
-    }
-
-    public void run() {
-        MulticastSocket socket = null;
-        try {
-            socket = new MulticastSocket(PORT);  // create socket and bind it
-            InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
-            socket.joinGroup(group);
-                byte[] buffer = new byte[256];
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                socket.receive(packet);
-
-                System.out.println("Received packet from " + packet.getAddress().getHostAddress() + ":" + packet.getPort() + " with message:");
-                String message = new String(packet.getData(), 0, packet.getLength());
-                System.out.println(message);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            socket.close();
-        }
-    }
-}
-
-
 public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
+	
+	static private String MULTICAST_ADDRESS = "224.3.2.1";
+    static private int PORT = 4321;
+	static MulticastSocket socket;
+	static InetAddress group;
 	
 	public ServidorRMI() throws RemoteException {
 		super();
@@ -69,6 +42,27 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		protocolo.put("type", new String("registo"));
 		protocolo.put("username", username);
 		protocolo.put("password",password);
+		long counter = 0;
+		
+		String message = "Packet " + counter++;
+		byte[] buffer = message.getBytes();
+		
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT);
+		try{
+			socket.send(packet);
+		}catch(Exception c){
+			System.out.println("Exception in send packet : " + c);
+		}
+		buffer = new byte[256];
+		packet = new DatagramPacket(buffer, buffer.length);
+        try{
+			socket.receive(packet);
+		}catch(Exception c){
+			System.out.println("Exception in receive packet : " + c);
+		}
+		
+		message = new String(packet.getData(), 0, packet.getLength());
+		System.out.println(message);
 		//Mandar protocolo e ver se o username esta a ser usado
 		return false;
 	}
@@ -127,27 +121,29 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		}
 	}
 
-	// =======================================================
+	// ============================MAIN===========================
 
 	public static void main(String args[]) {
-		MulticastConection servidoresMulti = new MulticastConection();
 		String a;
-
+		
 		System.getProperties().put("java.security.policy", "policy.all");
 		System.setSecurityManager(new RMISecurityManager());
-
-		InputStreamReader input = new InputStreamReader(System.in);
-		BufferedReader reader = new BufferedReader(input);
-
+		
 		try {
+            socket = new MulticastSocket(PORT);
+            group = InetAddress.getByName(MULTICAST_ADDRESS);
+            socket.joinGroup(group);
+			
 			ServidorRMI s = new ServidorRMI();
 			Naming.bind("Drop", s);
 			System.out.println("DropMusic RMI Server ready.");
 			while (true) {
-				
+					
 				}
 		} catch (Exception re) {
 			System.out.println("Exception in DropMusicImpl.main: " + re);
-		} 
+		} finally {
+			socket.close();
+		}
 	}
 }

@@ -3,18 +3,17 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.io.IOException;
 
-public class MulticastServer extends Thread {
+public class ServidorMulti extends Thread {
     private String MULTICAST_ADDRESS = "224.3.2.1";
     private int PORT = 4321;
-    private long SLEEP_TIME = 5000;
 
     public static void main(String[] args) {
-        MulticastServer server = new MulticastServer();
+        ServidorMulti server = new ServidorMulti();
         server.start();
     }
 
-    public MulticastServer() {
-        super("Server " + (long) (Math.random() * 1000));
+    public ServidorMulti() {
+        super("Server online" );
     }
 
     public void run() {
@@ -22,16 +21,28 @@ public class MulticastServer extends Thread {
         long counter = 0;
         System.out.println(this.getName() + " running...");
         try {
-            socket = new MulticastSocket();  // create socket without binding it (only for sending)
+            socket = new MulticastSocket();
             while (true) {
-                String message = this.getName() + " packet " + counter++;
-                byte[] buffer = message.getBytes();
+				byte[] buffer = new byte[256];
+				InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
+				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT);
+				try{
+					socket.receive(packet);
+				}catch(Exception c){
+					System.out.println("Exception in send receive : " + c);
+				}
+				ManageRequest(packet);
 
-                InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT);
+				String message = "Packet " + counter++;
+				buffer = message.getBytes();
+				
+				packet = new DatagramPacket(buffer, buffer.length);
+				try{
+					socket.send(packet);
+				}catch(Exception c){
+					System.out.println("Exception in send packet : " + c);
+				}
                 socket.send(packet);
-
-                try { sleep((long) (Math.random() * SLEEP_TIME)); } catch (InterruptedException e) { }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,4 +50,11 @@ public class MulticastServer extends Thread {
             socket.close();
         }
     }
+	
+	public void ManageRequest(DatagramPacket packet){
+		String message = new String(packet.getData(), 0, packet.getLength());
+		System.out.println(message);
+	}
+	
+	
 }
