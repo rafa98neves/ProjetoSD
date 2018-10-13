@@ -4,13 +4,50 @@ import java.net.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.MulticastSocket;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.io.IOException;
+
+
+class MulticastConection extends Thread {
+    private String MULTICAST_ADDRESS = "224.3.2.1";
+    private int PORT = 4321;
+
+    public static void MulticastConection(){
+		MulticastConection client = new MulticastConection();
+        client.start();
+    }
+
+    public void run() {
+        MulticastSocket socket = null;
+        try {
+            socket = new MulticastSocket(PORT);  // create socket and bind it
+            InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
+            socket.joinGroup(group);
+                byte[] buffer = new byte[256];
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                socket.receive(packet);
+
+                System.out.println("Received packet from " + packet.getAddress().getHostAddress() + ":" + packet.getPort() + " with message:");
+                String message = new String(packet.getData(), 0, packet.getLength());
+                System.out.println(message);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            socket.close();
+        }
+    }
+}
+
 
 public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	
 	public ServidorRMI() throws RemoteException {
 		super();
 	}
-
+	
 	public void NewUser(String s) throws RemoteException {
 		System.out.println("> " + s);
 	}
@@ -93,6 +130,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	// =======================================================
 
 	public static void main(String args[]) {
+		MulticastConection servidoresMulti = new MulticastConection();
 		String a;
 
 		System.getProperties().put("java.security.policy", "policy.all");
