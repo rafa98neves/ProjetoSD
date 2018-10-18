@@ -5,44 +5,43 @@ import java.io.IOException;
 
 public class ServidorMulti extends Thread {
     private String MULTICAST_ADDRESS = "224.3.2.1";
-    private int PORT = 4321;
-
+    private int PORT_RECEIVE = 4322;
+	private int PORT_SEND = 4321;
+	
     public static void main(String[] args) {
         ServidorMulti server = new ServidorMulti();
         server.start();
     }
 
     public ServidorMulti() {
-        super("Server online" );
+        super("Server online");
     }
 
     public void run() {
         MulticastSocket socket = null;
         long counter = 0;
+
         System.out.println(this.getName() + " running...");
         try {
-            socket = new MulticastSocket();
+            socket = new MulticastSocket(PORT_RECEIVE);
+			InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
+			socket.joinGroup(group);
             while (true) {
 				byte[] buffer = new byte[256];
-				InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
-				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT);
-				try{
-					socket.receive(packet);
-				}catch(Exception c){
-					System.out.println("Exception in send receive : " + c);
-				}
+				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);			
+				System.out.println("Bloqueado");
+				socket.receive(packet);
+			    System.out.println("Desbloqueado");
+				
 				ManageRequest(packet);
-
-				String message = "Packet " + counter++;
+				
+				buffer = new byte[256];
+				String message = "Packet do multi";
 				buffer = message.getBytes();
 				
-				packet = new DatagramPacket(buffer, buffer.length);
-				try{
-					socket.send(packet);
-				}catch(Exception c){
-					System.out.println("Exception in send packet : " + c);
-				}
-                socket.send(packet);
+				packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+				socket.send(packet);
+				System.out.println("Sent!");
             }
         } catch (IOException e) {
             e.printStackTrace();
