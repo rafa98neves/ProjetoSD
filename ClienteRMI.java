@@ -296,7 +296,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		System.out.printf("\nNome do utilizador a dar previlegios: ");
 		String user = sc.nextLine();
 		try{
-			h.GivePriv(user, c);
+			h.GivePriv(online.IsEditor(), user, c);
 			Thread.sleep(500);
 		} catch (Exception re) {
 			System.out.println("Exception in Function Consulta(): " + re);

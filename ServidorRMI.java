@@ -2,8 +2,6 @@ import java.rmi.*;
 import java.rmi.server.*;
 import java.net.*;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.net.MulticastSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -72,9 +70,10 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	}
 	
 	public void CheckNotifications(String username, DropMusic_C_I c) throws RemoteException{
-		Map<String, String> protocolo = new HashMap<String, String>();
-		protocolo.put("type", new String("notifications"));
-		protocolo.put("username", username);
+		String protocolo = new String();
+		protocolo = "type | notifications ; username | " + username;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
 		//Procura na BD por notificacoes pendentes a este user
 		try {
 			c.Print("\nInformacao: Nenhuma notificacao pendente");
@@ -92,19 +91,19 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		//Mandar protocolo e ver se o username esta a ser usado
 		return false;
 	}
-	public boolean CheckUser(String name, String password,  DropMusic_C_I c) throws RemoteException{
-		Map<String, String> protocolo = new HashMap<String, String>();
-		protocolo.put("type", new String("login"));
-		protocolo.put("username", name);
-		protocolo.put("password", password);
+	public boolean CheckUser(String username, String password,  DropMusic_C_I c) throws RemoteException{
+		String protocolo = new String();
+		protocolo = "type | login ; username | " + username + " ; password | " + password;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
 		//Ver se o user esta na BD
 		return true;
 	}
 	public void Find(String name, String tipo, DropMusic_C_I c) throws RemoteException{
-		Map<String, String> protocolo = new HashMap<String, String>();
-		protocolo.put("type", new String("search"));
-		protocolo.put("nome", name);
-		protocolo.put("from", tipo);
+		String protocolo = new String();
+		protocolo = "type | search ; name | " + name + " ; from | " + name;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
 		//Receber da BD toda a informação relatica ao album, artista ou musica.
 		String aux = new String("Temos esse " + tipo + " sim");
 		try {
@@ -115,27 +114,37 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	}
 	
 	public void Write(String username, int pont, String critica, String album) throws RemoteException{
-		Map<String, String> protocolo = new HashMap<String, String>();
-		protocolo.put("type", new String("critic"));
-		protocolo.put("username", username);
-		protocolo.put("album", album);
-		protocolo.put("score", Integer.toString(pont));
-		protocolo.put("write", critica);		
+		String protocolo = new String();
+		protocolo = "type | critic ; username | " + username + " ; album | " + album + " ; score | " + Integer.toString(pont) + " ; write | " + critica;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();	
 		//find album
 		//escreve critica
 	}
-	public void ShareMusic(String NAOSEI) throws RemoteException{
-		
+	public void ShareMusic(String username) throws RemoteException{
+		String protocolo = new String();
+		protocolo = "type | share ; username | " + username;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
 	}
-	public void TransferMusic(String NAOSEI) throws RemoteException{
-		
+	public void TransferMusic(String username) throws RemoteException{
+		String protocolo = new String();
+		protocolo = "type | download  ; username | " + username;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
+	}
+	public void UploadMusic(String username) throws RemoteException{
+		String protocolo = new String();
+		protocolo = "type | upload  ; username | " + username;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
 	}
 	
-	public void GivePriv(String username, DropMusic_C_I c) throws RemoteException{
-		Map<String, String> protocolo = new HashMap<String, String>();
-		protocolo.put("privileges", new String("critic"));
-		protocolo.put("username", username);
-		protocolo.put("editor", new String("true"));	
+	public void GivePriv(boolean editor, String username, DropMusic_C_I c) throws RemoteException{
+		String protocolo = new String();
+		protocolo = "type | privileges  ; username | " + username + " ; editor | " + editor;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();	
 		String aux;
 		//Receber da BD o ID do Client c com este username
 		// c.ChangeUserToEditor()
