@@ -18,11 +18,14 @@ download musica -> type | download ; username | tintin* ; (...)
 
 Fazer registo -> type | registo ; confirmation | [true/false]
 Fazer login -> type | login ; confirmation | [true/false]
-Ver se o utilizador tem notificacoes pendentes -> 	type | notifications ; notification_1 | blabla* ; notification_2 | blablabla*
-							type | notifications ; notification_1 | noone
+Ver se o utilizador tem notificacoes pendentes -> 	type | notifications ; notification_1 | blabla* ; notification_2 | blablabla* 
+							type | notifications ; notification_1 | none
 encontrar musica/album/artista/genero -> type | search ; possibility_1 | zeca ; possibility_2 | zecaaa
+					type | search ; possibility_1 | none
 detalhes musica/album/artista/genero -> type | details ; detail_1 | moreno* ; detail_2 | Nasceu a ..*
+					type | details ; detail_1 | none
 escrever critica a um album -> type | critic ; confirmation | [escrito/negado]
+Dar previlegios -> type | privileges ; confirmation | [done/negado]
 error -> type | error ; function | [NomeDaFuncao]
 
 

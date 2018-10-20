@@ -56,9 +56,9 @@ public class ServidorMulti extends Thread {
 		ArrayList<String> processa = new ArrayList<String>();
 		String[] aux;
 		for(String s : processar){
-                    aux = s.split(Pattern.quote(" ; "));
+                    aux = s.split(Pattern.quote(" | "));
+                    processa.add(aux[0]);
                     processa.add(aux[1]);
-                    processa.add(aux[2]);
 		}
 		
 		switch(processa.get(1)){
@@ -75,15 +75,16 @@ public class ServidorMulti extends Thread {
 				return protocolo;
 				
 			case "notifications":
+				protocolo = "type | notifications ; notification_1 | Foi promovido a editor ; notification_2 | O Pedro é gay"; //Para testar
 				//Procurar na BD se processa[3] (username) tem notificações pendentes
 				//if(existe) protocolo = "type | notifications ; notification_1 | blabla* ; notification_2 | blablabla* ; (...)" ;
-				//else protocolo = "type | notifications ; notification_1 | noone";
+				//else protocolo = "type | notifications ; notification_1 | none";
 				return protocolo;
 				
 			case "search":
 				//Procurar na BD se processa[5] (tipo de pesquisa (album, genero,...) tem processa[3] (nome)
 				//if(existe) protocolo = "type | search ; possibility_1 | zeca* ; possibility_2 | zecaaa*" ;
-				//else protocolo = "type | search ; possibility_1 | noone";
+				//else protocolo = "type | search ; possibility_1 | none";
 				return protocolo;
 				
 			case "details":

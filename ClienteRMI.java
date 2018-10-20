@@ -195,12 +195,13 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	}
 	public static void Pesquisar(String escolha){
 		String search;
+		String[] respostas;
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.printf("\nNome:");
 		search = sc.nextLine();
 		try{
-			h.Find(search,escolha,c);
+			respostas = h.Find(search,escolha,c);
 		} catch (Exception re) {
 			System.out.println("Exception in Pesquisa(): " + re);
 		}
@@ -249,11 +250,12 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	}
 	public static void Consultar(String escolha){
 		String search;
+		String[] respostas;
 		Scanner sc = new Scanner(System.in);
 		System.out.printf("\nNome:");
 		search = sc.nextLine(); //Só funciona para uma palavra, resolver!!
 		try{
-			h.Find(search,escolha,c);
+			respostas = h.Find(search,escolha,c);
 		} catch (Exception re) {
 			System.out.println("Exception in Consulta: " + re);
 		} 
