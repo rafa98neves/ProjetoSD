@@ -150,7 +150,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
                     processa.add(aux[1]);
 		}
 		
-		String[] resposta;
+		String[] resposta = new String[(processa.size() - 2)/2];
 		if(processa.get(3).compareTo("none")==0){
 			resposta[0] = "none";
 			return resposta;
@@ -180,14 +180,14 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
                     processa.add(aux[1]);
 		}
 		
-		String[] resposta;
+		String[] resposta = new String[(processa.size() - 2)/2];
 		if(processa.get(3).compareTo("none")==0){
 			resposta[0] = "none";
 			return resposta;
 		}
 		else{
 			int counter=0;
-			for(int i = 3; i <= processa.size() ; i+=2){
+			for(int i = 3; i <= processa.size() ; i++){
 				resposta[counter] = processa.get(i);
 				counter++;
 			}
