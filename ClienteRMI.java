@@ -4,11 +4,41 @@ import java.rmi.server.*;
 import java.net.*;
 import java.io.*;
 
+
+
+
+class CheckingConnection extends Thread {
+	private static DropMusic_S_I teste;
+    
+	public CheckingConnection(){
+		super("Connection");
+	}
+	public void Checking(){
+		this.start();
+		ClienteRMI.Connected = "Drop";
+		try{
+			this.join();
+		}catch(Exception c){
+			System.out.println("Join error in Checking Thread: " + c);
+		}
+	}
+	
+    public void run() {
+        while(true){				
+			try{
+				teste = (DropMusic_S_I) Naming.lookup("Drop");
+				break;
+			}catch(Exception c){}
+		}
+	}
+}
+
+
 public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	private static User online;
 	private static ClienteRMI c;
 	private static DropMusic_S_I h;
-	private static boolean flag = false;
+	public static String Connected = "Drop";
 	
 	ClienteRMI() throws RemoteException {
 		super();
@@ -31,10 +61,11 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		BufferedReader reader = new BufferedReader(input);
 		
 		try {
-			h = (DropMusic_S_I) Naming.lookup("Drop");
+			h = (DropMusic_S_I) Naming.lookup(Connected);
 		}catch (Exception e1) {
 			BackUp();
-			flag = true;
+			CheckingConnection n = new CheckingConnection();
+			n.start();
 		}
 		
 		try{
@@ -51,10 +82,12 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		do{
 			try {
 			h = (DropMusic_S_I) Naming.lookup("Drop");
+			Connected ="Drop";
 			break;
 			}catch(Exception e1){
 				try{
 				h = (DropMusic_S_I) Naming.lookup("Drop_Backup");
+				Connected = "Drop_Backup";
 				break;
 				}catch(Exception e2){
 					connection++;
