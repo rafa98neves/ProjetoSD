@@ -10,6 +10,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	private static User online;
 	private static DropMusic_S_I h;
 	private static ClienteRMI c;
+	
 	ClienteRMI() throws RemoteException {
 		super();
 	}
@@ -29,15 +30,49 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 
 		InputStreamReader input = new InputStreamReader(System.in);
 		BufferedReader reader = new BufferedReader(input);
+		
 		try {
 			h = (DropMusic_S_I) Naming.lookup("Drop");
+		}catch (Exception e1) {
+			BackUp();
+		}
+		
+		try{
 			c = new ClienteRMI();
-		}catch (Exception e) {
-			System.out.println("Exception in main: " + e);
+		}catch(Exception e2){
+			System.out.println("Problemas a criar o cliente: " + e2);
 		}
 		MainScreen();
 	}
         
+	public static void BackUp(){
+		int connection = 0;	
+		System.out.println("\n\t\tA ligar ao servidor, aguarde enquanto a ligacao e estabelecida...");
+		do{
+			try {
+			h = (DropMusic_S_I) Naming.lookup("Drop");
+			break;
+			}catch(Exception e1){
+				try{
+				h = (DropMusic_S_I) Naming.lookup("Drop_Backup");
+				break;
+				}catch(Exception e2){
+					connection++;
+					try{
+						Thread.sleep(1000);
+					}catch(Exception e3){
+						System.out.println("Problemas com a thread main: " + e3);
+					}
+				}
+			}	
+		}while(connection != 30);
+		
+		if(connection == 30){
+			System.out.println("Nao foi possivel estabelecer a ligacao ao servidor, tente mais tarde"); 
+			System.exit(0);
+		}
+	}
+	
 	public static void MainScreen(){
 		System.out.println("\t\t\t >>DropMusic<< ");
 		System.out.println("\n");
