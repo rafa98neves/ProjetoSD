@@ -4,12 +4,11 @@ import java.rmi.server.*;
 import java.net.*;
 import java.io.*;
 
-
 public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
-	
 	private static User online;
-	private static DropMusic_S_I h;
 	private static ClienteRMI c;
+	private static DropMusic_S_I h;
+	private static boolean flag = false;
 	
 	ClienteRMI() throws RemoteException {
 		super();
@@ -35,6 +34,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			h = (DropMusic_S_I) Naming.lookup("Drop");
 		}catch (Exception e1) {
 			BackUp();
+			flag = true;
 		}
 		
 		try{
@@ -95,6 +95,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	}
 	
 	public static void Registo(){
+		boolean registou = false;
 		String nome = new String();
 		String password = new String();
 		Scanner sc = new Scanner(System.in);
@@ -103,18 +104,26 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			nome = sc.next();
 			System.out.printf("Password: ");
 			password = sc.next();
-			try {
-				if(h.RegistUser(nome,password)){
-					System.out.println("Registo efectuado com sucesso!");
+			while(true){
+				try {
+					if(h.RegistUser(nome,password)){
+						System.out.println("Registo efectuado com sucesso!");
+						registou = true;
+					}
 					break;
+				} catch (Exception e) {
+					BackUp();
 				}
-			} catch (Exception e) {
-				System.out.println("Exception in main: " + e);
 			}
-			System.out.println("Username ja esta em uso, escolha outro");
-			System.out.printf("Pretende:\n1.Tentar outra vez\n2.Fazer Login\n\n0.Exit");
-			if(sc.nextInt()==2) Login();
-			else if(sc.nextInt()==0) System.exit(0);
+			if(!registou){
+				System.out.println("Username ja esta em uso, escolha outro");
+				System.out.printf("Pretende:\n1.Tentar outra vez\n2.Fazer Login\n\n0.Exit");
+				if(sc.nextInt()==2) Login();
+				else if(sc.nextInt()==0) System.exit(0);
+			}
+			else{
+				break;
+			}
 		}
 		online = new User(nome, password);
 		DropMusic();
@@ -320,5 +329,4 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		} 
 		MainScreen();
 	}
-	
 }

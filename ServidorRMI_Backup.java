@@ -14,7 +14,7 @@ class MulticastConnection extends Thread {
     private int PORT_SEND = 4322;
 	private int PORT_RECEIVE = 4321;
 	private String protocolo;
-	
+	private boolean Waiting = true;
 	public MulticastConnection(String protocolo){
 		super("Multicast Conection");
 		this.protocolo = protocolo;
@@ -35,6 +35,7 @@ class MulticastConnection extends Thread {
         long counter = 0;
 		byte[] buffer = protocolo.getBytes();				
 		try{
+			Waiting = true;
 			socket = new MulticastSocket(PORT_RECEIVE);
 			InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
 			socket.joinGroup(group);
@@ -51,6 +52,7 @@ class MulticastConnection extends Thread {
 			
 			String received = new String(packet.getData(), 0, packet.getLength());
 			protocolo = received;
+			Waiting = false;
 		}catch(Exception c){
 			System.out.println("Exception in send/receive : " + c);
 		}finally{
@@ -248,8 +250,8 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		try {
 			
 			ServidorRMI s = new ServidorRMI();
-			Naming.bind("Drop", s);
-			System.out.println("DropMusic RMI Server ready.");
+			Naming.bind("Drop_Backup", s);
+			System.out.println("DropMusic RMI Back up Server ready.");
 			while (true) {
 					
 				}
