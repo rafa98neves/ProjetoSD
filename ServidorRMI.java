@@ -248,7 +248,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		try {
 			
 			ServidorRMI s = new ServidorRMI();
-			Naming.bind("Drop", s);
+			Naming.rebind("Drop", s);
 			System.out.println("DropMusic RMI Server ready.");
 			while (true) {
 					

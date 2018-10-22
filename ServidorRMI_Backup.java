@@ -9,61 +9,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-class MulticastConnection extends Thread {
-    private String MULTICAST_ADDRESS = "224.3.2.1";
-    private int PORT_SEND = 4322;
-	private int PORT_RECEIVE = 4321;
-	private String protocolo;
-	private boolean Waiting = true;
-	public MulticastConnection(String protocolo){
-		super("Multicast Conection");
-		this.protocolo = protocolo;
-	}
-	public String GetResponse(){
-		this.start();
-		try{
-			this.join();
-		}catch(Exception c){
-			System.out.println("Join error in Multicaste Thread: " + c);
-		}
-		return protocolo;
-	}
+public class ServidorRMI_Backup extends UnicastRemoteObject implements DropMusic_S_I{
 	
-    public void run() {
-		
-        MulticastSocket socket = null;
-        long counter = 0;
-		byte[] buffer = protocolo.getBytes();				
-		try{
-			Waiting = true;
-			socket = new MulticastSocket(PORT_RECEIVE);
-			InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
-			socket.joinGroup(group);
-			
-			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
-			socket.send(packet);
-			
-			buffer = new byte[256];
-			
-			packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
-			System.out.println("Bloqueado");
-			socket.receive(packet);
-			System.out.println("Desbloqueado");
-			
-			String received = new String(packet.getData(), 0, packet.getLength());
-			protocolo = received;
-			Waiting = false;
-		}catch(Exception c){
-			System.out.println("Exception in send/receive : " + c);
-		}finally{
-			socket.close();
-		}
-    }
-}
-
-public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
-	
-	public ServidorRMI() throws RemoteException {
+	public ServidorRMI_Backup() throws RemoteException {
 		super();
 	}
 	
@@ -249,8 +197,8 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		
 		try {
 			
-			ServidorRMI s = new ServidorRMI();
-			Naming.bind("Drop_Backup", s);
+			ServidorRMI_Backup s = new ServidorRMI_Backup();
+			Naming.rebind("Drop_Backup", s);
 			System.out.println("DropMusic RMI Back up Server ready.");
 			while (true) {
 					

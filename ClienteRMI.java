@@ -4,41 +4,10 @@ import java.rmi.server.*;
 import java.net.*;
 import java.io.*;
 
-
-
-
-class CheckingConnection extends Thread {
-	private static DropMusic_S_I teste;
-    
-	public CheckingConnection(){
-		super("Connection");
-	}
-	public void Checking(){
-		this.start();
-		ClienteRMI.Connected = "Drop";
-		try{
-			this.join();
-		}catch(Exception c){
-			System.out.println("Join error in Checking Thread: " + c);
-		}
-	}
-	
-    public void run() {
-        while(true){				
-			try{
-				teste = (DropMusic_S_I) Naming.lookup("Drop");
-				break;
-			}catch(Exception c){}
-		}
-	}
-}
-
-
 public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	private static User online;
 	private static ClienteRMI c;
-	private static DropMusic_S_I h;
-	public static String Connected = "Drop";
+	public static DropMusic_S_I h;
 	
 	ClienteRMI() throws RemoteException {
 		super();
@@ -61,7 +30,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		BufferedReader reader = new BufferedReader(input);
 		
 		try {
-			h = (DropMusic_S_I) Naming.lookup(Connected);
+			h = (DropMusic_S_I) Naming.lookup("Drop");
 		}catch (Exception e1) {
 			BackUp();
 			CheckingConnection n = new CheckingConnection();
@@ -78,32 +47,36 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
         
 	public static void BackUp(){
 		int connection = 0;	
-		System.out.println("\n\t\tA ligar ao servidor, aguarde enquanto a ligacao e estabelecida...");
+		int counter = 0;
 		do{
+			counter++;
 			try {
-			h = (DropMusic_S_I) Naming.lookup("Drop");
-			Connected ="Drop";
-			break;
+				h = (DropMusic_S_I) Naming.lookup("Drop");
+				h.NewUser(" ");
 			}catch(Exception e1){
 				try{
 				h = (DropMusic_S_I) Naming.lookup("Drop_Backup");
-				Connected = "Drop_Backup";
-				break;
-				}catch(Exception e2){
-					connection++;
+				h.NewUser(" ");
+				}catch(Exception e2){	
+					connection++;	
 					try{
 						Thread.sleep(1000);
 					}catch(Exception e3){
 						System.out.println("Problemas com a thread main: " + e3);
 					}
 				}
-			}	
+			}
+			if(connection != counter) break;
 		}while(connection != 30);
 		
 		if(connection == 30){
 			System.out.println("Nao foi possivel estabelecer a ligacao ao servidor, tente mais tarde"); 
 			System.exit(0);
 		}
+		/*else{
+			CheckingConnection k = new CheckingConnection();
+			k.Checking();
+		}*/
 	}
 	
 	public static void MainScreen(){
@@ -149,7 +122,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				}
 			}
 			if(!registou){
-				System.out.println("Username ja esta em uso, escolha outro");
+				System.out.printf("Username ja esta em uso, escolha outro");
 				System.out.printf("Pretende:\n1.Tentar outra vez\n2.Fazer Login\n\n0.Exit");
 				if(sc.nextInt()==2) Login();
 				else if(sc.nextInt()==0) System.exit(0);
@@ -177,10 +150,10 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 					break;
 				}
 			} catch (Exception e) {
-				System.out.println("Exception in Login: " + e);
+				BackUp();
 			}
-			System.out.println("Username ou password errados!");
-			System.out.printf("Pretende:\n1.Tentar outra vez\n2.Registar\n\n0.Exit");
+			System.out.println("\nUsername ou password errados!");
+			System.out.println("\nPretende:\n1.Tentar outra vez\n2.Registar\n\n0.Exit");
 			if(sc.nextInt()==2) Registo();
 			else if(sc.nextInt()==0) System.exit(0);
 		}
