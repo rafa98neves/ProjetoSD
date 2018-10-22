@@ -225,6 +225,13 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		protocolo = N.GetResponse();
 	}
 	
+	public void Playlist(String musica, String username) throws RemoteException{
+		String protocolo = new String();
+		protocolo = "type | upload  ; username | " + username;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
+	}
+	
 	public boolean GivePriv(boolean editor, String username, DropMusic_C_I c) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | privileges  ; username | " + username + " ; editor | " + editor;

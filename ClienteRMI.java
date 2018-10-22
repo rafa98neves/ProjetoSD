@@ -73,10 +73,6 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			System.out.println("Nao foi possivel estabelecer a ligacao ao servidor, tente mais tarde"); 
 			System.exit(0);
 		}
-		/*else{
-			CheckingConnection k = new CheckingConnection();
-			k.Checking();
-		}*/
 	}
 	
 	public static void MainScreen(){
@@ -275,18 +271,29 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 					String critica;
 					int pontuacao;
 					System.out.printf("Pontuacao [0 a 10]: ");
-					pontuacao = sc.nextInt();
+					while(true){
+						pontuacao = sc.nextInt();
+						if(pontuacao <= 10 || pontuacao >= 0) break;
+						else System.out.printf("Escolha uma pontuacao entre 0 e 10!\n");
+					}
 					System.out.printf("\nComentario >>> ");
 					while ((critica = reader.readLine()) != null){
-						h.Write(online.GetNome(), pontuacao, critica,search);
-						break;
+						try{
+							h.Write(online.GetNome(), pontuacao, critica,search);
+						}catch(Exception t){
+							BackUp();
+							try{
+								h.Write(online.GetNome(), pontuacao, critica,search);
+							}catch(Exception tt){
+								System.out.println("Nao foi possivel fazer o seu comentario, tenta mais tarde");
+							}
+						}
 					}
 				}
 			}catch (Exception re) {
 				System.out.println("Exception in Pesquisa(): " + re);
 			}
-		}
-			
+		}	
 		if(online.IsEditor()){
 			System.out.printf("Pretende fazer alterações?[y/n]");
 			search = sc.nextLine();
@@ -306,8 +313,18 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	}
 
 	public static void Playlist(){
-		System.out.println("\n\n\n\n\t\t >>Consultar detalhes sobre álbum e sobre artista<<");
-		Pesquisar("musica");
+		System.out.println("\n\n\n\n\t\t >>Playlist<<");
+		String[] playlists = h.GetPlaylists();
+		int counter = 1;
+		if(playlist[0].compareTo("none")!=0){
+			for(int i = 0; i<playlists.length; i++){
+				
+				System.out.println(counter + ". " + playlists[i]);
+				counter++;
+			}
+		}
+		System.out.println(counter +". Criar nova");
+
 		//?
 	}
 	public static void Upload(){
