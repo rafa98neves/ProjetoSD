@@ -24,7 +24,8 @@ encontrar musica/album/artista/genero -> type | search ; possibility_1 | zeca ; 
 					type | search ; possibility_1 | none
 detalhes musica/album/artista/genero -> type | details ; nome | joao* ; idade | 22 anos*
 					type | details ; detail_1 | none
-escrever critica a um album -> type | critic ; confirmation | [escrito/negado]
+escrever critica a um album -> type | critic ; confirmation | [escrito/negado] ; notificate_1 | none
+			       type | critic ; confirmation | [escrito/negado] ; notificate_1 | joao ; notificate_2 | none
 Dar previlegios -> type | privileges ; confirmation | [done/negado]
 error -> type | error ; function | [NomeDaFuncao]
 
