@@ -61,12 +61,26 @@ class MulticastConnection extends Thread {
 
 public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	
+	private static DropMusic_C_I[] online = new DropMusic_C_I[100];
+	private static String[] usernames = new String[100];
 	public ServidorRMI() throws RemoteException {
 		super();
 	}
 	
-	public void NewUser(String s) throws RemoteException {
-		System.out.println("> " + s);
+	public void ping() throws RemoteException {}
+	
+	
+	public void NewUser(DropMusic_C_I c, String username) throws RemoteException {
+		int i = 0;
+		while(online[i] != null) i++;
+		online[i] = c;
+		usernames[i] = username;
+	}
+	public void UserQuit(DropMusic_C_I c, String username) throws RemoteException {
+		int i = 0;
+		while(usernames[i].compareTo(username) == 0) i++;
+		online[i] = null;
+		usernames[i] = " ";
 	}
 	
 	public void CheckNotifications(String username, DropMusic_C_I c) throws RemoteException{
@@ -225,13 +239,6 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		protocolo = N.GetResponse();
 	}
 	
-	public void Playlist(String musica, String username) throws RemoteException{
-		String protocolo = new String();
-		protocolo = "type | upload  ; username | " + username;
-        MulticastConnection N = new MulticastConnection(protocolo);
-		protocolo = N.GetResponse();
-	}
-	
 	public boolean GivePriv(boolean editor, String username, DropMusic_C_I c) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | privileges  ; username | " + username + " ; editor | " + editor;
@@ -240,7 +247,10 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		String[] aux = processar[1].split(Pattern.quote(" | "));
-		if(aux[1].compareTo("done")==0) return true;
+		if(aux[1].compareTo("done")==0){
+			
+			return true;
+		}
 		else return false;
 	}
 

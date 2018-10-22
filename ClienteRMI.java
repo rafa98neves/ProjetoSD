@@ -16,6 +16,9 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	public void ChangeUserToEditor(){
 		online.ChangeUserToEditor(true);
 	}
+	public void ping(){
+	}
+	
 	public void Print(String s){
 		System.out.println(s);
 	}
@@ -33,8 +36,6 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			h = (DropMusic_S_I) Naming.lookup("Drop");
 		}catch (Exception e1) {
 			BackUp();
-			CheckingConnection n = new CheckingConnection();
-			n.start();
 		}
 		
 		try{
@@ -44,7 +45,20 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		}
 		MainScreen();
 	}
-        
+     
+	public static void LogOut(){
+		while(true){
+			try{
+				h.UserQuit(c, online.GetNome());
+				break;
+			}catch(Exception c){
+				BackUp();
+			}
+		}
+		System.exit(0);
+	}
+	
+	
 	public static void BackUp(){
 		int connection = 0;	
 		int counter = 0;
@@ -52,11 +66,11 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			counter++;
 			try {
 				h = (DropMusic_S_I) Naming.lookup("Drop");
-				h.NewUser(" ");
+				h.ping();
 			}catch(Exception e1){
 				try{
 				h = (DropMusic_S_I) Naming.lookup("Drop_Backup");
-				h.NewUser(" ");
+				h.ping();
 				}catch(Exception e2){	
 					connection++;	
 					try{
@@ -88,7 +102,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 					break;
 				case 2: Registo();
 					break;
-				case 0: System.exit(0);
+				case 0: LogOut();
 					break;
 				default: System.out.println("Opção Inválida");
 					break;
@@ -121,7 +135,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				System.out.printf("Username ja esta em uso, escolha outro");
 				System.out.printf("Pretende:\n1.Tentar outra vez\n2.Fazer Login\n\n0.Exit");
 				if(sc.nextInt()==2) Login();
-				else if(sc.nextInt()==0) System.exit(0);
+				else if(sc.nextInt()==0) LogOut();
 			}
 			else{
 				break;
@@ -151,17 +165,19 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			System.out.println("\nUsername ou password errados!");
 			System.out.println("\nPretende:\n1.Tentar outra vez\n2.Registar\n\n0.Exit");
 			if(sc.nextInt()==2) Registo();
-			else if(sc.nextInt()==0) System.exit(0);
+			else if(sc.nextInt()==0) LogOut();
 		}
 		online = new User(nome,password);
 		DropMusic();
 	}
 	
-	public static void DropMusic(){			
+	public static void DropMusic(){	
+		
 		int opcao;
 		boolean exit = false;
 		System.out.println("\n\n\n\n\t\t >>DropMusic<<");
 		try{
+			h.NewUser(c, online.GetNome());
 			h.CheckNotifications(online.GetNome(), c); 
 			Thread.sleep(500);
 		}catch(Exception c){
@@ -313,7 +329,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	}
 
 	public static void Playlist(){
-		System.out.println("\n\n\n\n\t\t >>Playlist<<");
+		/*System.out.println("\n\n\n\n\t\t >>Playlist<<");
 		String[] playlists = h.GetPlaylists();
 		int counter = 1;
 		if(playlist[0].compareTo("none")!=0){
@@ -323,9 +339,8 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				counter++;
 			}
 		}
-		System.out.println(counter +". Criar nova");
-
-		//?
+		System.out.println(counter +". Criar nova");*/
+		System.out.println("Funcionalidade a ser desenvolvida.");
 	}
 	public static void Upload(){
 		System.out.println("\n\n\t\t >>Upload de musica<<");
