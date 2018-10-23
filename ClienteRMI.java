@@ -278,7 +278,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			for(int possibilidades = 1; possibilidades<=respostas.length; possibilidades++){
 				System.out.println(possibilidades + ". ->" + respostas[possibilidades-1]);
 			}
-			int numero = sc.nextInt();	
+			int numero = sc.nextInt();
 			String[] details;
 			while(true){
 				try{
@@ -292,69 +292,99 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				for(int i = 0; i<details.length; i+=2){
 					System.out.println(details[i] + ": " + details[i+1]);
 				}
-			}
+			}			
+		if(escolha.compareTo("album")==0) FazerCritica(respostas[numero-1]);		
+		if(online.IsEditor()) FazerAlteracoes(escolha);
 		}
-		
-			
-		if(escolha.compareTo("album")==0){
-			InputStreamReader input = new InputStreamReader(System.in);
-			BufferedReader reader = new BufferedReader(input);
-			System.out.println("Prentende fazer um critica [y/n]?");
+	}
+	
+	public static void FazerCritica(String album){
+		Scanner sc = new Scanner(System.in);
+		String choice = new String();
+		InputStreamReader input = new InputStreamReader(System.in);
+		BufferedReader reader = new BufferedReader(input);
+		System.out.println("Prentende fazer um critica [y/n]?");
+		try{
+			choice = reader.readLine();
+		}catch(Exception re){
+			System.out.println("Erro a escrever: " + re);
+		}
+		if(choice.compareTo("y")==0){
+			String critica;
+			int pontuacao;
+			System.out.printf("Pontuacao [0 a 10]: ");
 			while(true){
-				try{
-					search = reader.readLine();
-					break;
-				}catch(Exception re3){
-					BackUp();
-				}
+				pontuacao = sc.nextInt();
+				if(pontuacao <= 10 || pontuacao >= 0) break;
+				else System.out.printf("Escolha uma pontuacao entre 0 e 10!\n");
 			}
-			if(search.compareTo("y")==0){
-				String critica;
-				int pontuacao;
-				System.out.printf("Pontuacao [0 a 10]: ");
-				while(true){
-					pontuacao = sc.nextInt();
-					if(pontuacao <= 10 || pontuacao >= 0) break;
-					else System.out.printf("Escolha uma pontuacao entre 0 e 10!\n");
-				}
-				System.out.printf("\nComentario >>> ");
-				try{
-					while ((critica = reader.readLine()) != null){
+			System.out.printf("\nComentario >>> ");
+			try{
+				while ((critica = reader.readLine()) != null){
+					try{
+						h.Write(online.GetNome(), pontuacao, critica, album);
+					}catch(Exception t){
+						BackUp();
 						try{
-							h.Write(online.GetNome(), pontuacao, critica,search);
-						}catch(Exception t){
-							BackUp();
-							try{
-								h.Write(online.GetNome(), pontuacao, critica,search);
-							}catch(Exception tt){
-								System.out.println("Nao foi possivel fazer o seu comentario, tenta mais tarde");
-							}
+							h.Write(online.GetNome(), pontuacao, critica, album);
+						}catch(Exception tt){
+							System.out.println("Nao foi possivel fazer o seu comentario, tenta mais tarde");
 						}
 					}
-				}catch(Exception re4){
-					System.out.println("Não foi possivel fazer o seu comentario, tente mais tarde");
 				}
+			}catch(Exception re4){
+				System.out.println("Não foi possivel fazer o seu comentario, tente mais tarde");
 			}
-		}	
-		
-		if(online.IsEditor()){
-			System.out.printf("Pretende fazer alterações?[y/n]");
-			search = sc.nextLine();
-			if(search.compareTo("y")==0){
-				String alterado, alteracao; 
-				System.out.printf("Para sair escreva <exit>\n");
-				while(true){
-					System.out.printf("O que quer alterar?[Ex. artistas]: ");
+		}
+	}
+	
+	public static void FazerAlteracoes(String escolha){
+		String choice = new String();
+		Scanner sc = new Scanner(System.in);
+		InputStreamReader input = new InputStreamReader(System.in);
+		BufferedReader reader = new BufferedReader(input);
+		System.out.printf("Pretende fazer alterações?[y/n]");
+		try{
+			choice = reader.readLine();
+		}catch(Exception re){
+			System.out.println("Erro a escrever: " + re);
+		}
+		if(choice.compareTo("y")==0){
+			String alterado, alteracao; 
+			while(true){
+				if(escolha.compareTo("album") == 0){
+					System.out.printf("O que quer alterar?[nome/ano/RemoverMusica/AdicionarMusica/Exit]: ");
 					alterado = sc.nextLine().toLowerCase();
 					if(alterado.compareTo("exit")==0) break;
 					System.out.printf("\n>>> ");
 					alteracao = sc.nextLine();
-					//Comunicar com RMI para fazer alteracoes <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-				}				
-			}
+				}
+				else if(escolha.compareTo("musica") == 0) {
+					System.out.printf("O que quer alterar?[titulo/artistas/genero/Exit]: ");
+					alterado = sc.nextLine().toLowerCase();
+					if(alterado.compareTo("exit")==0) break;
+					System.out.printf("\n>>> ");
+					alteracao = sc.nextLine();
+				}
+				else if(escolha.compareTo("artista") == 0) {
+					System.out.printf("O que quer alterar?[nome/Compositor/Exit]: ");
+					alterado = sc.nextLine().toLowerCase();
+					if(alterado.compareTo("exit")==0) break;
+					System.out.printf("\n>>> ");
+					alteracao = sc.nextLine();
+				}
+				else{
+					System.out.printf("O que quer alterar?[AcrescentarGenero/Exit]: ");
+					alterado = sc.nextLine().toLowerCase();
+					if(alterado.compareTo("exit")==0) break;
+					System.out.printf("\n>>> ");
+					alteracao = sc.nextLine();
+				}
+				//Comunicar com RMI para fazer alteracoes <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+			}				
 		}
 	}
-
+	
 	public static void Playlist(){
 		/*System.out.println("\n\n\n\n\t\t >>Playlist<<");
 		String[] playlists = h.GetPlaylists();

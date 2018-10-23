@@ -122,6 +122,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 	}
+	
 	public boolean RegistUser(String username, String password) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | registo ; username | " + username + " ; password | " + password;
@@ -215,7 +216,39 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			}
 			return resposta;
 		}
-
+	}
+	
+	public void AlterarDados(String username, String tipo, String alvo, String alteracao, String alterado) throws RemoteException{ //tipo = album, musica, (...) ||  alvo = nome // alteracao = genero, artista (...) // alterado = texto novo
+		String protocolo = new String();
+		protocolo = "type | alteration ; username | " + username + " ; " + tipo + " | " + alvo + " ; " + alteracao + " | " + alterado;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
+		
+		String[] processar = protocolo.split(Pattern.quote(" ; "));
+		ArrayList<String> processa = new ArrayList<String>();
+		String[] aux = new String[2];
+		for(String s : processar){
+                    aux = s.split(Pattern.quote(" | "));
+                    processa.add(aux[0]);
+                    processa.add(aux[1]);
+		}
+		if(aux[1].compareTo("alterado")==0){
+			int counter = 3;
+			int i = 0;
+			while(processa.get(counter).compareTo("none") != 0){ //Notificar editores anteriores
+				while(usernames[i] != null){
+					if(usernames[i].compareTo(username) == 0){
+							try{
+								online[i].Print("O editor " + username + " alterou informacao + " + alteracao + " no(a) " + tipo + " - " + alvo);
+							}catch(Exception c1){
+								AddNotification(username, ("O editor " + username + " alterou informacao + " + alteracao + " no(a) " + tipo + " - " + alvo));
+							}
+					}
+					i++;
+				}
+				counter++;
+			}
+		}
 	}
 	
 	public boolean Write(String username, int pont, String critica, String album) throws RemoteException{
@@ -224,8 +257,8 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 		
-		String[] processar = protocolo.split(Pattern.quote(" ; "));
-		String[] aux = processar[1].split(Pattern.quote(" | "));
+		String [] processa = protocolo.split(Pattern.quote(" ; "));
+		String aux[] = processa[1].split(Pattern.quote(" | "));
 		if(aux[1].compareTo("escrito")==0) return true;
 		else return false;		
 	}

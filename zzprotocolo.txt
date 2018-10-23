@@ -11,8 +11,7 @@ dar/tirar previlegios -> type | privileges ; username | ze* ; editor | [true/fal
 partilhar musica -> type | share ; username | tintin* ; (...)
 upload musica -> type | upload ; username | tintin* ; (...)
 download musica -> type | download ; username | tintin* ; (...)
-
-
+alterar dados -> type | alteration ; username | tintin* ; [musica/album] | nome ; [artista/genero/...] | alteracao
 
 
 <<Protocolo a enviar pelo Servidor Multicast:>>
@@ -26,9 +25,10 @@ encontrar musica/album/artista/genero -> type | search ; possibility_1 | zeca ; 
 					type | search ; possibility_1 | none
 detalhes musica/album/artista/genero -> type | details ; nome | joao* ; idade | 22 anos*
 					type | details ; detail_1 | none
-escrever critica a um album -> type | critic ; confirmation | [escrito/negado] ; notificate_1 | none
-			       type | critic ; confirmation | [escrito/negado] ; notificate_1 | joao ; notificate_2 | none
+escrever critica a um album -> type | critic ; confirmation | [escrito/negado]
 Dar previlegios -> type | privileges ; confirmation | [done/negado]
+alterar dados -> type | alteration ; notificate | joao ; notificate | none
+
 error -> type | error ; function | [NomeDaFuncao]
 
 
