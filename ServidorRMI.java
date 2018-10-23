@@ -210,12 +210,16 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		}
 		else{
 			int counter=0;
-			for(int i = 3; i <= processa.size() ; i++){
+			for(int i = 2; i <= processa.size() ; i++){
 				resposta[counter] = processa.get(i);
 				counter++;
 			}
 			return resposta;
 		}
+	}
+	
+	public void AddRemoveMusic(String tipo, String nome, String nome_musica, boolean remove) throws RemoteException{
+		
 	}
 	
 	public void AlterarDados(String username, String tipo, String alvo, String alteracao, String alterado) throws RemoteException{ //tipo = album, musica, (...) ||  alvo = nome // alteracao = genero, artista (...) // alterado = texto novo

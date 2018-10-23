@@ -11,6 +11,8 @@ public interface DropMusic_S_I extends Remote {
 	public String[] Find(String name, String tipo, DropMusic_C_I client) throws RemoteException;
 	public String[] GetDetails(String name, String tipo, DropMusic_C_I c) throws RemoteException;
 	public boolean Write(String username, int pont, String critica, String album) throws RemoteException;
+	public void AddRemoveMusic(String tipo, String nome, String nome_musica, boolean remove) throws RemoteException;
+	public void AlterarDados(String username, String tipo, String alvo, String alteracao, String alterado) throws RemoteException;
 	public void ShareMusic(String username) throws RemoteException;
 	public void TransferMusic(String username) throws RemoteException;
 	public void UploadMusic(String username) throws RemoteException;

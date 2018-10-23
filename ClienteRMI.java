@@ -294,7 +294,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				}
 			}			
 		if(escolha.compareTo("album")==0) FazerCritica(respostas[numero-1]);		
-		if(online.IsEditor()) FazerAlteracoes(escolha);
+		if(online.IsEditor()) FazerAlteracoes(escolha, respostas[numero-1], details);
 		}
 	}
 	
@@ -338,7 +338,8 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		}
 	}
 	
-	public static void FazerAlteracoes(String escolha){
+	public static void FazerAlteracoes(String escolha, String nome, String[] details){
+		int counter;
 		String choice = new String();
 		Scanner sc = new Scanner(System.in);
 		InputStreamReader input = new InputStreamReader(System.in);
@@ -351,17 +352,87 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		}
 		if(choice.compareTo("y")==0){
 			String alterado, alteracao; 
+			String before = " ";
+			String[] beforeChoices = new String[256];
 			while(true){
 				if(escolha.compareTo("album") == 0){
 					System.out.printf("O que quer alterar?[nome/ano/RemoverMusica/AdicionarMusica/Exit]: ");
 					alterado = sc.nextLine().toLowerCase();
 					if(alterado.compareTo("exit")==0) break;
-					System.out.printf("\n>>> ");
-					alteracao = sc.nextLine();
+					before = alterado;
+					switch(alterado){
+						case "nome":
+						case "ano":
+							System.out.printf("\nNovo>>> ");
+							try{
+								choice = reader.readLine();
+							}catch(Exception re){
+								System.out.println("Erro a escrever: " + re);
+							}
+							while(true){
+								try{
+									h.AlterarDados(online.GetNome(), escolha, nome, alterado, choice);  
+									break;
+								}catch(Exception re2){
+									BackUp();
+								}
+							}
+							break;
+						case "removermusica":
+							counter = 1;
+							for(int i = 0; i<details.length; i+=2){
+								if(details[i].compareTo("musica")==0) System.out.println(counter + ". " + details[i+1]);
+								beforeChoices[counter-1] = details[i+1];
+							}
+							counter = sc.nextInt();
+							while(true){
+								try{
+									h.AddRemoveMusic(escolha,nome,beforeChoices[counter],true); 
+									break;
+								}catch(Exception re3){
+									BackUp();
+								}
+							}								
+							break;
+						case "adicionarmusica":
+							System.out.printf("\nNome da Musica>>> ");
+							try{
+								choice = reader.readLine();
+							}catch(Exception re){
+								System.out.println("Erro a escrever: " + re);
+							}
+							String[] respostas = new String[256];
+							while(true){
+								try{
+									respostas = h.Find(choice,"musica",c);
+									break;
+								}catch(Exception re4){
+									BackUp();
+								}
+							}
+							
+							if(respostas[0].compareTo("none")==0) System.out.println("Nada encontrado para: " + choice);
+							else{
+								for(int possibilidades = 1; possibilidades<=respostas.length; possibilidades++){
+									System.out.println(possibilidades + ". ->" + respostas[possibilidades-1]);
+								}
+								counter = sc.nextInt();
+								while(true){
+									try{
+										h.AddRemoveMusic(escolha, nome, respostas[counter],false);
+										break;
+									}catch(Exception re5){
+										BackUp();
+									}
+								}
+							}
+							break;
+					}
 				}
 				else if(escolha.compareTo("musica") == 0) {
 					System.out.printf("O que quer alterar?[titulo/artistas/genero/Exit]: ");
 					alterado = sc.nextLine().toLowerCase();
+					before = alterado;
 					if(alterado.compareTo("exit")==0) break;
 					System.out.printf("\n>>> ");
 					alteracao = sc.nextLine();
@@ -369,6 +440,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				else if(escolha.compareTo("artista") == 0) {
 					System.out.printf("O que quer alterar?[nome/Compositor/Exit]: ");
 					alterado = sc.nextLine().toLowerCase();
+					before = alterado;
 					if(alterado.compareTo("exit")==0) break;
 					System.out.printf("\n>>> ");
 					alteracao = sc.nextLine();
@@ -376,6 +448,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				else{
 					System.out.printf("O que quer alterar?[AcrescentarGenero/Exit]: ");
 					alterado = sc.nextLine().toLowerCase();
+					before = alterado;
 					if(alterado.compareTo("exit")==0) break;
 					System.out.printf("\n>>> ");
 					alteracao = sc.nextLine();

@@ -24,6 +24,7 @@ Adicionar notificacao -> type | confirmation ; notification | [add/error]
 encontrar musica/album/artista/genero -> type | search ; possibility_1 | zeca ; possibility_2 | zecaaa
 					type | search ; possibility_1 | none
 detalhes musica/album/artista/genero -> type | details ; nome | joao* ; idade | 22 anos*
+					type | details ; nome | Album Fixe ; musica | hello* ; musica | hello2*
 					type | details ; detail_1 | none
 escrever critica a um album -> type | critic ; confirmation | [escrito/negado]
 Dar previlegios -> type | privileges ; confirmation | [done/negado]
