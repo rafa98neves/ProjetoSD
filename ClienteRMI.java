@@ -161,14 +161,17 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 					System.out.println("Login efectuado com sucesso!");
 					break;
 				}
+				else{
+					System.out.println("\nUsername ou password errados!");
+					System.out.println("\nPretende:\n1.Tentar outra vez\n2.Registar\n\n0.Exit");
+					if(sc.nextInt()==2) Registo();
+					else if(sc.nextInt()==0) LogOut();
+					break;
+				}
 			} catch (Exception e) {
 				BackUp();
 			}
 		}
-		System.out.println("\nUsername ou password errados!");
-		System.out.println("\nPretende:\n1.Tentar outra vez\n2.Registar\n\n0.Exit");
-		if(sc.nextInt()==2) Registo();
-		else if(sc.nextInt()==0) LogOut();
 		online = new User(nome,password);
 		DropMusic();
 	}
@@ -352,14 +355,11 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		}
 		if(choice.compareTo("y")==0){
 			String alterado, alteracao; 
-			String before = " ";
-			String[] beforeChoices = new String[256];
 			while(true){
 				if(escolha.compareTo("album") == 0){
 					System.out.printf("O que quer alterar?[nome/ano/RemoverMusica/AdicionarMusica/Exit]: ");
 					alterado = sc.nextLine().toLowerCase();
 					if(alterado.compareTo("exit")==0) break;
-					before = alterado;
 					switch(alterado){
 						case "nome":
 						case "ano":
@@ -380,6 +380,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 							break;
 						case "removermusica":
 							counter = 1;
+							String[] beforeChoices = new String[256];
 							for(int i = 0; i<details.length; i+=2){
 								if(details[i].compareTo("musica")==0) System.out.println(counter + ". " + details[i+1]);
 								beforeChoices[counter-1] = details[i+1];
@@ -387,7 +388,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 							counter = sc.nextInt();
 							while(true){
 								try{
-									h.AddRemoveMusic(escolha,nome,beforeChoices[counter],true); 
+									h.AddRemoveSomething("album",nome,beforeChoices[counter],true); //Remove musica escolhida de album com nome 'nome'
 									break;
 								}catch(Exception re3){
 									BackUp();
@@ -419,7 +420,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								counter = sc.nextInt();
 								while(true){
 									try{
-										h.AddRemoveMusic(escolha, nome, respostas[counter],false);
+										h.AddRemoveSomething("album", nome, respostas[counter],false); //Adiciona musica escolhida a album com nome 'nome'
 										break;
 									}catch(Exception re5){
 										BackUp();
@@ -427,31 +428,154 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								}
 							}
 							break;
+							
+						default: System.out.println("Opção Inválida");
 					}
 				}
 				else if(escolha.compareTo("musica") == 0) {
 					System.out.printf("O que quer alterar?[titulo/artistas/genero/Exit]: ");
 					alterado = sc.nextLine().toLowerCase();
-					before = alterado;
 					if(alterado.compareTo("exit")==0) break;
-					System.out.printf("\n>>> ");
-					alteracao = sc.nextLine();
+					switch(alterado){
+						case "titulo":
+							System.out.printf("\nNovo>>> ");
+							try{
+								choice = reader.readLine();
+							}catch(Exception re){
+								System.out.println("Erro a escrever: " + re);
+							}
+							while(true){
+								try{
+									h.AlterarDados(online.GetNome(), escolha, nome, alterado, choice);  
+									break;
+								}catch(Exception re2){
+									BackUp();
+								}
+							}
+							break;
+						case "artistas":
+							System.out.printf("Quer:\n 1.Remover artista\n 2.Adicionar artista\n 0.Back\n ");
+							counter = sc.nextInt();
+							if(counter == 0) break;
+							else if(counter == 1){
+								counter = 1;
+								String[] beforeChoices = new String[256];
+								for(int i = 0; i<details.length; i+=2){
+									if(details[i].compareTo("artista")==0) System.out.println(counter + ". " + details[i+1]);
+									beforeChoices[counter-1] = details[i+1];
+								}
+								counter = sc.nextInt();
+								while(true){
+									try{
+										h.AddRemoveSomething("artista",nome,beforeChoices[counter],true); 
+										break;
+									}catch(Exception re3){
+										BackUp();
+									}
+								}								
+								break;	
+							}
+							else{
+								System.out.printf("\nNome do artista>>> ");
+								try{
+									choice = reader.readLine();
+								}catch(Exception re){
+									System.out.println("Erro a escrever: " + re);
+								}
+								String[] respostas = new String[256];
+								while(true){
+									try{
+										respostas = h.Find(choice,"artista",c);
+										break;
+									}catch(Exception re4){
+										BackUp();
+									}
+								}
+								
+								if(respostas[0].compareTo("none")==0) System.out.println("Nada encontrado para: " + choice);
+								else{
+									for(int possibilidades = 1; possibilidades<=respostas.length; possibilidades++){
+										System.out.println(possibilidades + ". ->" + respostas[possibilidades-1]);
+									}
+									counter = sc.nextInt();
+									while(true){
+										try{
+											h.AddRemoveSomething("musica", nome, respostas[counter],false); //Adiciona artista escolhido a musica com nome 'nome'
+											break;
+										}catch(Exception re2){
+											BackUp();
+										}
+									}
+								}
+								break;
+							}							
+						case "genero":	
+							String[] respostas = new String[50];
+							while(true){
+								try{
+									respostas = h.GetGeneros();
+									break;
+								}catch(Exception re){
+									BackUp();
+								}
+							}
+							System.out.println("Novo genero: ");
+							int i = 0;
+							while(respostas[i] != null){
+								System.out.println(i+1 + ". " + respostas[i]);
+								i++;
+							}
+							System.out.println("0. Back");
+							int esc = sc.nextInt();
+							if(esc == 0) break;
+							else if(esc > 0 && esc <= i+1){
+								try{
+									h.AlterarDados(online.GetNome(), escolha, nome, alterado, respostas[esc-1]);  
+									break;
+								}catch(Exception re2){
+									BackUp();
+								}	
+							break;
+							}
+							else System.out.println("Resposta Invalida");
+							break;
+						default: System.out.println("Opção Inválida");
+					}
 				}
 				else if(escolha.compareTo("artista") == 0) {
-					System.out.printf("O que quer alterar?[nome/Compositor/Exit]: ");
+					System.out.printf("O que quer alterar?[Nome/Compositor/Exit]: ");
 					alterado = sc.nextLine().toLowerCase();
-					before = alterado;
 					if(alterado.compareTo("exit")==0) break;
-					System.out.printf("\n>>> ");
-					alteracao = sc.nextLine();
+					switch(alterado){
+						case "nome":
+						
+						case "compositor":
+						
+							
+						default: System.out.println("Opção Inválida");
+					}
 				}
 				else{
 					System.out.printf("O que quer alterar?[AcrescentarGenero/Exit]: ");
 					alterado = sc.nextLine().toLowerCase();
-					before = alterado;
-					if(alterado.compareTo("exit")==0) break;
-					System.out.printf("\n>>> ");
-					alteracao = sc.nextLine();
+					if(alterado.compareTo("exit")==0);
+					else if(alterado.compareTo("acrescentargenero")==0){
+						System.out.println("Genero a acrescentar: ");
+						try{
+							choice = reader.readLine();
+						}catch(Exception re){
+							System.out.println("Erro a escrever: " + re);
+						}
+						while(true){
+							try{
+								h.AddGenero(choice);
+							}catch(Exception re2){
+								BackUp();
+							}
+						}
+					}
+					else System.out.println("Opção Invalida");
+					break;
 				}
 				//Comunicar com RMI para fazer alteracoes <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 			}				

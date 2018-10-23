@@ -168,9 +168,9 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		ArrayList<String> processa = new ArrayList<String>();
 		String[] aux;
 		for(String s : processar){
-                    aux = s.split(Pattern.quote(" | "));
-                    processa.add(aux[0]);
-                    processa.add(aux[1]);
+			aux = s.split(Pattern.quote(" | "));
+			processa.add(aux[0]);
+			processa.add(aux[1]);
 		}
 		
 		String[] resposta = new String[(processa.size() - 2)/2];
@@ -218,7 +218,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		}
 	}
 	
-	public void AddRemoveMusic(String tipo, String nome, String nome_musica, boolean remove) throws RemoteException{
+	public void AddRemoveSomething(String tipo, String nome, String dado_add_removido, boolean remove) throws RemoteException{
 		
 	}
 	
@@ -254,6 +254,14 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			}
 		}
 	}
+	public String[] GetGeneros() throws RemoteException{
+		String[] cenas = new String[29];
+		return cenas;
+	}
+	public void AddGenero(String genero) throws RemoteException{
+		
+	}
+	
 	
 	public boolean Write(String username, int pont, String critica, String album) throws RemoteException{
 		String protocolo = new String();
