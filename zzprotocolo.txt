@@ -3,6 +3,7 @@
 Fazer registo -> type | registo ; username | tintin* ; password | unicorn* 
 Fazer login -> type | login ; username | tintin* ; password | unicorn*
 Ver se o utilizador tem notificacoes pendentes -> type | notifications ; username | tintin*
+Adicionar notificação -> type | add_notification ; username | notificado ; notificacion | "asdasdsa"
 encontrar musica/album/artista/genero -> type | search ; name | zeca afonso* ; from | [album/music/genre/artist] 
 detalhes musica/album/artista/genero -> type | details; name | zeca afonso* ; from | [album/music/artist]
 escrever critica a um album -> type | critic ; username | tintin* ; album | Example* ; write | blablabla*
@@ -20,6 +21,7 @@ Fazer registo -> type | registo ; confirmation | [true/false]
 Fazer login -> type | login ; confirmation | [true/false]
 Ver se o utilizador tem notificacoes pendentes -> 	type | notifications ; notification_1 | blabla* ; notification_2 | blablabla* 
 							type | notifications ; notification_1 | none
+Adicionar notificacao -> type | confirmation ; notification | [add/error]
 encontrar musica/album/artista/genero -> type | search ; possibility_1 | zeca ; possibility_2 | zecaaa
 					type | search ; possibility_1 | none
 detalhes musica/album/artista/genero -> type | details ; nome | joao* ; idade | 22 anos*

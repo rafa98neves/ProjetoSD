@@ -67,10 +67,12 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			try {
 				h = (DropMusic_S_I) Naming.lookup("Drop");
 				h.ping();
+				h.NewUser(c, online.GetNome());
 			}catch(Exception e1){
 				try{
 				h = (DropMusic_S_I) Naming.lookup("Drop_Backup");
 				h.ping();
+				h.NewUser(c, online.GetNome());
 				}catch(Exception e2){	
 					connection++;	
 					try{

@@ -72,13 +72,18 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	
 	public void NewUser(DropMusic_C_I c, String username) throws RemoteException {
 		int i = 0;
-		while(online[i] != null) i++;
+		while(online[i] != null){
+			if(online[i] != c) i++;
+			else return;
+		}
 		online[i] = c;
 		usernames[i] = username;
 	}
+	
+	
 	public void UserQuit(DropMusic_C_I c, String username) throws RemoteException {
 		int i = 0;
-		while(usernames[i].compareTo(username) == 0) i++;
+		while(usernames[i].compareTo(username) != 0) i++;
 		online[i] = null;
 		usernames[i] = " ";
 	}
@@ -111,7 +116,12 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			System.out.println("Exception in Find(): " + re);
 		} 
 	}
-	
+	public void AddNotification(String username, String notificacao){
+		String protocolo = new String();
+		protocolo = "type | add_notifications ; username | " + username + " ; notification | " + notificacao;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
+	}
 	public boolean RegistUser(String username, String password) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | registo ; username | " + username + " ; password | " + password;
@@ -240,6 +250,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	}
 	
 	public boolean GivePriv(boolean editor, String username, DropMusic_C_I c) throws RemoteException{
+		int i = 0;
 		String protocolo = new String();
 		protocolo = "type | privileges  ; username | " + username + " ; editor | " + editor;
         MulticastConnection N = new MulticastConnection(protocolo);
@@ -248,10 +259,33 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		String[] aux = processar[1].split(Pattern.quote(" | "));
 		if(aux[1].compareTo("done")==0){
-			
-			return true;
+			while(usernames[i] != null){
+				if(usernames[i].compareTo(username) == 0){
+					if(editor){
+						try{
+							online[i].Print("Parabens, foi promovido a editor!");
+						}catch(Exception c1){
+							AddNotification(username, "Parabens, foi promovido a editor!");
+						}
+					}
+					else{
+						try{
+							online[i].Print("Um editor tirou os seu previlegios");
+						}catch(Exception c2){
+							AddNotification(username, "Um editor tirou os seu previlegios");
+						}
+					}
+					return true;
+				}
+				i++;
+			}
+			if(usernames[i] == null){
+				if(editor) AddNotification(username, "Parabens, foi promovido a editor!");
+				else AddNotification(username, "Um editor tirou os seu previlegios");
+				return true;
+			}
 		}
-		else return false;
+		return false;
 	}
 
 	// ============================MAIN===========================
