@@ -12,7 +12,10 @@ partilhar musica -> type | share ; username | tintin* ; (...)
 upload musica -> type | upload ; username | tintin* ; (...)
 download musica -> type | download ; username | tintin* ; (...)
 alterar dados -> type | alteration ; username | tintin* ; [musica/album] | nome ; [artista/genero/...] | alteracao
-
+Adicionar informacao -> type | add ; from | album* ; named | MusicasDoToy* ; this |  CoracaoNaoTemIdade*
+Remover informacao -> type | remove ; from | album* ; named | MusicasDoToy* ; this |  RosaNegra*
+Get generos -> type | getgeneros
+Add Genero -> type | addgenero; genero | rock*
 
 <<Protocolo a enviar pelo Servidor Multicast:>>
 
@@ -29,6 +32,9 @@ detalhes musica/album/artista/genero -> type | details ; nome | joao* ; idade | 
 escrever critica a um album -> type | critic ; confirmation | [escrito/negado]
 Dar previlegios -> type | privileges ; confirmation | [done/negado]
 alterar dados -> type | alteration ; notificate | joao ; notificate | none
+Get generos -> genero1 | genero2 | genero3 | ...
+Add Genero -> type | addgenero; confirmation | [true/false]
+
 
 error -> type | error ; function | [NomeDaFuncao]
 

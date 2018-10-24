@@ -219,7 +219,11 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	}
 	
 	public void AddRemoveSomething(String tipo, String nome, String dado_add_removido, boolean remove) throws RemoteException{
-		
+		String protocolo = new String();
+		if(remove) protocolo = "type | remove ; from | " + tipo + " ; named | " + nome +" ; this | " + dado_add_removido; //Remove do 'tipo' (album, artista,..) com este 'nome' este dado
+		else protocolo = "type | add ; from | " + tipo + " ; named | " + nome +" ; this | " + dado_add_removido; //Adiciona do 'tipo' (album, artista,..) com este 'nome' este dado
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
 	}
 	
 	public void AlterarDados(String username, String tipo, String alvo, String alteracao, String alterado) throws RemoteException{ //tipo = album, musica, (...) ||  alvo = nome // alteracao = genero, artista (...) // alterado = texto novo
@@ -255,11 +259,21 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		}
 	}
 	public String[] GetGeneros() throws RemoteException{
-		String[] cenas = new String[29];
-		return cenas;
-	}
-	public void AddGenero(String genero) throws RemoteException{
+		String protocolo = new String();
+		protocolo = "type | getgeneros";
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
 		
+		String[] processar = protocolo.split(Pattern.quote(" | "));
+		
+		return processar;		
+	}
+	
+	public void AddGenero(String genero) throws RemoteException{
+		String protocolo = new String();
+		protocolo = "type | addgenero ; genero | " + genero;
+        MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
 	}
 	
 	
@@ -337,18 +351,28 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 
 	public static void main(String args[]) {
 		String a;
+		DropMusic_S_I h;
 		
 		System.getProperties().put("java.security.policy", "policy.all");
 		System.setSecurityManager(new RMISecurityManager());
 		
 		try {
-			
 			ServidorRMI s = new ServidorRMI();
 			Naming.rebind("Drop", s);
 			System.out.println("DropMusic RMI Server ready.");
-			while (true) {
-					
+			while (true) {	//Fazer testes ao Servidor Secundario
+				try{
+					Thread.sleep(60000);
+				}catch(Exception erro){
+					System.out.println("Exception ThreadSleep.main: " + erro);
 				}
+				try{
+					h = (DropMusic_S_I) Naming.lookup("Drop_Backup");
+					h.ping();
+				}catch(Exception c){
+					System.out.println("Servidor de Backup está indisponivel");
+				}
+			}
 		} catch (Exception re) {
 			System.out.println("Exception in DropMusicImpl.main: " + re);
 		}
