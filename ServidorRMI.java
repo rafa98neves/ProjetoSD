@@ -80,7 +80,6 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		usernames[i] = username;
 	}
 	
-	
 	public void UserQuit(DropMusic_C_I c, String username) throws RemoteException {
 		int i = 0;
 		while(usernames[i].compareTo(username) != 0) i++;
@@ -116,6 +115,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			System.out.println("Exception in Find(): " + re);
 		} 
 	}
+	
 	public void AddNotification(String username, String notificacao){
 		String protocolo = new String();
 		protocolo = "type | add_notifications ; username | " + username + " ; notification | " + notificacao;
@@ -140,6 +140,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		if(processa.get(3).compareTo("true")==0) return true;
 		else return false;
 	}
+	
 	public boolean CheckUser(String username, String password,  DropMusic_C_I c) throws RemoteException{
 		return true;
 		/*String protocolo = new String();
@@ -258,6 +259,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			}
 		}
 	}
+	
 	public String[] GetGeneros() throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | getgeneros";
@@ -275,8 +277,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 	}
-	
-	
+		
 	public boolean Write(String username, int pont, String critica, String album) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | critic ; username | " + username + " ; album | " + album + " ; score | " + Integer.toString(pont) + " ; write | " + critica;
@@ -295,18 +296,17 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 	}
-	public void TransferMusic(String username) throws RemoteException{
+	
+	public String TransferMusic(String username) throws RemoteException{
 		String protocolo = new String();
-		protocolo = "type | download  ; username | " + username;
+		protocolo = "type | GetAddress  ; username | " + username;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
+		String[] aux = protocolo.split(Pattern.quote(" ; "));
+		String[] endereco = aux[1].split(Pattern.quote(" | "));
+		return endereco[1];
 	}
-	public void UploadMusic(String username) throws RemoteException{
-		String protocolo = new String();
-		protocolo = "type | upload  ; username | " + username;
-        MulticastConnection N = new MulticastConnection(protocolo);
-		protocolo = N.GetResponse();
-	}
+	
 	
 	public boolean GivePriv(boolean editor, String username, DropMusic_C_I c) throws RemoteException{
 		int i = 0;
@@ -350,16 +350,32 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	// ============================MAIN===========================
 
 	public static void main(String args[]) {
-		String a;
+		boolean secundario = false;
 		DropMusic_S_I h;
 		
 		System.getProperties().put("java.security.policy", "policy.all");
 		System.setSecurityManager(new RMISecurityManager());
 		
-		try {
+		
+		try{
 			ServidorRMI s = new ServidorRMI();
-			Naming.rebind("Drop", s);
-			System.out.println("DropMusic RMI Server ready.");
+			h = (DropMusic_S_I) Naming.lookup("Drop");
+			h.ping();
+			Naming.rebind("Drop_Backup", s);
+			secundario = true;
+			System.out.println("DropMusic RMI Secundary Server ready.");
+		}catch(Exception c1){
+			try {
+				ServidorRMI s = new ServidorRMI();
+				Naming.rebind("Drop", s);
+				System.out.println("DropMusic RMI Primary Server ready.");
+			}catch(Exception c2){
+				System.out.println("Exception in DropMusicImpl.main: " + c2);
+			}
+		}
+		
+		
+		if(!secundario){
 			while (true) {	//Fazer testes ao Servidor Secundario
 				try{
 					Thread.sleep(60000);
@@ -369,12 +385,35 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 				try{
 					h = (DropMusic_S_I) Naming.lookup("Drop_Backup");
 					h.ping();
-				}catch(Exception c){
+				}catch(Exception c3){
 					System.out.println("Servidor de Backup está indisponivel");
 				}
 			}
-		} catch (Exception re) {
-			System.out.println("Exception in DropMusicImpl.main: " + re);
+		}
+		else{
+			while (true) {	//Fazer testes ao Servidor Primario
+				try{
+					Thread.sleep(10000);
+				}catch(Exception erro2){
+					System.out.println("Exception ThreadSleep.main: " + erro2);
+				}
+				try{
+					h = (DropMusic_S_I) Naming.lookup("Drop");
+					h.ping();
+				}catch(Exception c4){
+					try{
+						ServidorRMI s = new ServidorRMI();
+						Naming.rebind("Drop", s);
+						secundario = false;						
+						System.out.println("Server is now primary");
+					}catch(Exception c5){
+						System.out.println("Exception in DropMusicImpl.main: " + c5);
+					}
+				}
+			}
 		}
 	}
+	
+	
+	
 }
