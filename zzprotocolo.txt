@@ -9,7 +9,7 @@ detalhes musica/album/artista/genero -> type | details; name | zeca afonso* ; fr
 escrever critica a um album -> type | critic ; username | tintin* ; album | Example* ; write | blablabla*
 dar/tirar previlegios -> type | privileges ; username | ze* ; editor | [true/false]
 partilhar musica -> type | share ; username | tintin* ; (...)
-download_upload musica -> type | GetAddress ; username | tintin*
+download_upload musica -> type | GetAddress ; tipo | [download/upload]
 alterar dados -> type | alteration ; username | tintin* ; [musica/album] | nome ; [artista/genero/...] | alteracao
 Adicionar informacao -> type | add ; from | album* ; named | MusicasDoToy* ; this |  CoracaoNaoTemIdade*
 Remover informacao -> type | remove ; from | album* ; named | MusicasDoToy* ; this |  RosaNegra*
