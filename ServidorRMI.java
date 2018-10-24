@@ -1,4 +1,6 @@
 import java.rmi.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.*;
 import java.net.*;
 import java.io.*;
@@ -351,63 +353,77 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 
 	public static void main(String args[]) {
 		boolean secundario = false;
+		int port = 0;
 		DropMusic_S_I h;
 		
-		System.getProperties().put("java.security.policy", "policy.all");
-		System.setSecurityManager(new RMISecurityManager());
-		
-		
 		try{
-			ServidorRMI s = new ServidorRMI();
-			h = (DropMusic_S_I) Naming.lookup("Drop");
-			h.ping();
-			Naming.rebind("Drop_Backup", s);
+			h = (DropMusic_S_I) LocateRegistry.getRegistry(7000).lookup("Drop1");
+			
+			ServidorRMI s2 = new ServidorRMI();
+			Registry r2 = LocateRegistry.createRegistry(7001);
+			r2.rebind("Drop2", s2);
+			port = 7001;
 			secundario = true;
 			System.out.println("DropMusic RMI Secundary Server ready.");
 		}catch(Exception c1){
 			try {
+				h = (DropMusic_S_I) LocateRegistry.getRegistry(7001).lookup("Drop2");
+				
 				ServidorRMI s = new ServidorRMI();
-				Naming.rebind("Drop", s);
-				System.out.println("DropMusic RMI Primary Server ready.");
+				Registry r = LocateRegistry.createRegistry(7000);
+				r.rebind("Drop1", s);
+				port = 7000;
+				secundario = true;
+				System.out.println("DropMusic RMI Secundary Server ready.");
 			}catch(Exception c2){
-				System.out.println("Exception in DropMusicImpl.main: " + c2);
-			}
-		}
-		
-		
-		if(!secundario){
-			while (true) {	//Fazer testes ao Servidor Secundario
 				try{
-					Thread.sleep(60000);
-				}catch(Exception erro){
-					System.out.println("Exception ThreadSleep.main: " + erro);
-				}
-				try{
-					h = (DropMusic_S_I) Naming.lookup("Drop_Backup");
-					h.ping();
+					ServidorRMI s = new ServidorRMI();
+					Registry r = LocateRegistry.createRegistry(7000);
+					port = 7000;
+					r.rebind("Drop1", s);
+					System.out.println("DropMusic RMI Primary Server ready.");
 				}catch(Exception c3){
-					System.out.println("Servidor de Backup está indisponivel");
+					System.out.println("Erro: " +c3);
 				}
 			}
 		}
-		else{
-			while (true) {	//Fazer testes ao Servidor Primario
-				try{
-					Thread.sleep(10000);
-				}catch(Exception erro2){
-					System.out.println("Exception ThreadSleep.main: " + erro2);
-				}
-				try{
-					h = (DropMusic_S_I) Naming.lookup("Drop");
-					h.ping();
-				}catch(Exception c4){
+		
+		while(true){
+			if(!secundario){
+				while (true) {	//Fazer testes ao Servidor Secundario
 					try{
-						ServidorRMI s = new ServidorRMI();
-						Naming.rebind("Drop", s);
-						secundario = false;						
-						System.out.println("Server is now primary");
-					}catch(Exception c5){
-						System.out.println("Exception in DropMusicImpl.main: " + c5);
+						Thread.sleep(30000);
+					}catch(Exception erro){
+						System.out.println("Exception ThreadSleep.main: " + erro);
+					}
+					try{
+						if(port == 7000) h = (DropMusic_S_I) LocateRegistry.getRegistry(7001).lookup("Drop2");
+						else if(port == 7001) h = (DropMusic_S_I) LocateRegistry.getRegistry(7000).lookup("Drop1");
+						else;
+					}catch(Exception c3){
+						System.out.println("Servidor de Backup esta indisponivel");
+					}
+				}
+			}
+			else{
+				while (true) {	//Fazer testes ao Servidor Primario
+					try{
+						Thread.sleep(1000);
+					}catch(Exception erro2){
+						System.out.println("Exception ThreadSleep.main: " + erro2);
+					}
+					try{
+						if(port == 7000) h = (DropMusic_S_I) LocateRegistry.getRegistry(7001).lookup("Drop2");
+						else if(port == 7001) h = (DropMusic_S_I) LocateRegistry.getRegistry(7000).lookup("Drop1");
+						else;
+					}catch(Exception c4){
+						try{
+							secundario = false;						
+							System.out.println("Server is now primary");
+							break;
+						}catch(Exception c5){
+							System.out.println("Exception in DropMusicImpl.main: " + c5);
+						}
 					}
 				}
 			}

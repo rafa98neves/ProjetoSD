@@ -4,6 +4,7 @@ public interface DropMusic_S_I extends Remote {
 	
 	public void ping() throws java.rmi.RemoteException;
 	public void NewUser(DropMusic_C_I c, String username) throws java.rmi.RemoteException;
+	
 	public void UserQuit(DropMusic_C_I c, String username) throws RemoteException;
 	public void CheckNotifications(String username, DropMusic_C_I c) throws RemoteException;
 	public boolean RegistUser(String name, String password) throws RemoteException;
