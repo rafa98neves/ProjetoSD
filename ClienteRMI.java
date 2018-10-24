@@ -779,6 +779,17 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 						BackUp(false);
 					}
 				}
+				Socket s = null;
+				while(true){
+					try{
+						s = new Socket(endereco[0],Integer.parseInt(endereco[1]));
+						DataInputStream in = new DataInputStream(s.getInputStream());
+						int musica = in.read();
+						//guardar em localizacao
+					}catch(Exception c){
+						BackUp(false);
+					}
+				}
 				
 			}
 		}
