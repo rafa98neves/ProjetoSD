@@ -31,7 +31,7 @@ detalhes musica/album/artista/genero -> type | details ; nome | joao* ; idade | 
 escrever critica a um album -> type | critic ; confirmation | [escrito/negado]
 Dar previlegios -> type | privileges ; confirmation | [done/negado]
 Partilhar musica -> type | share ; music | CoracaoNaoTemIdade* ; username | tintin* ; username2 | momo*
-downloand_upload musica -> type | GetAddress ; endereco | 0.0.0.0*
+downloand_upload musica -> type | GetAddress ; endereco | porto
 alterar dados -> type | alteration ; notificate | joao ; notificate | none
 Get generos -> genero1 | genero2 | genero3 | ...
 Add Genero -> type | addgenero; confirmation | [true/false]

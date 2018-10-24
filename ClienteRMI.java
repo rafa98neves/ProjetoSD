@@ -5,7 +5,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.*;
 import java.net.*;
 import java.io.*;
-import java.io.File;
 
 
 public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
@@ -686,7 +685,8 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			Scanner sc = new Scanner(System.in);
 			int numero = sc.nextInt();
 			if(numero!=0){
-				String localizacao, endereco;
+				String localizacao;
+				String[] endereco = new String[2];
 				System.out.println("localizacao do ficheiro: ");
 				try{
 					localizacao = reader.readLine();
@@ -706,17 +706,17 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 					}
 				}
 				
-				/*try (Socket socket = new Socket(endereco, 6666)) {
-					if (socket.isConnected()) {
-						Socket client = socket.accept();
-						OutputStream out = client.getOutputStream();
-
-						byte buffer[] = new byte[2048];
-						int count;
-						while ((count = in.read(buffer)) != -1)
-							out.write(buffer, 0, count);
+				Socket s = null;
+				while(true){
+					try{
+						s = new Socket(endereco[0],Integer.parseInt(endereco[1]));
+						DataOutputStream out = new DataOutputStream(s.getOutputStream());
+						byte [] musicbyte  = new byte [(int)musica.length()];
+						out.write(musicbyte,0,musicbyte.length);
+					}catch(Exception c){
+						BackUp(false);
 					}
-				}*/
+				}
 			}
 		}
 	
@@ -762,7 +762,8 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			System.out.println("0. -> Back");
 			int numero = sc.nextInt();
 			if(numero!=0){
-				String localizacao, endereco;
+				String localizacao;
+				String[] endereco = new String[2];
 				System.out.println("localizacao de destino: ");
 				try{
 					localizacao = reader.readLine();
@@ -802,7 +803,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 
 	// ============================MAIN===========================
 	
-public static void main(String args[]) {
+	public static void main(String args[]) {
 		boolean exit=false;
 		String a;
 

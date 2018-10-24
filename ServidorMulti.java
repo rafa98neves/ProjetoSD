@@ -4,6 +4,8 @@ import java.net.InetAddress;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.io.*;
+import java.net.*;
 
 public class ServidorMulti extends Thread {
     private String MULTICAST_ADDRESS = "224.3.2.1";
@@ -108,7 +110,7 @@ public class ServidorMulti extends Thread {
 				return protocolo;
 				
 			case "upload":
-			
+				
 			
 				return protocolo;
 				
@@ -122,16 +124,30 @@ public class ServidorMulti extends Thread {
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
+
+class RecebeMusica extends Thread{
+	DataInputStream in;
+    Socket clientSocket;
+	int serverPort = 6000;
+	
+    public RecebeMusica() {
+        try{
+            ServerSocket listenSocket = new ServerSocket(serverPort);
+			clientSocket = listenSocket.accept();
+            in = new DataInputStream(clientSocket.getInputStream());
+            this.start();
+        }catch(IOException e){System.out.println("Connection:" + e.getMessage());}
+    }
+    //=============================
+    public void run(){
+        String resposta;
+        try{
+			int musica = in.read();
+			//Transformar em musica e guardar
+        }catch(EOFException e){System.out.println("EOF:" + e);
+        }catch(IOException e){System.out.println("IO:" + e);}
+    }
+}
+
+
