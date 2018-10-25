@@ -1,7 +1,10 @@
+package com.company;
+
 import java.net.MulticastSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.io.*;
@@ -11,9 +14,23 @@ public class ServidorMulti extends Thread {
     private String MULTICAST_ADDRESS = "224.3.2.1";
     private int PORT_RECEIVE = 4322;
 	private int PORT_SEND = 4321;
+
+	private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
+	//private String con = "jdbc:sqlserver://ASUSPEDRO;databaseName=SD_DB;integratedSecurity=true;";
+	//private String con = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Pedro\\GitHub\\ProjetoSD\\SD_DB.mdf;Integrated Security=True;Connect Timeout=30";
+	//String url ="jdbc:sqlserver://PC01\inst01;databaseName=DB01;integratedSecurity=true";
+
     public static void main(String[] args) {
         ServidorMulti server = new ServidorMulti();
-        server.start();
+
+        try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		}
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		server.start();
     }
 	
     public ServidorMulti() {
@@ -61,9 +78,32 @@ public class ServidorMulti extends Thread {
                     processa.add(aux[0]);
                     processa.add(aux[1]);
 		}
-		
+
+		Connection conn = null;
+
 		switch(processa.get(1)){
 			case "registo":
+				String strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.Registo @User, @Password, @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.Registo(?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(2, new String(processa.get(5)));
+					stmt.registerOutParameter(3, Types.INTEGER);
+					stmt.registerOutParameter(4, Types.VARCHAR);
+					stmt.execute();
+					System.out.printf("\n OLA: " + stmt.getInt(3));
+					System.out.printf("\n ADEUS: " + stmt.getString(4));
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+
 				//Procurar na BD se processa[3] (username) já existe
 				//if(existe) protocolo = "type | registo ; confirmation | false";
 				//else protocolo = "type | registo ; confirmation | true"; e acrescenta na BD
