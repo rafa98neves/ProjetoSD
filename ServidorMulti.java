@@ -15,17 +15,7 @@ public class ServidorMulti extends Thread {
     private String MULTICAST_ADDRESS = "224.3.2.1";
     private int PORT_RECEIVE = 4322;
 	private int PORT_SEND = 4321;
-<<<<<<< HEAD
 	private static int name;
-	private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
-	
-    public static void main(String[] args) {
-        ServidorMulti server = new ServidorMulti();
-		//Synch s = new Synch();
-		//name = s.GetServerNumber();
-		try {
-=======
-
 	private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
 	//private String con = "jdbc:sqlserver://ASUSPEDRO;databaseName=SD_DB;integratedSecurity=true;";
 	//private String con = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Pedro\\GitHub\\ProjetoSD\\SD_DB.mdf;Integrated Security=True;Connect Timeout=30";
@@ -33,20 +23,15 @@ public class ServidorMulti extends Thread {
 
     public static void main(String[] args) {
         ServidorMulti server = new ServidorMulti();
-
+		//Synch s = new Synch();
+		//name = s.GetServerNumber();
         try {
->>>>>>> cddd7ffc376602c955e339215cd1b1dece0e156a
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		}
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-<<<<<<< HEAD
         server.start();
-=======
-
-		server.start();
->>>>>>> cddd7ffc376602c955e339215cd1b1dece0e156a
     }
 	
     public ServidorMulti() {
@@ -101,11 +86,8 @@ public class ServidorMulti extends Thread {
 
 		switch(processa.get(1)){
 			case "registo":
-<<<<<<< HEAD
 				strCmd = "DECLARE @Erro int; " +
-=======
 				String strCmd = "DECLARE @Erro int; " +
->>>>>>> cddd7ffc376602c955e339215cd1b1dece0e156a
 						"DECLARE @Description VARCHAR(1000);" +
 						"EXECUTE dbo.Registo @User, @Password, @Erro OUTPUT, @Description OUTPUT;" +
 						"SELECT @Erro erro, @Description description;";
@@ -120,26 +102,15 @@ public class ServidorMulti extends Thread {
 					stmt.execute();
 					System.out.printf("\n OLA: " + stmt.getInt(3));
 					System.out.printf("\n ADEUS: " + stmt.getString(4));
-<<<<<<< HEAD
 					if(stmt.getInt(3) >= 0) protocolo = "type | registo ; confirmation | false";
 					else protocolo = "type | registo ; confirmation | true";
 					return protocolo;
-=======
->>>>>>> cddd7ffc376602c955e339215cd1b1dece0e156a
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
 					System.out.println("SQLState: " + ex.getSQLState());
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
-<<<<<<< HEAD
 				break;
-=======
-
-				//Procurar na BD se processa[3] (username) já existe
-				//if(existe) protocolo = "type | registo ; confirmation | false";
-				//else protocolo = "type | registo ; confirmation | true"; e acrescenta na BD
-				return protocolo;
->>>>>>> cddd7ffc376602c955e339215cd1b1dece0e156a
 				
 			case "login":
 				strCmd = "DECLARE @Erro int; " +
