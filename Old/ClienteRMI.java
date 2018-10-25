@@ -1,5 +1,3 @@
-package com.company;
-
 import java.util.Scanner;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
@@ -92,7 +90,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 					break;
 				case 0: LogOut();
 					break;
-				default: System.out.println("Opï¿½ï¿½o Invï¿½lida");
+				default: System.out.println("Opção Inválida");
 					break;
 			}
 		}
@@ -106,7 +104,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		String password = new String();
 		Scanner sc = new Scanner(System.in);
 		while(true){
-			System.out.printf("\nNome de utlizador (sem espaï¿½os ou caracteres especiais): ");
+			System.out.printf("\nNome de utlizador (sem espaços ou caracteres especiais): ");
 			try{
 				nome = reader.readLine();
 			}catch(Exception aa){
@@ -193,7 +191,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		}
 		Scanner sc = new Scanner(System.in);
 		if(online.IsEditor()){
-			System.out.println("\n1.Pesquisar\n2.Criar Playlist\n3.Partilhar mï¿½sicas\n4.Donwload de mï¿½sicas\n5.Upload de mï¿½sicas\n6.Dar previlï¿½gios\n0.Log Out");
+			System.out.println("\n1.Pesquisar\n2.Criar Playlist\n3.Partilhar músicas\n4.Donwload de músicas\n5.Upload de músicas\n6.Dar previlégios\n0.Log Out");
 			while(!exit){
 				opcao = sc.nextInt();
 				switch(opcao){
@@ -211,12 +209,12 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 							break;    
 					case 0: exit=true;
 							break;
-					default: System.out.println("Opï¿½ï¿½o Invï¿½lida");
+					default: System.out.println("Opção Inválida");
 				}
 			}
 		}
 		else{
-			System.out.println("\n1.Pesquisar\n2.Criar Playlist\n3.Partilhar mï¿½sicas\n4.Donwload de mï¿½sicas\n5.Upload de mï¿½sicas\n0.Log Out");
+			System.out.println("\n1.Pesquisar\n2.Criar Playlist\n3.Partilhar músicas\n4.Donwload de músicas\n5.Upload de músicas\n0.Log Out");
 			while(!exit){
 				opcao = sc.nextInt();
 				switch(opcao){
@@ -232,7 +230,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 							break;
 					case 0: exit=true;
 							break;
-					default: System.out.println("Opï¿½ï¿½o Invï¿½lida");
+					default: System.out.println("Opção Inválida");
 				}
 			}
 		}
@@ -257,7 +255,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 					break;
 			case 0: DropMusic();
 					break;
-			default: System.out.println("Opï¿½ï¿½o Invï¿½lida");
+			default: System.out.println("Opção Inválida");
 		}	
 	}
 	
@@ -387,7 +385,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 					}
 				}
 			}catch(Exception re4){
-				System.out.println("Nï¿½o foi possivel fazer o seu comentario, tente mais tarde");
+				System.out.println("Não foi possivel fazer o seu comentario, tente mais tarde");
 			}
 		}
 	}
@@ -399,7 +397,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		InputStreamReader input = new InputStreamReader(System.in);
 		BufferedReader reader = new BufferedReader(input);
 		while(true){
-			System.out.printf("Pretende fazer alteraï¿½ï¿½es?[y/n]");
+			System.out.printf("Pretende fazer alterações?[y/n]");
 			try{
 				choice = reader.readLine();
 			}catch(Exception re){
@@ -480,7 +478,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								}
 								break;
 								
-							default: System.out.println("Opï¿½ï¿½o Invï¿½lida");
+							default: System.out.println("Opção Inválida");
 						}
 					}
 					else if(escolha.compareTo("musica") == 0) {
@@ -590,7 +588,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								}
 								else System.out.println("Resposta Invalida");
 								break;
-							default: System.out.println("Opï¿½ï¿½o Invï¿½lida");
+							default: System.out.println("Opção Inválida");
 						}
 					}
 					else if(escolha.compareTo("artista") == 0) {
@@ -657,7 +655,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 									}
 								}
 								break;
-							default: System.out.println("Opï¿½ï¿½o Invï¿½lida");
+							default: System.out.println("Opção Inválida");
 						}
 					}
 					else{
@@ -679,7 +677,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								}
 							}
 						}
-						else System.out.println("Opï¿½ï¿½o Invalida");
+						else System.out.println("Opção Invalida");
 						break;
 					}
 				}				

@@ -18,7 +18,7 @@ class MulticastConnection extends Thread {
     private int PORT_SEND = 4322;
 	private int PORT_RECEIVE = 4321;
 	private String protocolo;
-	
+
 	public MulticastConnection(String protocolo){
 		super("Multicast Conection");
 		this.protocolo = protocolo;
@@ -28,31 +28,31 @@ class MulticastConnection extends Thread {
 		try{
 			this.join();
 		}catch(Exception c){
-			System.out.println("Join error in Multicaste Thread: " + c);
+			System.out.println("Join error in Multicast Thread: " + c);
 		}
 		return protocolo;
 	}
-	
+
     public void run() {
-		
+
         MulticastSocket socket = null;
         long counter = 0;
-		byte[] buffer = protocolo.getBytes();				
+		byte[] buffer = protocolo.getBytes();
 		try{
 			socket = new MulticastSocket(PORT_RECEIVE);
 			InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
 			socket.joinGroup(group);
-			
+
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
 			socket.send(packet);
-			
+
 			buffer = new byte[256];
-			
+
 			packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
 			System.out.println("Bloqueado");
 			socket.receive(packet);
 			System.out.println("Desbloqueado");
-			
+
 			String received = new String(packet.getData(), 0, packet.getLength());
 			protocolo = received;
 		}catch(Exception c){
@@ -64,16 +64,16 @@ class MulticastConnection extends Thread {
 }
 
 public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
-	
+
 	private static DropMusic_C_I[] online = new DropMusic_C_I[100];
 	private static String[] usernames = new String[100];
 	public ServidorRMI() throws RemoteException {
 		super();
 	}
-	
+
 	public void ping() throws RemoteException {}
-	
-	
+
+
 	public void NewUser(DropMusic_C_I c, String username) throws RemoteException {
 		int i = 0;
 		while(online[i] != null){
@@ -83,20 +83,20 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		online[i] = c;
 		usernames[i] = username;
 	}
-	
+
 	public void UserQuit(DropMusic_C_I c, String username) throws RemoteException {
 		int i = 0;
 		while(usernames[i].compareTo(username) != 0) i++;
 		online[i] = null;
 		usernames[i] = " ";
 	}
-	
+
 	public void CheckNotifications(String username, DropMusic_C_I c) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | notifications ; username | " + username;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
-		
+
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		ArrayList<String> processa = new ArrayList<String>();
 		String[] aux;
@@ -105,7 +105,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
                     processa.add(aux[0]);
                     processa.add(aux[1]);
 		}
-		
+
 		try {
 			if(processa.get(3).compareTo("none")==0) c.Print("\nInformacao: Nenhuma notificacao pendente");
 			else{
@@ -117,22 +117,22 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			}
 		} catch (Exception re) {
 			System.out.println("Exception in Find(): " + re);
-		} 
+		}
 	}
-	
+
 	public void AddNotification(String username, String notificacao){
 		String protocolo = new String();
 		protocolo = "type | add_notifications ; username | " + username + " ; notification | " + notificacao;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 	}
-	
+
 	public boolean RegistUser(String username, String password) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | registo ; username | " + username + " ; password | " + password;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
-		
+
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		ArrayList<String> processa = new ArrayList<String>();
 		String[] aux;
@@ -144,7 +144,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		if(processa.get(3).compareTo("true")==0) return true;
 		else return false;
 	}
-	
+
 	public boolean CheckUser(String username, String password,  DropMusic_C_I c) throws RemoteException{
 		return true;
 		/*String protocolo = new String();
@@ -162,13 +162,13 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		if(processa.get(3).compareTo("true")==0) return true;
 		else return false;*/
 	}
-	
+
 	public String[] Find(String name, String tipo, DropMusic_C_I c) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | search ; name | " + name + " ; from | " + tipo;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
-		
+
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		ArrayList<String> processa = new ArrayList<String>();
 		String[] aux;
@@ -177,7 +177,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			processa.add(aux[0]);
 			processa.add(aux[1]);
 		}
-		
+
 		String[] resposta = new String[(processa.size() - 2)/2];
 		if(processa.get(3).compareTo("none")==0){
 			resposta[0] = "none";
@@ -192,13 +192,13 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			return resposta;
 		}
 	}
-	
+
 	public String[] GetDetails(String name, String tipo, DropMusic_C_I c) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | details ; name | " + name + " ; from | " + tipo;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
-		
+
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		ArrayList<String> processa = new ArrayList<String>();
 		String[] aux;
@@ -207,7 +207,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
                     processa.add(aux[0]);
                     processa.add(aux[1]);
 		}
-		
+
 		String[] resposta = new String[(processa.size() - 2)/2];
 		if(processa.get(3).compareTo("none")==0){
 			resposta[0] = "none";
@@ -222,7 +222,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			return resposta;
 		}
 	}
-	
+
 	public void AddRemoveSomething(String tipo, String nome, String dado_add_removido, boolean remove) throws RemoteException{
 		String protocolo = new String();
 		if(remove) protocolo = "type | remove ; from | " + tipo + " ; named | " + nome +" ; this | " + dado_add_removido; //Remove do 'tipo' (album, artista,..) com este 'nome' este dado
@@ -230,13 +230,13 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 	}
-	
+
 	public void AlterarDados(String username, String tipo, String alvo, String alteracao, String alterado) throws RemoteException{ //tipo = album, musica, (...) ||  alvo = nome // alteracao = genero, artista (...) // alterado = texto novo
 		String protocolo = new String();
 		protocolo = "type | alteration ; username | " + username + " ; " + tipo + " | " + alvo + " ; " + alteracao + " | " + alterado;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
-		
+
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		ArrayList<String> processa = new ArrayList<String>();
 		String[] aux = new String[2];
@@ -263,44 +263,44 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			}
 		}
 	}
-	
+
 	public String[] GetGeneros() throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | getgeneros";
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
-		
+
 		String[] processar = protocolo.split(Pattern.quote(" | "));
-		
-		return processar;		
+
+		return processar;
 	}
-	
+
 	public void AddGenero(String genero) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | addgenero ; genero | " + genero;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 	}
-		
+
 	public boolean Write(String username, int pont, String critica, String album) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | critic ; username | " + username + " ; album | " + album + " ; score | " + Integer.toString(pont) + " ; write | " + critica;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
-		
+
 		String [] processa = protocolo.split(Pattern.quote(" ; "));
 		String aux[] = processa[1].split(Pattern.quote(" | "));
 		if(aux[1].compareTo("escrito")==0) return true;
-		else return false;		
+		else return false;
 	}
-	
+
 	public void ShareMusic(String username) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | share ; username | " + username;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 	}
-	
+
 	public String[] TransferMusic(String username) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | GetAddress  ; username | " + username;
@@ -310,15 +310,15 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		String[] endereco = aux[1].split(Pattern.quote(" | "));
 		return endereco;
 	}
-	
-	
+
+
 	public boolean GivePriv(boolean editor, String username, DropMusic_C_I c) throws RemoteException{
 		int i = 0;
 		String protocolo = new String();
 		protocolo = "type | privileges  ; username | " + username + " ; editor | " + editor;
         MulticastConnection N = new MulticastConnection(protocolo);
-		protocolo = N.GetResponse();	
-		
+		protocolo = N.GetResponse();
+
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		String[] aux = processar[1].split(Pattern.quote(" | "));
 		if(aux[1].compareTo("done")==0){
@@ -357,10 +357,10 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		boolean secundario = false;
 		int port = 0;
 		DropMusic_S_I h;
-		
+
 		try{
 			h = (DropMusic_S_I) LocateRegistry.getRegistry(7000).lookup("Drop1");
-			
+
 			ServidorRMI s2 = new ServidorRMI();
 			Registry r2 = LocateRegistry.createRegistry(7001);
 			r2.rebind("Drop2", s2);
@@ -370,7 +370,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		}catch(Exception c1){
 			try {
 				h = (DropMusic_S_I) LocateRegistry.getRegistry(7001).lookup("Drop2");
-				
+
 				ServidorRMI s = new ServidorRMI();
 				Registry r = LocateRegistry.createRegistry(7000);
 				r.rebind("Drop1", s);
@@ -389,7 +389,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 				}
 			}
 		}
-		
+
 		while(true){
 			if(!secundario){
 				while (true) {	//Fazer testes ao Servidor Secundario
@@ -420,7 +420,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 						else;
 					}catch(Exception c4){
 						try{
-							secundario = false;						
+							secundario = false;
 							System.out.println("Server is now primary");
 							break;
 						}catch(Exception c5){
@@ -431,7 +431,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			}
 		}
 	}
-	
-	
-	
+
+
+
 }
