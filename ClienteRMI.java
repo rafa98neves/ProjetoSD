@@ -261,12 +261,12 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	
 	public static void Pesquisar(String escolha){
 		boolean flag = false;
-		String search;
+		String search = new String();
 		String[] respostas;
 		Scanner sc = new Scanner(System.in);
 		if(escolha.compareTo("album")==0){
-			System.out.printn("\nPesquisar por:");
-			System.out.printn("\n1.Nome do Album\n2.Nome do artista");
+			System.out.println("\nPesquisar por:");
+			System.out.println("\n1.Nome do Album\n2.Nome do artista");
 			int choice = sc.nextInt();
 			switch(choice){
 				case 1:
@@ -302,7 +302,10 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			for(int possibilidades = 1; possibilidades<=respostas.length; possibilidades++){
 				System.out.println(possibilidades + ". ->" + respostas[possibilidades-1]);
 			}
+			System.out.println("0.Back");
 			int numero = sc.nextInt();
+			if(numero == 0) return;
+			
 			String[] details;
 			while(true){
 				try{

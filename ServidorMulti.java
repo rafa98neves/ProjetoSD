@@ -6,25 +6,37 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.io.*;
 import java.net.*;
+import java.sql.*;
 
 public class ServidorMulti extends Thread {
     private String MULTICAST_ADDRESS = "224.3.2.1";
     private int PORT_RECEIVE = 4322;
 	private int PORT_SEND = 4321;
+	private static int name;
+	private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
+	
     public static void main(String[] args) {
         ServidorMulti server = new ServidorMulti();
+		//Synch s = new Synch();
+		//name = s.GetServerNumber();
+		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		}
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
         server.start();
     }
 	
     public ServidorMulti() {
         super("Server online");
     }
-
+	
     public void run() {
         MulticastSocket socket = null;
         long counter = 0;
 
-        System.out.println(this.getName() + " running...");
+        System.out.println(this.getName() + " " + name + " running...");
         try {
             socket = new MulticastSocket(PORT_RECEIVE);
 			InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
@@ -52,6 +64,7 @@ public class ServidorMulti extends Thread {
     }
 	
 	public String ManageRequest(DatagramPacket packet){
+		Connection conn = null;
 		String protocolo = new String(packet.getData(), 0, packet.getLength());
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		ArrayList<String> processa = new ArrayList<String>();
@@ -64,19 +77,78 @@ public class ServidorMulti extends Thread {
 		
 		switch(processa.get(1)){
 			case "registo":
+				String strCmd = "DECLARE @Erro int; " +
+							"DECLARE @Description VARCHAR(1000);" +
+							"EXECUTE dbo.Registo @User, @Password, @Erro OUTPUT, @Description OUTPUT;" +
+							"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.Registo(?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(2, new String(processa.get(5)));
+					stmt.registerOutParameter(3, Types.INTEGER);
+					stmt.registerOutParameter(4, Types.VARCHAR);
+					stmt.execute();
+					System.out.printf("\n OLA: " + stmt.getInt(3));
+					System.out.printf("\n ADEUS: " + stmt.getString(4));
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
 				//Procurar na BD se processa[3] (username) já existe
 				//if(existe) protocolo = "type | registo ; confirmation | false";
 				//else protocolo = "type | registo ; confirmation | true"; e acrescenta na BD
 				return protocolo;
 				
 			case "login":
+				String strCmd = "DECLARE @Erro int; " +
+								"DECLARE @Description VARCHAR(1000);" +
+								"EXECUTE dbo.Login @User, @Password, @Erro OUTPUT, @Description OUTPUT;" +
+								"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.Login(?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(2, new String(processa.get(5)));
+					stmt.registerOutParameter(3, Types.INTEGER);
+					stmt.registerOutParameter(4, Types.VARCHAR);
+					stmt.execute();
+					System.out.printf("\n OLA: " + stmt.getInt(3));
+					System.out.printf("\n ADEUS: " + stmt.getString(4));
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
 				//Procurar na BD se processa[3] (username) se existe e se a password corresponde
 				//if(existe) protocolo = "type | login ; confirmation | true";
 				//else protocolo = "type | login ; confirmation | false";
 				return protocolo;
 				
 			case "notifications":
-				protocolo = "type | notifications ; notification_1 | Foi promovido a editor ; notification_2 | O Pedro é gay"; //Para testar
+				String strCmd = "DECLARE @Erro int; " +
+								"DECLARE @Description VARCHAR(1000);" +
+								"EXECUTE dbo.Notifications @User, @Erro OUTPUT, @Description OUTPUT;" +
+								"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.Login(?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(2, new String(processa.get(5)));
+					stmt.registerOutParameter(3, Types.INTEGER);
+					stmt.registerOutParameter(4, Types.VARCHAR);
+					stmt.execute();
+					System.out.printf("\n OLA: " + stmt.getInt(3));
+					System.out.printf("\n ADEUS: " + stmt.getString(4));
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
 				//Procurar na BD se processa[3] (username) tem notificações pendentes
 				//if(existe) protocolo = "type | notifications ; notification_1 | blabla* ; notification_2 | blablabla* ; (...)" ;
 				//else protocolo = "type | notifications ; notification_1 | none";
@@ -124,6 +196,75 @@ public class ServidorMulti extends Thread {
 	}
 	
 }
+
+class Synch extends Thread{
+	private int server = 0;
+	private MulticastSocket socket;
+	private DatagramPacket packet;
+    private String MULTICAST_ADDRESS = "224.3.2.1";
+	private int PORT_MANAGE = 4323;
+	private String i = "1";
+	
+	public Synch(){
+		try {
+			
+			socket = new MulticastSocket(PORT_MANAGE);
+			InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
+			socket.joinGroup(group);
+			byte[] buffer = new byte[256];
+			buffer = i.getBytes();
+			packet = new DatagramPacket(buffer, buffer.length, group, PORT_MANAGE);
+			socket.send(packet);
+			System.out.println("Enviado");
+			int p = 0;
+			for(int j = 0; j<3; j++){
+				try{
+					Thread.sleep(500);
+				}catch(Exception asdas){
+					System.out.println("Erroooo : " + asdas);
+				}
+				
+				packet = new DatagramPacket(buffer, buffer.length, group, PORT_MANAGE);	
+				socket.receive(packet);
+				if(j==1){
+					server = p;
+					p++;
+					buffer = Integer.toString(p).getBytes();
+					packet = new DatagramPacket(buffer, buffer.length, group, PORT_MANAGE);
+					socket.send(packet);
+					break;
+				}
+				String pr = new String(packet.getData(), 0, packet.getLength());
+				p = Integer.parseInt(pr);
+				if(p != Integer.parseInt(i)) break;
+			}
+			System.out.println("recebido");
+					
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			socket.close();
+		}
+		this.start();
+	}
+	
+	public synchronized int GetServerNumber(){
+		while(server==0){
+			try{
+				Thread.sleep(500);
+			}catch(Exception c){
+				System.out.println("Erro: " +c);
+			}
+		}
+		return server;		
+	}
+	
+	public void run(){
+		while(true){
+		}
+	}
+}
+
 
 class RecebeMusica extends Thread{
 	DataInputStream in;
