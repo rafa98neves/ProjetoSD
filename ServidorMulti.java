@@ -7,12 +7,16 @@ import java.util.regex.Pattern;
 import java.io.*;
 import java.net.*;
 
+
 public class ServidorMulti extends Thread {
     private String MULTICAST_ADDRESS = "224.3.2.1";
     private int PORT_RECEIVE = 4322;
 	private int PORT_SEND = 4321;
+	private static int name;
     public static void main(String[] args) {
         ServidorMulti server = new ServidorMulti();
+		//Synch s = new Synch();
+		//name = s.GetServerNumber();
         server.start();
     }
 	
@@ -24,7 +28,7 @@ public class ServidorMulti extends Thread {
         MulticastSocket socket = null;
         long counter = 0;
 
-        System.out.println(this.getName() + " running...");
+        System.out.println(this.getName() + " " + name + " running...");
         try {
             socket = new MulticastSocket(PORT_RECEIVE);
 			InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
@@ -124,6 +128,75 @@ public class ServidorMulti extends Thread {
 	}
 	
 }
+
+class Synch extends Thread{
+	private int server = 0;
+	private MulticastSocket socket;
+	private DatagramPacket packet;
+    private String MULTICAST_ADDRESS = "224.3.2.1";
+	private int PORT_MANAGE = 4323;
+	private String i = "1";
+	
+	public Synch(){
+		try {
+			
+			socket = new MulticastSocket(PORT_MANAGE);
+			InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
+			socket.joinGroup(group);
+			byte[] buffer = new byte[256];
+			buffer = i.getBytes();
+			packet = new DatagramPacket(buffer, buffer.length, group, PORT_MANAGE);
+			socket.send(packet);
+			System.out.println("Enviado");
+			int p = 0;
+			for(int j = 0; j<3; j++){
+				try{
+					Thread.sleep(500);
+				}catch(Exception asdas){
+					System.out.println("Erroooo : " + asdas);
+				}
+				
+				packet = new DatagramPacket(buffer, buffer.length, group, PORT_MANAGE);	
+				socket.receive(packet);
+				if(j==1){
+					server = p;
+					p++;
+					buffer = Integer.toString(p).getBytes();
+					packet = new DatagramPacket(buffer, buffer.length, group, PORT_MANAGE);
+					socket.send(packet);
+					break;
+				}
+				String pr = new String(packet.getData(), 0, packet.getLength());
+				p = Integer.parseInt(pr);
+				if(p != Integer.parseInt(i)) break;
+			}
+			System.out.println("recebido");
+					
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			socket.close();
+		}
+		this.start();
+	}
+	
+	public synchronized int GetServerNumber(){
+		while(server==0){
+			try{
+				Thread.sleep(500);
+			}catch(Exception c){
+				System.out.println("Erro: " +c);
+			}
+		}
+		return server;		
+	}
+	
+	public void run(){
+		while(true){
+		}
+	}
+}
+
 
 class RecebeMusica extends Thread{
 	DataInputStream in;

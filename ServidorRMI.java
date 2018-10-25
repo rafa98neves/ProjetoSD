@@ -22,12 +22,7 @@ class MulticastConnection extends Thread {
 		this.protocolo = protocolo;
 	}
 	public String GetResponse(){
-		this.start();
-		try{
-			this.join();
-		}catch(Exception c){
-			System.out.println("Join error in Multicast Thread: " + c);
-		}
+		this.run();
 		return protocolo;
 	}
 	
@@ -99,9 +94,9 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		ArrayList<String> processa = new ArrayList<String>();
 		String[] aux;
 		for(String s : processar){
-                    aux = s.split(Pattern.quote(" | "));
-                    processa.add(aux[0]);
-                    processa.add(aux[1]);
+			aux = s.split(Pattern.quote(" | "));
+			processa.add(aux[0]);
+			processa.add(aux[1]);
 		}
 		
 		try {
@@ -408,7 +403,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			else{
 				while (true) {	//Fazer testes ao Servidor Primario
 					try{
-						Thread.sleep(1000);
+						Thread.sleep(30000);
 					}catch(Exception erro2){
 						System.out.println("Exception ThreadSleep.main: " + erro2);
 					}
