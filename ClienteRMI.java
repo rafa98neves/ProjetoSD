@@ -259,13 +259,35 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		}	
 	}
 	
-	public static	 void Pesquisar(String escolha){
+	public static void Pesquisar(String escolha){
+		boolean flag = false;
 		String search;
 		String[] respostas;
 		Scanner sc = new Scanner(System.in);
+		if(escolha.compareTo("album")==0){
+			System.out.printn("\nPesquisar por:");
+			System.out.printn("\n1.Nome do Album\n2.Nome do artista");
+			int choice = sc.nextInt();
+			switch(choice){
+				case 1:
+					System.out.println("\nNome: ");
+					search = sc.nextLine();
+					break;
+				case 2:
+					System.out.println("\nNome: ");
+					escolha = "artista";
+					search = sc.nextLine();
+					flag = true;
+					break;
+				default:
+					System.out.println("Opcao invalida!");
+			}
+		}
+		else{
+			System.out.println("\nNome: ");
+			search = sc.nextLine();
+		}
 		
-		System.out.printf("\nNome:");
-		search = sc.nextLine();
 		while(true){
 			try{
 				respostas = h.Find(search,escolha,c);
@@ -290,13 +312,38 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 					BackUp(false);
 				}
 			}
-			if(details[0].compareTo("none")!=0){
+			if(flag && details[0].compareTo("none")!=0){
+				int j = 0;
+				String[] details2;
+				escolha = "album";
+				for(int i = 0; i<details.length; i+=2){
+					if(details[i].compareTo("album") == 0){
+						System.out.println("Procura >>" +details[i+1] + "<< ? [Se SIM pressione 'y' se NAO pressione outra tecla qualquer]");
+						if(sc.next().toLowerCase().compareTo("y")==0){
+							j = i+1;
+							break;
+						}
+					}
+				}
+				if(j != 0){
+					while(true){
+						try{
+						details2 = h.GetDetails(details[j],escolha,c);
+							break;
+						}catch(Exception re2){
+							BackUp(false);
+						}
+					}
+				}
+				else return;
+			}		
+			else if(details[0].compareTo("none")!=0){
 				for(int i = 0; i<details.length; i+=2){
 					System.out.println(details[i] + ": " + details[i+1]);
 				}
 			}			
-		if(escolha.compareTo("album")==0) FazerCritica(respostas[numero-1]);		
-		if(online.IsEditor()) FazerAlteracoes(escolha, respostas[numero-1], details);
+			if(escolha.compareTo("album")==0) FazerCritica(respostas[numero-1]);		
+			if(online.IsEditor()) FazerAlteracoes(escolha, respostas[numero-1], details);
 		}
 	}
 	

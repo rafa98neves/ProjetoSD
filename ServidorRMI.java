@@ -26,7 +26,7 @@ class MulticastConnection extends Thread {
 		try{
 			this.join();
 		}catch(Exception c){
-			System.out.println("Join error in Multicaste Thread: " + c);
+			System.out.println("Join error in Multicast Thread: " + c);
 		}
 		return protocolo;
 	}
