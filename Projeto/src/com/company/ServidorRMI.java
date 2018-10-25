@@ -146,8 +146,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	}
 
 	public boolean CheckUser(String username, String password,  DropMusic_C_I c) throws RemoteException{
-		return true;
-		/*String protocolo = new String();
+		String protocolo = new String();
 		protocolo = "type | login ; username | " + username + " ; password | " + password;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
@@ -155,12 +154,12 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		ArrayList<String> processa = new ArrayList<String>();
 		String[] aux;
 		for(String s : processar){
-                    aux = s.split(Pattern.quote(" | "));
-                    processa.add(aux[1]);
-                    processa.add(aux[2]);
+			aux = s.split(Pattern.quote(" | "));
+			processa.add(aux[0]);
+			processa.add(aux[1]);
 		}
 		if(processa.get(3).compareTo("true")==0) return true;
-		else return false;*/
+		else return false;
 	}
 
 	public String[] Find(String name, String tipo, DropMusic_C_I c) throws RemoteException{

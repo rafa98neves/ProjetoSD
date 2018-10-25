@@ -99,8 +99,8 @@ public class ServidorMulti extends Thread {
 					stmt.execute();
 					System.out.printf("\n OLA: " + stmt.getInt(3));
 					System.out.printf("\n ADEUS: " + stmt.getString(4));
-					if(stmt.getInt(3) >= 0) protocolo = "type | registo ; confirmation | false";
-					else protocolo = "type | registo ; confirmation | true";
+					if(stmt.getInt(3) >= 0) protocolo = "type | registo ; confirmation | true";
+					else protocolo = "type | registo ; confirmation | false";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
