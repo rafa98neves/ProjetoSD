@@ -65,6 +65,7 @@ public class ServidorMulti extends Thread {
 	
 	public String ManageRequest(DatagramPacket packet){
 		Connection conn = null;
+		String strCmd;
 		String protocolo = new String(packet.getData(), 0, packet.getLength());
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		ArrayList<String> processa = new ArrayList<String>();
@@ -77,10 +78,10 @@ public class ServidorMulti extends Thread {
 		
 		switch(processa.get(1)){
 			case "registo":
-				String strCmd = "DECLARE @Erro int; " +
-							"DECLARE @Description VARCHAR(1000);" +
-							"EXECUTE dbo.Registo @User, @Password, @Erro OUTPUT, @Description OUTPUT;" +
-							"SELECT @Erro erro, @Description description;";
+				strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.Registo @User, @Password, @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.Registo(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -92,21 +93,21 @@ public class ServidorMulti extends Thread {
 					stmt.execute();
 					System.out.printf("\n OLA: " + stmt.getInt(3));
 					System.out.printf("\n ADEUS: " + stmt.getString(4));
+					if(stmt.getInt(3) >= 0) protocolo = "type | registo ; confirmation | false";
+					else protocolo = "type | registo ; confirmation | true";
+					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
 					System.out.println("SQLState: " + ex.getSQLState());
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
-				//Procurar na BD se processa[3] (username) já existe
-				//if(existe) protocolo = "type | registo ; confirmation | false";
-				//else protocolo = "type | registo ; confirmation | true"; e acrescenta na BD
-				return protocolo;
+				break;
 				
 			case "login":
-				String strCmd = "DECLARE @Erro int; " +
-								"DECLARE @Description VARCHAR(1000);" +
-								"EXECUTE dbo.Login @User, @Password, @Erro OUTPUT, @Description OUTPUT;" +
-								"SELECT @Erro erro, @Description description;";
+				strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.Login @User, @Password, @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.Login(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -116,25 +117,44 @@ public class ServidorMulti extends Thread {
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
-					System.out.printf("\n OLA: " + stmt.getInt(3));
-					System.out.printf("\n ADEUS: " + stmt.getString(4));
+					if(stmt.getInt(3) >= 0) protocolo = "type | login ; confirmation | true";
+					else protocolo = "type | login ; confirmation | false";
+					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
 					System.out.println("SQLState: " + ex.getSQLState());
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
-				//Procurar na BD se processa[3] (username) se existe e se a password corresponde
-				//if(existe) protocolo = "type | login ; confirmation | true";
-				//else protocolo = "type | login ; confirmation | false";
-				return protocolo;
-				
+				break;
 			case "notifications":
-				String strCmd = "DECLARE @Erro int; " +
-								"DECLARE @Description VARCHAR(1000);" +
-								"EXECUTE dbo.Notifications @User, @Erro OUTPUT, @Description OUTPUT;" +
-								"SELECT @Erro erro, @Description description;";
+				strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.Notifications @User, @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
 				try {
-					String commandText = "{call dbo.Login(?,?,?,?)}";
+					String commandText = "{call dbo.Notifications(?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.registerOutParameter(2, Types.INTEGER);
+					stmt.registerOutParameter(3, Types.VARCHAR); //VARRAY ?
+					stmt.execute();
+					if(stmt.getInt(2) >= 0 ) protocolo = "type | notifications ; notification_1 | "+ stmt.getString(3) +" ; notification_2 | " + "?" +" ; "; // (...)" ;
+					else protocolo = "type | notifications ; notification_1 | none";
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
+			case "add_notifications":
+				strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.AddNoti @User, @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.AddNoti(?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3)));
@@ -142,43 +162,181 @@ public class ServidorMulti extends Thread {
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
-					System.out.printf("\n OLA: " + stmt.getInt(3));
-					System.out.printf("\n ADEUS: " + stmt.getString(4));
+					if(stmt.getInt(3) >= 0 ) protocolo = "type | confirmation ; notification | add";
+					else protocolo = "type | confirmation ; notification | error";
+					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
 					System.out.println("SQLState: " + ex.getSQLState());
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
-				//Procurar na BD se processa[3] (username) tem notificações pendentes
-				//if(existe) protocolo = "type | notifications ; notification_1 | blabla* ; notification_2 | blablabla* ; (...)" ;
-				//else protocolo = "type | notifications ; notification_1 | none";
-				return protocolo;
+				break;
 				
 			case "search":
-				//Procurar na BD se processa[5] (tipo de pesquisa (album, genero,...) tem processa[3] (nome)
-				//if(existe) protocolo = "type | search ; possibility_1 | zeca* ; possibility_2 | zecaaa*" ;
-				//else protocolo = "type | search ; possibility_1 | none";
-				return protocolo;
+				strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.Search @Nome, @From, @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.Search(?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(2, new String(processa.get(5)));
+					stmt.registerOutParameter(3, Types.INTEGER);
+					stmt.registerOutParameter(4, Types.VARCHAR); //VARRAY ?
+					stmt.execute();
+					if(stmt.getInt(3) >= 0 ) protocolo = "type | search ; possibility_1 | "+ stmt.getString(4) +" ; possibility_2 | " + "?" +" ; "; // (...)" ;
+					else protocolo = "type | search ; possibility_1 | none";
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
 				
 			case "details":
-				//Procurar na BD processa[3](nome)
-				//protocolo = "type | details ; detail_1 | moreno* ; detail_2 | Nasceu a ..*" ;
-				return protocolo;
+				strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.Details @Nome, @From, @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.Details(?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(2, new String(processa.get(5)));
+					stmt.registerOutParameter(3, Types.INTEGER);
+					stmt.registerOutParameter(4, Types.VARCHAR); //VARRAY ?
+					stmt.execute();
+					if(stmt.getInt(3) >= 0 ) protocolo = "type | details ; " + stmt.getString(4) + " | " + stmt.getString(5); // (...)" ;
+					else protocolo = "type | search ; details_1 | none";
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
 				
 			case "critic":
-				//Procurar na BD processa[5](nome do album) e escrever critica
-				//protocolo = "type | critic ; confirmation | true";
-				return protocolo;
+				strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.WriteCritic @User, @Album, @Write, @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.WriteCritic(?,?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(2, new String(processa.get(5)));
+					stmt.setObject(3, new String(processa.get(7)));
+					stmt.registerOutParameter(4, Types.INTEGER);
+					stmt.registerOutParameter(5, Types.VARCHAR);
+					stmt.execute();
+					if(stmt.getInt(4) >= 0 ) protocolo = "type | critic ; confirmation | escrito";
+					else protocolo = "type | critic ; confirmation | negado";
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
 				
 			case "privileges":
-			
-			
-				return protocolo;
+				strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.Privileges @User, @Editor, @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.Privileges(?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(2, new String(processa.get(5)));
+					stmt.registerOutParameter(3, Types.INTEGER);
+					stmt.registerOutParameter(4, Types.VARCHAR);
+					stmt.execute();
+					if(stmt.getInt(3) >= 0 ) protocolo = "type | privileges ; confirmation | done";
+					else protocolo = "type | privileges ; confirmation | negado";
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
 				
-			case "share":
+			case "share": //AINDA NAO SEI BEM, O QUE ESTA EM BAIXO ESTA MAL
+				strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.Share @User, @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.Privileges(?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(2, new String(processa.get(5)));
+					stmt.registerOutParameter(3, Types.INTEGER);
+					stmt.registerOutParameter(4, Types.VARCHAR);
+					stmt.execute();
+					if(stmt.getInt(3) >= 0 ) protocolo = "type | privileges ; confirmation | done";
+					else protocolo = "type | privileges ; confirmation | negado";
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
+				
+			case "getgeneros":
+				strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.Generos @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.Generos(?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.registerOutParameter(1, Types.INTEGER);
+					stmt.registerOutParameter(2, Types.VARCHAR);
+					stmt.execute();
+					if(stmt.getInt(1) >= 0 ) protocolo = stmt.getString(2) + " | " + stmt.getString(3); //(....)
+					else protocolo = "type | error ; function | " + processa.get(1);
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
 			
-			
-				return protocolo;
+			case "addgenero":
+				strCmd = "DECLARE @Erro int; " +
+						"DECLARE @Description VARCHAR(1000);" +
+						"EXECUTE dbo.AddGenero @Genero, @Erro OUTPUT, @Description OUTPUT;" +
+						"SELECT @Erro erro, @Description description;";
+				try {
+					String commandText = "{call dbo.Generos(?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.registerOutParameter(2, Types.INTEGER);
+					stmt.registerOutParameter(3, Types.VARCHAR);
+					stmt.execute();
+					if(stmt.getInt(2) >= 0 ) protocolo = "type | addgenero; confirmation | true";
+					else protocolo = "type | addgenero; confirmation | false";
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
 				
 			case "GetAddress":
 				protocolo = "type | GetAddress ; " + MULTICAST_ADDRESS + " | 6000";
@@ -193,8 +351,9 @@ public class ServidorMulti extends Thread {
 				protocolo = "type | error ; function | " + processa.get(1);
 				return protocolo;	
 		}
+		
+		return "type | error ; function | " + processa.get(1);
 	}
-	
 }
 
 class Synch extends Thread{
