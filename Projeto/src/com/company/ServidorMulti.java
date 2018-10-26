@@ -92,7 +92,7 @@ class ManageNewRequest extends Thread{
 
 	public ManageNewRequest(int nome,MulticastSocket socket,InetAddress group, DatagramPacket packet){
 		this.nome = nome;
-		this. socket = socket;
+		this.socket = socket;
 		this.group = group;
 		this.packet = packet;
 		this.start();
@@ -104,7 +104,6 @@ class ManageNewRequest extends Thread{
 		byte[] buffer = new byte[256];
 		buffer = message.getBytes();
 		try {
-
 			packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
 			socket.send(packet);
 			System.out.println("Sent!");
@@ -113,6 +112,7 @@ class ManageNewRequest extends Thread{
 			System.out.println("Erro a enviar pacote: " + e);
 		}
 	}
+
 	public String ManageRequest(DatagramPacket packet){
 		Connection conn = null;
 		String strCmd;
@@ -143,8 +143,8 @@ class ManageNewRequest extends Thread{
 					stmt.execute();
 					System.out.printf("\n OLA: " + stmt.getInt(3));
 					System.out.printf("\n ADEUS: " + stmt.getString(4));
-					if(stmt.getInt(3) >= 0) protocolo = "type | registo ; confirmation | true";
-					else protocolo = "type | registo ; confirmation | false";
+					if(stmt.getInt(3) >= 0) protocolo = "type | registo ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | true";
+					else protocolo = "type | registo ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | false";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -167,8 +167,8 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(3) >= 0) protocolo = "type | login ; confirmation | true";
-					else protocolo = "type | login ; confirmation | false";
+					if(stmt.getInt(3) >= 0) protocolo = "type | login ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | true";
+					else protocolo = "type | login ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | false";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -189,8 +189,8 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(2, Types.INTEGER);
 					stmt.registerOutParameter(3, Types.VARCHAR); //VARRAY ?
 					stmt.execute();
-					if(stmt.getInt(2) >= 0 ) protocolo = "type | notifications ; notification_1 | "+ stmt.getString(3) +" ; notification_2 | " + "?" +" ; "; // (...)" ;
-					else protocolo = "type | notifications ; notification_1 | none";
+					if(stmt.getInt(2) >= 0 ) protocolo = "type | notifications ; " + processa.get(2) +" | " + processa.get(3) + " ; notification_1 | "+ stmt.getString(3) +" ; notification_2 | " + "?" +" ; "; // (...)" ;
+					else protocolo = "type | notifications ; " + processa.get(2) +" | " + processa.get(3) + " ; notification_1 | none";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -212,8 +212,8 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(3) >= 0 ) protocolo = "type | confirmation ; notification | add";
-					else protocolo = "type | confirmation ; notification | error";
+					if(stmt.getInt(3) >= 0 ) protocolo = "type | confirmation ; " + processa.get(2) +" | " + processa.get(3) + " ; notification | add";
+					else protocolo = "type | confirmation ; " + processa.get(2) +" | " + processa.get(3) + " ; notification | error";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -236,8 +236,8 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR); //VARRAY ?
 					stmt.execute();
-					if(stmt.getInt(3) >= 0 ) protocolo = "type | search ; possibility_1 | "+ stmt.getString(4) +" ; possibility_2 | " + "?" +" ; "; // (...)" ;
-					else protocolo = "type | search ; possibility_1 | none";
+					if(stmt.getInt(3) >= 0 ) protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + " ; possibility_1 | "+ stmt.getString(4) +" ; possibility_2 | " + "?" +" ; "; // (...)" ;
+					else protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + " ; possibility_1 | none";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -260,8 +260,8 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR); //VARRAY ?
 					stmt.execute();
-					if(stmt.getInt(3) >= 0 ) protocolo = "type | details ; " + stmt.getString(4) + " | " + stmt.getString(5); // (...)" ;
-					else protocolo = "type | search ; details_1 | none";
+					if(stmt.getInt(3) >= 0 ) protocolo = "type | details ; " + processa.get(2) +" | " + processa.get(3) + " ; " + stmt.getString(4) + " | " + stmt.getString(5); // (...)" ;
+					else protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + " ; details_1 | none";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -285,8 +285,8 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(4, Types.INTEGER);
 					stmt.registerOutParameter(5, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(4) >= 0 ) protocolo = "type | critic ; confirmation | escrito";
-					else protocolo = "type | critic ; confirmation | negado";
+					if(stmt.getInt(4) >= 0 ) protocolo = "type | critic ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | escrito";
+					else protocolo = "type | critic ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | negado";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -309,8 +309,8 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(3) >= 0 ) protocolo = "type | privileges ; confirmation | done";
-					else protocolo = "type | privileges ; confirmation | negado";
+					if(stmt.getInt(3) >= 0 ) protocolo = "type | privileges ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | done";
+					else protocolo = "type | privileges ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | negado";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -333,8 +333,8 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(3) >= 0 ) protocolo = "type | privileges ; confirmation | done";
-					else protocolo = "type | privileges ; confirmation | negado";
+					if(stmt.getInt(3) >= 0 ) protocolo = "type | privileges ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | done";
+					else protocolo = "type | privileges ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | negado";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -355,8 +355,8 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(1, Types.INTEGER);
 					stmt.registerOutParameter(2, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(1) >= 0 ) protocolo = stmt.getString(2) + " | " + stmt.getString(3); //(....)
-					else protocolo = "type | error ; function | " + processa.get(1);
+					if(stmt.getInt(1) >= 0 ) protocolo = "type | getgeneros ; " + processa.get(2) +" | " + processa.get(3) + " ; " + stmt.getString(2) + " | " + stmt.getString(2); //(....)
+					else protocolo = "type | error ; " + processa.get(2) +" | " + processa.get(3) + " ; function | " + processa.get(1);
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -378,8 +378,8 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(2, Types.INTEGER);
 					stmt.registerOutParameter(3, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(2) >= 0 ) protocolo = "type | addgenero; confirmation | true";
-					else protocolo = "type | addgenero; confirmation | false";
+					if(stmt.getInt(2) >= 0 ) protocolo = "type | addgenero; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | true";
+					else protocolo = "type | addgenero; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | false";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -398,11 +398,11 @@ class ManageNewRequest extends Thread{
 				}
 				return protocolo;
 			default:
-				protocolo = "type | error ; function | " + processa.get(1);
+				protocolo = "type | error ; " + processa.get(2) +" | " + processa.get(3) + " ; function | " + processa.get(1);
 				return protocolo;
 		}
 
-		return "type | error ; function | " + processa.get(1);
+		return "type | error ; " + processa.get(2) +" | " + processa.get(3) + " ; function | " + processa.get(1);
 	}
 }
 
