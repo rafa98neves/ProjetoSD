@@ -1,43 +1,49 @@
 <<Protocolo a enviar pelo Servidor RMI:>>
 
-Fazer registo -> type | registo ; username | tintin* ; password | unicorn* 
-Fazer login -> type | login ; username | tintin* ; password | unicorn*
-Ver se o utilizador tem notificacoes pendentes -> type | notifications ; username | tintin*
-Adicionar notificação -> type | add_notification ; username | notificado ; notificacion | "asdasdsa"
-encontrar musica/album/artista/genero -> type | search ; name | zeca afonso* ; from | [album/music/genre/artist] 
-detalhes musica/album/artista/genero -> type | details; name | zeca afonso* ; from | [album/music/artist]
-escrever critica a um album -> type | critic ; username | tintin* ; album | Example* ; write | blablabla*
-dar/tirar previlegios -> type | privileges ; username | ze* ; editor | [true/false]
-partilhar musica -> type | share ; username | tintin* ; (...)
-download_upload musica -> type | GetAddress ; tipo | [download/upload]
-alterar dados -> type | alteration ; username | tintin* ; [musica/album] | nome ; [artista/genero/...] | alteracao
-Adicionar informacao -> type | add ; from | album* ; named | MusicasDoToy* ; this |  CoracaoNaoTemIdade*
-Remover informacao -> type | remove ; from | album* ; named | MusicasDoToy* ; this |  RosaNegra*
-Get generos -> type | getgeneros
-Add Genero -> type | addgenero; genero | rock*
+>>Fazer registo -------------------------------	type | registo ; protocolo_id | xxxx ;  username | tintin* ; password | unicorn*
+>>Fazer login ---------------------------------	type | login ; protocolo_id | xxxx ; username | tintin* ; password | unicorn*
+>>Ver se o utilizador -------------------------	type | notifications ; user_id | xxxx
+  tem notificacoes pendentes
+>>Adicionar notificação -----------------------	type | add_notification ; user_id | xxxx  ; username | notificado ; notificacion | "asdasdsa"
+>>Encontrar musica/album/artista/genero ------- type | search ; user_id | xxxx ; name | zeca afonso* ; from | [album/music/genre/artist] 
+>>Detalhes musica/album/artista/genero -------- type | details ; user_id | xxxx ; name | zeca afonso* ; from | [album/music/artist]
+>>Escrever critica a um album ----------------- type | critic ; user_id | xxxx ; album | Example* ; write | blablabla*
+>>Dar/tirar previlegios ----------------------- type | privileges ; user_id | xxxx ; username | ze* ; editor | [true/false]
+>>Partilhar musica ---------------------------- type | share ; user_id | xxxx ; (...)
+>>Download_upload musica ---------------------- type | GetAddress ; user_id | xxxx ; tipo | [download/upload]
+>>Alterar dados ------------------------------- type | alteration ; user_id | xxxx ; [musica/album] | nome ; [artista/genero/...] | alteracao
+>>Adicionar informacao ------------------------ type | add ; user_id | xxxx ; from | album* ; named | MusicasDoToy* ; this |  CoracaoNaoTemIdade*
+>>Remover informacao -------------------------- type | remove ; user_id | xxxx ; from | album* ; named | MusicasDoToy* ; this |  RosaNegra*
+>>Get generos --------------------------------- type | getgeneros ; user_id | xxxx
+>>Add Genero ---------------------------------- type | addgenero ; user_id | xxxx ;  genero | rock*
 
+
+
+==================================================================
 <<Protocolo a enviar pelo Servidor Multicast:>>
 
-Fazer registo -> type | registo ; confirmation | [true/false]
-Fazer login -> type | login ; confirmation | [true/false]
-Ver se o utilizador tem notificacoes pendentes -> 	type | notifications ; notification_1 | blabla* ; notification_2 | blablabla* 
-							type | notifications ; notification_1 | none
-Adicionar notificacao -> type | confirmation ; notification | [add/error]
-encontrar musica/album/artista/genero -> type | search ; possibility_1 | zeca ; possibility_2 | zecaaa
-					type | search ; possibility_1 | none
-detalhes musica/album/artista/genero -> type | details ; nome | joao* ; idade | 22 anos*
-					type | details ; nome | Album Fixe ; musica | hello* ; musica | hello2*
-					type | details ; detail_1 | none
-escrever critica a um album -> type | critic ; confirmation | [escrito/negado]
-Dar previlegios -> type | privileges ; confirmation | [done/negado]
-Partilhar musica -> type | share ; music | CoracaoNaoTemIdade* ; username | tintin* ; username2 | momo*
-downloand_upload musica -> type | GetAddress ; endereco | porto
-alterar dados -> type | alteration ; notificate | joao ; notificate | none
-Get generos -> genero1 | genero2 | genero3 | ...
-Add Genero -> type | addgenero; confirmation | [true/false]
+>>Fazer registo ---------------------------------------	type | registo ; protocolo_id | xxxx ; confirmation | true ; id | xxxxx ; editor | [true/false]
+		---------------------------------------	type | registo ; protocolo_id | xxxx ; confirmation | false
+>>Fazer login -----------------------------------------	type | login ; protocolo_id | xxxx ; confirmation | true ; id | xxxx ; editor | [true/false]
+		---------------------------------------	type | login ; protocolo_id | xxxx ; confirmation | false	
+>>Ver se o utilizador tem notificacoes pendentes ------	type | notifications ; user_id | xxxx ; notification_1 | blabla* ; notification_2 | blablabla* 
+						-------	type | notifications ; user_id | xxxx ; notification_1 | none
+>>Adicionar notificacao -------------------------------	type | confirmation ; user_id | xxxx ; notification | [add/error]
+>>Encontrar musica/album/artista/genero --------------- type | search ; user_id | xxxx ; possibility_1 | zeca ; possibility_2 | zecaaa
+					---------------	type | search ; user_id | xxxx ; possibility_1 | none
+>>Detalhes musica/album/artista/genero ---------------- type | details ; user_id | xxxx ; nome | joao* ; idade | 22 anos*
+					---------------	type | details ; user_id | xxxx ; nome | Album Fixe ; musica | hello* ; musica | hello2*
+					---------------	type | details ; user_id | xxxx ; detail_1 | none
+>>Escrever critica a um album ------------------------- type | critic ; user_id | xxxx ; confirmation | [escrito/negado]
+>>Dar previlegios ------------------------------------- type | privileges ; user_id | xxxx ; confirmation | [done/negado]
+>>Partilhar musica ------------------------------------ type | share ; user_id | xxxx ; music | CoracaoNaoTemIdade* ; username | tintin* ; username2 | momo*
+>>Downloand_upload musica ----------------------------- type | GetAddress ; user_id | xxxx ; endereco | porto
+>>Alterar dados --------------------------------------- type | alteration ; user_id | xxxx ; notificate | joao ; notificate | none
+>>Get generos ----------------------------------------- type | getgeneros ; user_id | xxxx ; genero1 | genero2 | genero3 | ...
+>>Add Genero ------------------------------------------ type | addgenero; user_id | xxxx ; confirmation | [true/false]
 
 
-error -> type | error ; function | [NomeDaFuncao]
+error ----- type | error ; function | [NomeDaFuncao]
 
 
 (Faltam muitas coisa que vamos com o tempo, todos os comandos entre RMI - Multicast têm de estar aqui)

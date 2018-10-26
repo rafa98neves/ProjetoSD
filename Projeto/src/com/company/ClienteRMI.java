@@ -23,7 +23,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	public void ChangeUserToEditor(){
 		online.ChangeUserToEditor(true);
 	}
-	
+
 	public void ping(){
 	}
 	
@@ -113,9 +113,9 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		InputStreamReader input = new InputStreamReader(System.in);
 		BufferedReader reader = new BufferedReader(input);
 		boolean registou = false;
+		String[] resposta;
 		String nome = new String();
 		String password = new String();
-		Scanner sc = new Scanner(System.in);
 		while(true){
 			System.out.printf("\nNome de utlizador (sem espacos ou caracteres especiais): ");
 			try{
@@ -130,10 +130,10 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			}catch(Exception aaa){
 				System.out.println("Problemas com o reader");
 			}
-
 			while(true){
 				try {
-					if(h.RegistUser(nome,password)){
+					resposta = h.RegistUser(nome,password);
+					if(resposta[0].compareTo("true")==0){
 						System.out.println("Registo efectuado com sucesso!");
 						registou = true;
 					}
@@ -163,7 +163,8 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				break;
 			}
 		}
-		online = new User(nome, password);
+		if(resposta[2].compareTo("true")==0) online = new User(nome, password,true, Integer.parseInt(resposta[1]));
+		else online = new User(nome, password,false, Integer.parseInt(resposta[1]));
 		DropMusic();
 	}
 	
@@ -173,6 +174,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		boolean flag = true;
 		String nome = new String();
 		String password = new String();
+		String[] resposta = new String[3];
 		while(flag){
 			System.out.printf("\nNome de utlizador: ");
 			try{
@@ -189,7 +191,8 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			}
 			while(true) {
 				try {
-					if (h.CheckUser(nome, password, c)) {
+					resposta = h.RegistUser(nome,password);
+					if(resposta[0].compareTo("true")==0){
 						System.out.println("Login efectuado com sucesso!");
 						flag = false;
 						break;
@@ -216,7 +219,8 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				}
 			}
 		}
-		online = new User(nome,password);
+		if(resposta[2].compareTo("true")==0) online = new User(nome, password,true, Integer.parseInt(resposta[1]));
+		else online = new User(nome, password,false, Integer.parseInt(resposta[1]));
 		DropMusic();
 	}
 	
@@ -388,7 +392,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		
 		while(true){
 			try{
-				respostas = h.Find(search,escolha,c);
+				respostas = h.Find(online.GetID(),search,escolha);
 				break;
 			} catch (Exception re) {
 				BackUp(false);
@@ -417,7 +421,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			String[] details;
 			while(true){
 				try{
-					details = h.GetDetails(respostas[numero-1],escolha,c);
+					details = h.GetDetails(online.GetID(),respostas[numero-1],escolha);
 					break;
 				}catch(Exception re2){
 					BackUp(false);
@@ -439,7 +443,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				if(j != 0){
 					while(true){
 						try{
-						details2 = h.GetDetails(details[j],escolha,c);
+						details2 = h.GetDetails(online.GetID(),details[j],escolha);
 							break;
 						}catch(Exception re2){
 							BackUp(false);
@@ -482,11 +486,11 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			try{
 				while ((critica = reader.readLine()) != null){
 					try{
-						h.Write(online.GetNome(), pontuacao, critica, album);
+						h.Write(online.GetID(), online.GetNome(), pontuacao, critica, album);
 					}catch(Exception t){
 						BackUp(false);
 						try{
-							h.Write(online.GetNome(), pontuacao, critica, album);
+							h.Write(online.GetID(), online.GetNome(), pontuacao, critica, album);
 						}catch(Exception tt){
 							System.out.println("Nao foi possivel fazer o seu comentario, tenta mais tarde");
 						}
@@ -528,7 +532,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								}
 								while(true){
 									try{
-										h.AlterarDados(online.GetNome(), escolha, nome, alterado, choice);  
+										h.AlterarDados(online.GetID(), online.GetNome(), escolha, nome, alterado, choice);
 										break;
 									}catch(Exception re2){
 										BackUp(false);
@@ -545,7 +549,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								counter = sc.nextInt();
 								while(true){
 									try{
-										h.AddRemoveSomething("album",nome,beforeChoices[counter],true); //Remove musica escolhida de album com nome 'nome'
+										h.AddRemoveSomething(online.GetID(), "album",nome,beforeChoices[counter],true); //Remove musica escolhida de album com nome 'nome'
 										break;
 									}catch(Exception re3){
 										BackUp(false);
@@ -562,7 +566,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								String[] respostas = new String[256];
 								while(true){
 									try{
-										respostas = h.Find(choice,"musica",c);
+										respostas = h.Find(online.GetID(),choice,"musica");
 										break;
 									}catch(Exception re4){
 										BackUp(false);
@@ -577,7 +581,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 									counter = sc.nextInt();
 									while(true){
 										try{
-											h.AddRemoveSomething("album", nome, respostas[counter],false); //Adiciona musica escolhida a album com nome 'nome'
+											h.AddRemoveSomething(online.GetID(),"album", nome, respostas[counter],false); //Adiciona musica escolhida a album com nome 'nome'
 											break;
 										}catch(Exception re5){
 											BackUp(false);
@@ -603,7 +607,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								}
 								while(true){
 									try{
-										h.AlterarDados(online.GetNome(), escolha, nome, alterado, choice);  
+										h.AlterarDados(online.GetID(), online.GetNome(), escolha, nome, alterado, choice);
 										break;
 									}catch(Exception re2){
 										BackUp(false);
@@ -624,7 +628,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 									counter = sc.nextInt();
 									while(true){
 										try{
-											h.AddRemoveSomething("artista",nome,beforeChoices[counter],true); 
+											h.AddRemoveSomething(online.GetID(), "artista",nome,beforeChoices[counter],true);
 											break;
 										}catch(Exception re3){
 											BackUp(false);
@@ -642,7 +646,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 									String[] respostas = new String[256];
 									while(true){
 										try{
-											respostas = h.Find(choice,"artista",c);
+											respostas = h.Find(online.GetID(),choice,"artista");
 											break;
 										}catch(Exception re4){
 											BackUp(false);
@@ -657,7 +661,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 										counter = sc.nextInt();
 										while(true){
 											try{
-												h.AddRemoveSomething("musica", nome, respostas[counter],false); //Adiciona artista escolhido a musica com nome 'nome'
+												h.AddRemoveSomething(online.GetID(), "musica", nome, respostas[counter],false); //Adiciona artista escolhido a musica com nome 'nome'
 												break;
 											}catch(Exception re2){
 												BackUp(false);
@@ -670,7 +674,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								String[] respostas = new String[50];
 								while(true){
 									try{
-										respostas = h.GetGeneros();
+										respostas = h.GetGeneros(online.GetID());
 										break;
 									}catch(Exception re){
 										BackUp(false);
@@ -687,7 +691,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								if(esc == 0) break;
 								else if(esc > 0 && esc <= i+1){
 									try{
-										h.AlterarDados(online.GetNome(), escolha, nome, alterado, respostas[esc-1]);  
+										h.AlterarDados(online.GetID(),online.GetNome(), escolha, nome, alterado, respostas[esc-1]);
 										break;
 									}catch(Exception re2){
 										BackUp(false);
@@ -713,7 +717,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								}
 								while(true){
 									try{
-										h.AlterarDados(online.GetNome(),"artista",nome,"nome",choice); 
+										h.AlterarDados(online.GetID(), online.GetNome(),"artista",nome,"nome",choice);
 										break;
 									}catch(Exception re3){
 										BackUp(false);
@@ -733,7 +737,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 												while(true){
 													try{
 														String t = "false";
-														h.AlterarDados(online.GetNome(),"artista",nome,"compositor",t); 
+														h.AlterarDados(online.GetID(), online.GetNome(),"artista",nome,"compositor",t);
 														break;
 													}catch(Exception re3){
 														BackUp(false);
@@ -752,7 +756,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 												while(true){
 													try{
 														String t = "true";
-														h.AlterarDados(online.GetNome(),"artista",nome,"compositor",t); 
+														h.AlterarDados(online.GetID(), online.GetNome(),"artista",nome,"compositor",t);
 														break;
 													}catch(Exception re3){
 														BackUp(false);
@@ -779,7 +783,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 							}
 							while(true){
 								try{
-									h.AddGenero(choice);
+									h.AddGenero(online.GetID(), choice);
 								}catch(Exception re2){
 									BackUp(false);
 								}
@@ -826,7 +830,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		
 		while(true){
 			try{
-				respostas = h.Find(escolha,"musica",c);
+				respostas = h.Find(online.GetID(),escolha,"musica");
 				break;
 			} catch (Exception a2) {
 				BackUp(false);
@@ -857,7 +861,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				
 				while(true){
 					try{
-						endereco = h.TransferMusic(online.GetNome());
+						endereco = h.TransferMusic(online.GetID(), online.GetNome());
 						break;
 					} catch (Exception a2) {
 						BackUp(false);
@@ -903,7 +907,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		
 		while(true){
 			try{
-				respostas = h.Find(escolha,"musica",c);
+				respostas = h.Find(online.GetID(),escolha,"musica");
 				break;
 			} catch (Exception a2) {
 				BackUp(false);
@@ -931,7 +935,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				}
 				while(true){
 					try{
-						endereco = h.TransferMusic(online.GetNome());
+						endereco = h.TransferMusic(online.GetID(),online.GetNome());
 						break;
 					} catch (Exception a2) {
 						BackUp(false);
@@ -960,7 +964,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		String user = sc.nextLine();
 		while(true){
 			try{
-				h.GivePriv(online.IsEditor(), user, c);
+				h.GivePriv(online.GetID(), online.IsEditor(), user);
 				Thread.sleep(500);
 				break;
 			} catch (Exception re) {

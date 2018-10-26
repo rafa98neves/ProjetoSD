@@ -4,10 +4,12 @@ class User{
     private String nome;
     protected String password;
     private boolean editor;
-    User(String nome,String password){
+    private int ID;
+    User(String nome,String password, boolean editor, int id){
         this.nome = nome;
         this.password = password;
-        this.editor = false;
+        this.editor = editor;
+        this.ID = id;
     }
     public boolean IsEditor(){
         return editor;
@@ -17,5 +19,8 @@ class User{
     }
     public String GetNome(){
         return nome;
+    }
+    public String GetID(){
+        return Integer.toString(ID);
     }
 }

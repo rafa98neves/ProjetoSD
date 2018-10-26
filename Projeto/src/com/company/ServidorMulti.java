@@ -15,9 +15,7 @@ public class ServidorMulti extends Thread {
 	private static String MULTICAST_ADDRESS = "224.3.2.1";
 	private static int PORT_MANAGE = 4323;
 	private int PORT_RECEIVE = 4322;
-	private int PORT_SEND = 4321;
 	private static int name;
-	private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
 	//private String con = "jdbc:sqlserver://ASUSPEDRO;databaseName=SD_DB;integratedSecurity=true;";
 	//private String con = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Pedro\\GitHub\\ProjetoSD\\SD_DB.mdf;Integrated Security=True;Connect Timeout=30";
 	//String url ="jdbc:sqlserver://PC01\inst01;databaseName=DB01;integratedSecurity=true";
@@ -29,7 +27,7 @@ public class ServidorMulti extends Thread {
 			socket.joinGroup(group);
 
 			String request = "Que numero sou?";
-			byte[] buffer = new byte[256];
+			byte[] buffer;
 			buffer = request.getBytes();
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_MANAGE);
 			socket.send(packet);
@@ -52,6 +50,7 @@ public class ServidorMulti extends Thread {
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+
         server.start();
     }
 	
@@ -61,8 +60,6 @@ public class ServidorMulti extends Thread {
 	
     public void run() {
         MulticastSocket socket = null;
-        long counter = 0;
-
         System.out.println(this.getName() + " " + name + " running...");
         try {
             socket = new MulticastSocket(PORT_RECEIVE);
@@ -74,14 +71,7 @@ public class ServidorMulti extends Thread {
 				System.out.println("Bloqueado");
 				socket.receive(packet);
 			    System.out.println("Desbloqueado");
-				
-				String message = ManageRequest(packet);
-				
-				buffer = message.getBytes();
-				
-				packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
-				socket.send(packet);
-				System.out.println("Sent!");
+				ManageNewRequest manage = new ManageNewRequest(name, socket, group, packet);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -89,7 +79,40 @@ public class ServidorMulti extends Thread {
             socket.close();
         }
     }
-	
+}
+class ManageNewRequest extends Thread{
+	private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
+
+	private static String MULTICAST_ADDRESS = "224.3.2.1";
+	private int PORT_SEND = 4321;
+	private DatagramPacket packet;
+	private InetAddress group;
+	private MulticastSocket socket;
+	private int nome;
+
+	public ManageNewRequest(int nome,MulticastSocket socket,InetAddress group, DatagramPacket packet){
+		this.nome = nome;
+		this. socket = socket;
+		this.group = group;
+		this.packet = packet;
+		this.start();
+	}
+
+	public void run() {
+		String message = ManageRequest(packet);
+
+		byte[] buffer = new byte[256];
+		buffer = message.getBytes();
+		try {
+
+			packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+			socket.send(packet);
+			System.out.println("Sent!");
+
+		}catch (Exception e){
+			System.out.println("Erro a enviar pacote: " + e);
+		}
+	}
 	public String ManageRequest(DatagramPacket packet){
 		Connection conn = null;
 		String strCmd;
@@ -98,9 +121,9 @@ public class ServidorMulti extends Thread {
 		ArrayList<String> processa = new ArrayList<String>();
 		String[] aux;
 		for(String s : processar){
-                    aux = s.split(Pattern.quote(" | "));
-                    processa.add(aux[0]);
-                    processa.add(aux[1]);
+			aux = s.split(Pattern.quote(" | "));
+			processa.add(aux[0]);
+			processa.add(aux[1]);
 		}
 
 		switch(processa.get(1)){
@@ -129,7 +152,7 @@ public class ServidorMulti extends Thread {
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-				
+
 			case "login":
 				strCmd = "DECLARE @Erro int; " +
 						"DECLARE @Description VARCHAR(1000);" +
@@ -198,7 +221,7 @@ public class ServidorMulti extends Thread {
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-				
+
 			case "search":
 				strCmd = "DECLARE @Erro int; " +
 						"DECLARE @Description VARCHAR(1000);" +
@@ -222,7 +245,7 @@ public class ServidorMulti extends Thread {
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-				
+
 			case "details":
 				strCmd = "DECLARE @Erro int; " +
 						"DECLARE @Description VARCHAR(1000);" +
@@ -246,7 +269,7 @@ public class ServidorMulti extends Thread {
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-				
+
 			case "critic":
 				strCmd = "DECLARE @Erro int; " +
 						"DECLARE @Description VARCHAR(1000);" +
@@ -271,7 +294,7 @@ public class ServidorMulti extends Thread {
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-				
+
 			case "privileges":
 				strCmd = "DECLARE @Erro int; " +
 						"DECLARE @Description VARCHAR(1000);" +
@@ -295,7 +318,7 @@ public class ServidorMulti extends Thread {
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-				
+
 			case "share": //AINDA NAO SEI BEM, O QUE ESTA EM BAIXO ESTA MAL
 				strCmd = "DECLARE @Erro int; " +
 						"DECLARE @Description VARCHAR(1000);" +
@@ -319,7 +342,7 @@ public class ServidorMulti extends Thread {
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-				
+
 			case "getgeneros":
 				strCmd = "DECLARE @Erro int; " +
 						"DECLARE @Description VARCHAR(1000);" +
@@ -341,7 +364,7 @@ public class ServidorMulti extends Thread {
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-			
+
 			case "addgenero":
 				strCmd = "DECLARE @Erro int; " +
 						"DECLARE @Description VARCHAR(1000);" +
@@ -364,7 +387,7 @@ public class ServidorMulti extends Thread {
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-				
+
 			case "GetAddress":
 				protocolo = "type | GetAddress ; " + MULTICAST_ADDRESS + " | 6000";
 				if(processa.get(3).compareTo("download")==0){
@@ -374,11 +397,11 @@ public class ServidorMulti extends Thread {
 					RecebeMusica r = new RecebeMusica();
 				}
 				return protocolo;
-			default: 
+			default:
 				protocolo = "type | error ; function | " + processa.get(1);
-				return protocolo;	
+				return protocolo;
 		}
-		
+
 		return "type | error ; function | " + processa.get(1);
 	}
 }
@@ -391,6 +414,7 @@ class Synch extends Thread{
 	private String MULTICAST_ADDRESS = "224.3.2.1";
 	private int PORT_MANAGE = 4323;
 	private boolean blocked = false;
+
 	public Synch(){
 		this.start();
 	}
