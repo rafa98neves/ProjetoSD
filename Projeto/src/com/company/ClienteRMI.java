@@ -220,9 +220,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		DropMusic();
 	}
 	
-	public static void DropMusic(){	
-		
-		int opcao;
+	public static void DropMusic(){
 		boolean exit = false;
 		System.out.println("\n\n\n\n\t\t >>DropMusic<<");
 		while(true){
@@ -239,8 +237,18 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		if(online.IsEditor()){
 			System.out.println("\n1.Pesquisar\n2.Criar Playlist\n3.Partilhar musicas\n4.Donwload de musicas\n5.Upload de musicas\n6.Dar previlegios\n0.Log Out");
 			while(!exit){
-				opcao = sc.nextInt();
-				switch(opcao){
+				int choice = -1;
+				while (true){
+					try {
+						sc = new Scanner(System.in);
+						choice = sc.nextInt();
+						if(choice <0 && choice >6) System.out.println("Opcao Invalida");
+						else break;
+					} catch (Exception err) {
+						System.out.println("Escreva um digito por favor");
+					}
+				}
+				switch(choice){
 					case 1:	Pesquisar();
 							break;
 					case 2: Playlist();
@@ -262,8 +270,18 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		else{
 			System.out.println("\n1.Pesquisar\n2.Criar Playlist\n3.Partilhar musicas\n4.Donwload de musicas\n5.Upload de musicas\n0.Log Out");
 			while(!exit){
-				opcao = sc.nextInt();
-				switch(opcao){
+				int choice = -1;
+				while (true){
+					try {
+						sc = new Scanner(System.in);
+						choice = sc.nextInt();
+						if(choice <0 && choice > 5) System.out.println("Opcao Invalida");
+						else break;
+					} catch (Exception err) {
+						System.out.println("Escreva um digito por favor");
+					}
+				}
+				switch(choice){
 					case 1:	Pesquisar();
 							break;
 					case 2: Playlist();
@@ -284,13 +302,22 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	}
 	
 	public static void Pesquisar(){
-		int opcao;
 		boolean exit = false;
 		System.out.println("\n\n\t\t >>Pesquisar<<");
 		Scanner sc = new Scanner(System.in);
 		System.out.println("\n1.Pesquisar musica\n2.Pesquisar album\n3.Pesquisar genero\n4.Pesquisar artista\n0.Back");
-		opcao = sc.nextInt();
-		switch(opcao){
+		int choice = -1;
+		while (true){
+			try {
+				sc = new Scanner(System.in);
+				choice = sc.nextInt();
+				if(choice <0 && choice >4) System.out.println("Opcao Invalida");
+				else break;
+			} catch (Exception err) {
+				System.out.println("Escreva um digito por favor");
+			}
+		}
+		switch(choice){
 			case 1:	Pesquisar("musica");
 					break;
 			case 2: Pesquisar("album");
@@ -301,11 +328,14 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 					break;
 			case 0: DropMusic();
 					break;
-			default: System.out.println("Opcaoo Invalida");
+			default: System.out.println("Opcao Invalida");
 		}	
 	}
 	
 	public static void Pesquisar(String escolha){
+
+		InputStreamReader input = new InputStreamReader(System.in);
+		BufferedReader reader = new BufferedReader(input);
 		boolean flag = false;
 		String search = new String();
 		String[] respostas;
@@ -313,16 +343,34 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		if(escolha.compareTo("album")==0){
 			System.out.println("\nPesquisar por:");
 			System.out.println("\n1.Nome do Album\n2.Nome do artista");
-			int choice = sc.nextInt();
+			int choice = -1;
+			while (true){
+				try {
+					sc = new Scanner(System.in);
+					choice = sc.nextInt();
+					if(choice !=1 && choice != 2) System.out.println("Opcao Invalida");
+					else break;
+				} catch (Exception err) {
+					System.out.println("Escreva um digito por favor");
+				}
+			}
 			switch(choice){
 				case 1:
 					System.out.println("\nNome: ");
-					search = sc.nextLine();
+					try{
+						search = reader.readLine();
+					}catch(Exception aa){
+						System.out.println("Nao percebemos o que quis dizer");
+					}
 					break;
 				case 2:
 					System.out.println("\nNome: ");
 					escolha = "artista";
-					search = sc.nextLine();
+					try{
+						search = reader.readLine();
+					}catch(Exception aa){
+						System.out.println("Nao percebemos o que quis dizer");
+					}
 					flag = true;
 					break;
 				default:
@@ -331,7 +379,11 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		}
 		else{
 			System.out.println("\nNome: ");
-			search = sc.nextLine();
+			try{
+				search = reader.readLine();
+			}catch(Exception aa){
+				System.out.println("Nao percebemos o que quis dizer");
+			}
 		}
 		
 		while(true){
@@ -349,7 +401,17 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				System.out.println(possibilidades + ". ->" + respostas[possibilidades-1]);
 			}
 			System.out.println("0.Back");
-			int numero = sc.nextInt();
+			int numero = -1;
+			while (true){
+				try {
+					sc = new Scanner(System.in);
+					numero = sc.nextInt();
+					if(numero < 0 && numero > respostas.length) System.out.println("Opcao Invalida");
+					else break;
+				} catch (Exception err) {
+					System.out.println("Escreva um digito por favor");
+				}
+			}
 			if(numero == 0) return;
 			
 			String[] details;

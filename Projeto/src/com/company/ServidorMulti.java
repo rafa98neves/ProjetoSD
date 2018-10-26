@@ -429,7 +429,6 @@ class Synch extends Thread{
 	}
 }
 
-
 class RecebeMusica extends Thread{
 	DataInputStream in;
     Socket clientSocket;

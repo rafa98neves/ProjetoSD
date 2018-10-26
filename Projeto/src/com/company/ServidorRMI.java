@@ -73,7 +73,6 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 
 	public void ping() throws RemoteException {}
 
-
 	public void NewUser(DropMusic_C_I c, String username) throws RemoteException {
 		int i = 0;
 		while(online[i] != null){
