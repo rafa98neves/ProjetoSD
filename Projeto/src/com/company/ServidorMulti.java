@@ -132,8 +132,8 @@ class ManageNewRequest extends Thread{
 					String commandText = "{call dbo.Registo(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
-					stmt.setObject(1, new String(processa.get(3)));
-					stmt.setObject(2, new String(processa.get(5)));
+					stmt.setObject(1, new String(processa.get(5)));
+					stmt.setObject(2, new String(processa.get(7)));
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
@@ -154,8 +154,8 @@ class ManageNewRequest extends Thread{
 					String commandText = "{call dbo.Login(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
-					stmt.setObject(1, new String(processa.get(3)));
-					stmt.setObject(2, new String(processa.get(5)));
+					stmt.setObject(1, new String(processa.get(5)));
+					stmt.setObject(2, new String(processa.get(7)));
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
