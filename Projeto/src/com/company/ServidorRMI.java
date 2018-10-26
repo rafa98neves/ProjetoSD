@@ -60,6 +60,7 @@ class MulticastConnection extends Thread {
 				socket.receive(packet);
 				System.out.println("Desbloqueado");
 				received = new String(packet.getData(), 0, packet.getLength());
+				System.out.println(received);
 				String[] aux = received.split(Pattern.quote(" ; "));
 				String[] aux2 = aux[1].split(Pattern.quote(" | "));
 				ID_received = aux2[1];
@@ -100,7 +101,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		users_online[i] = " ";
 	}
 
-	public void CheckNotifications(String ID, DropMusic_C_I c) throws RemoteException{
+	public void CheckNotifications(String ID , DropMusic_C_I c) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | notifications ; user_id  | " + ID;
         MulticastConnection N = new MulticastConnection(protocolo);
@@ -139,7 +140,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	public String[] RegistUser(String username, String password) throws RemoteException{
 		String protocolo = new String();
 		String proto_id = UUID.randomUUID().toString();
-		protocolo = "type | registo ; protocolo_id | " + proto_id +"; username | " + username + " ; password | " + password;
+		protocolo = "type | registo ; protocolo_id | " + proto_id +" ; username | " + username + " ; password | " + password;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 
@@ -169,7 +170,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	public String[] CheckUser(String username, String password) throws RemoteException{
 		String protocolo = new String();
 		String proto_id = UUID.randomUUID().toString();
-		protocolo = "type | login ; protocolo_id | " + proto_id + "; username | " + username + " ; password | " + password;
+		protocolo = "type | login ; protocolo_id | " + proto_id + " ; username | " + username + " ; password | " + password;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 
@@ -358,6 +359,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 					if(editor){
 						try{
 							online[i].Print("Parabens, foi promovido a editor!");
+							online[i].ChangeUserToEditor(true);
 						}catch(Exception c1){
 							AddNotification(ID,username, "Parabens, foi promovido a editor!");
 						}
@@ -365,6 +367,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 					else{
 						try{
 							online[i].Print("Um editor tirou os seu previlegios");
+							online[i].ChangeUserToEditor(false);
 						}catch(Exception c2){
 							AddNotification(ID,username, "Um editor tirou os seu previlegios");
 						}

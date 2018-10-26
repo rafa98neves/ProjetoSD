@@ -8,7 +8,7 @@ public interface DropMusic_S_I extends Remote {
 	public void NewUser(DropMusic_C_I c, String username) throws java.rmi.RemoteException;
 	
 	public void UserQuit(DropMusic_C_I c, String username) throws RemoteException;
-	public void CheckNotifications(String username, DropMusic_C_I c) throws RemoteException;
+	public void CheckNotifications(String ID, DropMusic_C_I c) throws RemoteException;
 	public String[] RegistUser(String name, String password) throws RemoteException;
 	public String[] CheckUser(String username, String password) throws RemoteException;
 	public String[] Find(String ID, String name, String tipo) throws RemoteException;

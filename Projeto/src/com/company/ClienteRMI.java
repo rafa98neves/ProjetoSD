@@ -20,8 +20,8 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		super();
 	}
 		
-	public void ChangeUserToEditor(){
-		online.ChangeUserToEditor(true);
+	public void ChangeUserToEditor(boolean change){
+		online.ChangeUserToEditor(change);
 	}
 
 	public void ping(){
@@ -191,7 +191,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			}
 			while(true) {
 				try {
-					resposta = h.RegistUser(nome,password);
+					resposta = h.CheckUser(nome,password);
 					if(resposta[0].compareTo("true")==0){
 						System.out.println("Login efectuado com sucesso!");
 						flag = false;
@@ -230,7 +230,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		while(true){
 			try{
 				h.NewUser(c, online.GetNome());
-				h.CheckNotifications(online.GetNome(), c); 
+				h.CheckNotifications(online.GetID(),c);
 				Thread.sleep(500);
 				break;
 			}catch(Exception c){
