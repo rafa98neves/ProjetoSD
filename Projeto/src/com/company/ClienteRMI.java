@@ -11,6 +11,12 @@ import java.net.*;
 import java.io.*;
 
 
+/**
+ * Description: Interface que o User vê e utiliza para comunicação para o resto do programa
+ *
+ * @param
+ * @return
+ */
 public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	private static User online;
 	private static ClienteRMI c;

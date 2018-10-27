@@ -14,6 +14,12 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+/**
+ * Description: Classe utilizada para executar a conexão com o Multicast
+ *
+ * @param
+ * @return
+ */
 class MulticastConnection extends Thread {
     private String MULTICAST_ADDRESS = "224.3.2.1";
     private int PORT_SEND = 4322;
@@ -87,6 +93,12 @@ class MulticastConnection extends Thread {
     }
 }
 
+/**
+ * Description: Classe onde está localizada as funções que podem ser executadas pelo User
+ *
+ * @param
+ * @return
+ */
 public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 
 	private static DropMusic_C_I[] online = new DropMusic_C_I[100];

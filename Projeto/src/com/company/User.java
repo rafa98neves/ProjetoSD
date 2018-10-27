@@ -1,5 +1,12 @@
 package com.company;
 
+/**
+ * Description: Classe User utilizada para cada um dos Users que se encontra online
+ *
+ * @param
+ * @return
+ */
+
 class User{
     private String nome;
     protected String password;

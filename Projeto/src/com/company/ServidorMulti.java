@@ -12,6 +12,13 @@ import java.io.*;
 import java.net.*;
 import java.sql.*;
 
+/**
+ * Description: Classe onde está localizada a configuração de cada Multicast
+ *
+ * @param
+ * @return
+ */
+
 public class ServidorMulti extends Thread {
 	private static String MULTICAST_ADDRESS = "224.3.2.1";
 	private static int PORT_MANAGE = 4323;
@@ -23,10 +30,6 @@ public class ServidorMulti extends Thread {
 	private static int onlineServer = 0;
 	public static String[] historico = new String[1000];
 	public static int counting = 0;
-
-	//private String con = "jdbc:sqlserver://ASUSPEDRO;databaseName=SD_DB;integratedSecurity=true;";
-	//private String con = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Pedro\\GitHub\\ProjetoSD\\SD_DB.mdf;Integrated Security=True;Connect Timeout=30";
-	//String url ="jdbc:sqlserver://PC01\inst01;databaseName=DB01;integratedSecurity=true";
 
     public static void main(String[] args) {
 		try {
@@ -163,6 +166,14 @@ public class ServidorMulti extends Thread {
     }
 }
 
+/**
+ * Description: Classe onde é tratada a configuração da ligação à base de dados e onde é efectuada os pedidos de
+ * informação à mesma
+ *
+ * @param
+ * @return
+ */
+
 class ManageNewRequest extends Thread{
 	private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
 
@@ -200,6 +211,15 @@ class ManageNewRequest extends Thread{
 			ServidorMulti.server.addHist(recived,message);
 		}
 	}
+
+	/**
+	 * Description: Esta função tem como objetivo a ligação da aplicação à base de dados SQL Server.
+	 * É esta que entra em contacto direto com os scripts presentes na base de dados e que envia os argumentos
+	 * necessários para que esta possa dar a devida informação que o User se encontra à espera
+	 *
+	 * @param pacote com a informação a tratar pela base de dados
+	 * @return String com a respetiva resposta da base de dados
+	 */
 
 	public String ManageRequest(DatagramPacket packet){
 		Connection conn = null;
@@ -444,7 +464,7 @@ class ManageNewRequest extends Thread{
 
 			case "remove":
 				try {
-					String commandText = "{call dbo.Generos(?,?)}";
+					String commandText = "{call dbo.Remove(?,?,?,?,?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3))); //User_id
@@ -486,13 +506,13 @@ class ManageNewRequest extends Thread{
 
 			case "getgeneros":
 				try {
-					String commandText = "{call dbo.Generos(?,?)}";
+					String commandText = "{call dbo.GetGeneros(?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.registerOutParameter(1, Types.INTEGER);
 					stmt.registerOutParameter(2, Types.VARCHAR);
 					stmt.execute();
-					protocolo = "type | getgeneros ; "+ processa.get(2) + " | " + processa.get(3) + stmt.getString(2);
+					protocolo = "type | getgeneros ; "+ processa.get(2) + " | " + processa.get(3) + stmt.getString(2) + "none";
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -503,7 +523,7 @@ class ManageNewRequest extends Thread{
 
 			case "addgenero":
 				try {
-					String commandText = "{call dbo.Generos(?,?)}";
+					String commandText = "{call dbo.AddGenero(?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3)));
@@ -539,6 +559,13 @@ class ManageNewRequest extends Thread{
 		return "type | error ; " + processa.get(2) +" | " + processa.get(3) + " ; function | " + processa.get(1);
 	}
 }
+
+/**
+ * Description: Esta classe é utilizada para a comunicação dos servidores e para estabelecimento dos nomes
+ *
+ * @param
+ * @return
+ */
 
 class Synch extends Thread{
 	private int server = 1;
@@ -596,6 +623,13 @@ class Synch extends Thread{
 	}
 }
 
+/**
+ * Description: Classe utilizada quando o User faz Upload da música
+ *
+ * @param
+ * @return
+ */
+
 class RecebeMusica extends Thread{
 	DataInputStream in;
 	FileOutputStream out;
@@ -626,6 +660,13 @@ class RecebeMusica extends Thread{
         }catch(IOException e){System.out.println("IO:" + e);}
     }
 }
+
+/**
+ * Description: Classe utilizada quando o User faz Download da música
+ *
+ * @param
+ * @return
+ */
 
 class EnviaMusica extends Thread{
 	DataInputStream in;

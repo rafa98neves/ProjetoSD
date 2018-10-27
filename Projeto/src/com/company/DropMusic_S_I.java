@@ -2,6 +2,13 @@ package com.company;
 
 import java.rmi.*;
 
+/**
+ * Description: Funções que o User pode chamar no Servidor RMI
+ *
+ * @param
+ * @return
+ */
+
 public interface DropMusic_S_I extends Remote {
 	
 	public void ping() throws java.rmi.RemoteException;
