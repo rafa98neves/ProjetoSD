@@ -53,25 +53,31 @@ class MulticastConnection extends Thread {
 
 			buffer = new byte[256];
 
-			packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
 			String received = "erro";
 			String ID_received = "no";
+			socket.setSoTimeout(5000);
 			while(ID.compareTo(ID_received) != 0) {
-				socket.setSoTimeout(5000);
-				System.out.println("Bloqueado");
-				try {
-					socket.receive(packet);
-				}catch(SocketTimeoutException e){
-
-					packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+				while (true) {
+					try {
+						buffer = new byte[256];
+						packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
+						socket.receive(packet);
+						received = new String(packet.getData(), 0, packet.getLength());
+						System.out.println(received);
+						String[] aux = received.split(Pattern.quote(" ; "));
+						String[] aux2 = aux[1].split(Pattern.quote(" | "));
+						ID_received = aux2[1];
+						break;
+					} catch (SocketTimeoutException e) {
+						buffer = TimeOut.getBytes();
+						packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+						socket.send(packet);
+					} catch(Exception x){
+						System.out.println("Erro : " + x);
+					}
 				}
-				System.out.println("Desbloqueado");
-				received = new String(packet.getData(), 0, packet.getLength());
-				System.out.println(received);
-				String[] aux = received.split(Pattern.quote(" ; "));
-				String[] aux2 = aux[1].split(Pattern.quote(" | "));
-				ID_received = aux2[1];
 			}
+			System.out.println(">> " + received);
 			protocolo = received;
 		}catch(Exception c){
 			System.out.println("Exception in send/receive : " + c);
@@ -133,7 +139,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 				}
 			}
 		} catch (Exception re) {
-			System.out.println("Exception in Find(): " + re);
+			System.out.println("Exception in CheckNotifications(): " + re);
 		}
 	}
 
@@ -201,6 +207,15 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			Info[0] = "false";
 			return Info;
 		}
+	}
+
+	public void Criar(String ID, String tipo, String nome, String Info, String Info2) throws RemoteException{
+		String protocolo = new String();
+		protocolo = "type | criar ; user_id | " + ID + " ; tipo | " + tipo + " ; nome | " + nome + " ; Info | " + Info + " ; Info2 | " + Info2;
+		MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
+
+
 	}
 
 	public String[] Find(String ID, String name, String tipo) throws RemoteException{
@@ -341,13 +356,14 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		protocolo = N.GetResponse();
 	}
 
-	public String[] TransferMusic(String ID, String username) throws RemoteException{
+	public String[] TransferMusic(String ID, String type) throws RemoteException{
 		String protocolo = new String();
-		protocolo = "type | GetAddress ; user_id | " + ID +" ; username | " + username;
+		protocolo = "type | GetAddress ; user_id | " + ID +" ; tipo | " + type;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 		String[] aux = protocolo.split(Pattern.quote(" ; "));
 		String[] endereco = aux[2].split(Pattern.quote(" | "));
+		System.out.println("aaaaaaaaaa!");
 		return endereco;
 	}
 

@@ -5,6 +5,7 @@
 >>Ver se o utilizador -------------------------	type | notifications ; user_id | xxxx
   tem notificacoes pendentes
 >>Adicionar notificação -----------------------	type | add_notification ; user_id | xxxx  ; username | notificado ; notificacion | "asdasdsa"
+>>Criar conteudo ------------------------------ type | criar ; user_id | xxxx ; tipo | [album/artista/musica] ; nome | Toy* ; Info | Compositor*
 >>Encontrar musica/album/artista/genero ------- type | search ; user_id | xxxx ; name | zeca afonso* ; from | [album/music/genre/artist] 
 >>Detalhes musica/album/artista/genero -------- type | details ; user_id | xxxx ; name | zeca afonso* ; from | [album/music/artist]
 >>Escrever critica a um album ----------------- type | critic ; user_id | xxxx ; album | Example* ; score | 10 ; write | blablabla*
@@ -29,6 +30,7 @@
 >>Ver se o utilizador tem notificacoes pendentes ------	type | notifications ; user_id | xxxx ; notification_1 | blabla* ; notification_2 | blablabla* 
 						-------	type | notifications ; user_id | xxxx ; notification_1 | none
 >>Adicionar notificacao -------------------------------	type | confirmation ; user_id | xxxx ; notification | [add/error]
+>>Criar conteudo -------------------------------------- type | criar ; user_id | xxxx ; criado | [true/false]
 >>Encontrar musica/album/artista/genero --------------- type | search ; user_id | xxxx ; possibility_1 | zeca ; possibility_2 | zecaaa
 					---------------	type | search ; user_id | xxxx ; possibility_1 | none
 >>Detalhes musica/album/artista/genero ---------------- type | details ; user_id | xxxx ; nome | joao* ; idade | 22 anos ; album | Este é do Quim ; album | Este é do Toy*

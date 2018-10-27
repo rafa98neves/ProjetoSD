@@ -15,10 +15,15 @@ import java.sql.*;
 public class ServidorMulti extends Thread {
 	private static String MULTICAST_ADDRESS = "224.3.2.1";
 	private static int PORT_MANAGE = 4323;
+	private static int  PORT_SEND = 4321;
 	private int PORT_RECEIVE = 4322;
+	public static ServidorMulti server;
 	private static int name;
 	private static int InCharge = 1;
 	private static int onlineServer = 0;
+	public static String[] historico = new String[1000];
+	public static int counting = 0;
+
 	//private String con = "jdbc:sqlserver://ASUSPEDRO;databaseName=SD_DB;integratedSecurity=true;";
 	//private String con = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Pedro\\GitHub\\ProjetoSD\\SD_DB.mdf;Integrated Security=True;Connect Timeout=30";
 	//String url ="jdbc:sqlserver://PC01\inst01;databaseName=DB01;integratedSecurity=true";
@@ -46,7 +51,7 @@ public class ServidorMulti extends Thread {
 		}
 		name = s.GetServerNumber();
 
-		ServidorMulti server = new ServidorMulti();
+		server = new ServidorMulti();
         try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		}
@@ -55,12 +60,20 @@ public class ServidorMulti extends Thread {
 		}
 
         server.start();
-
+		int c = 0;
+		int previous = 0;
         while(true){
         	try {
-				Thread.sleep(3000);
+				Thread.sleep(5000);
 				onlineServer = s.GetMaxServers();
-				System.out.println(InCharge);
+				if(c == 0) previous = onlineServer;
+
+				if(onlineServer == previous) c++;
+				else c=0;
+
+				if(c == 10){
+					CleanHist();
+				}
 			}catch (Exception e){
 				System.out.println("erro: " + e);
 			}
@@ -71,9 +84,21 @@ public class ServidorMulti extends Thread {
     public ServidorMulti() {
         super("Server online");
     }
-	
+
+    public synchronized void addHist(String protocolo_before, String protocolo_new){
+    	historico[counting] = protocolo_before;
+    	counting++;
+    	historico[counting] = protocolo_new;
+    	counting++;
+	}
+	public static synchronized void CleanHist(){
+    	historico = new String[1000];
+    	counting = 0;
+	}
+
     public void run() {
         MulticastSocket socket = null;
+        String last = " ";
         System.out.println(this.getName() + " " + name + " running...");
         try {
             socket = new MulticastSocket(PORT_RECEIVE);
@@ -81,20 +106,52 @@ public class ServidorMulti extends Thread {
 			socket.joinGroup(group);
             while (true) {
 				byte[] buffer = new byte[256];
-				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);			
-				System.out.println("Bloqueado");
+				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
 				socket.receive(packet);
+
 				String Check = new String(packet.getData(), 0, packet.getLength());
-			    System.out.println("Desbloqueado");
 				if(Check.compareTo("TimeOutReached") == 0){
+					System.out.println("AVISO: O Servidor " + InCharge + " está inativo!");
 					if(InCharge < onlineServer){
 						InCharge++;
+						if(InCharge == name){
+							System.out.println("Informacao: Este servidor e agora responsavel pelo envio de respostas");
+							for(int i = 0; i<counting; i+=2) {
+								if (historico[i].compareTo(last) == 0) {
+									int j = i + 1;
+									buffer = historico[j].getBytes();
+									try {
+										packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+										socket.send(packet);
+									} catch (Exception aaa) {
+										System.out.println("Erro: " + aaa);
+									}
+								}
+							}
+						}
 					}
 					else{
 						InCharge--;
+						if(InCharge == name){
+							System.out.println("Informacao: Este servidor e agora responsavel pelo envio de respostas");
+							for(int i = 0; i<counting; i+=2) {
+								if (historico[i].compareTo(last) == 0) {
+									int j = i + 1;
+									buffer = historico[j].getBytes();
+									try {
+										System.out.println("<<<< " + historico[j]);
+										packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+										socket.send(packet);
+									} catch (Exception aaa) {
+										System.out.println("Erro: " + aaa);
+									}
+								}
+							}
+						}
 					}
 				}
 				else{
+					last =  new String(packet.getData(), 0, packet.getLength());
 					ManageNewRequest manage = new ManageNewRequest(name, socket, group, packet, InCharge);
 				}
             }
@@ -105,6 +162,7 @@ public class ServidorMulti extends Thread {
         }
     }
 }
+
 class ManageNewRequest extends Thread{
 	private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
 
@@ -121,22 +179,25 @@ class ManageNewRequest extends Thread{
 		this.group = group;
 		this.packet = packet;
 		this.InCharge = InCharge;
-		this.start();
+		this.run();
 	}
 
-	public void run() {
-		String message = ManageRequest(packet);
+	public void run(){
+		String recived = new String(packet.getData(), 0, packet.getLength());
+		String	message = ManageRequest(packet);
+
 		if(nome == InCharge) {
 			try {
 				byte[] buffer = new byte[256];
 				buffer = message.getBytes();
 				packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
 				socket.send(packet);
-				System.out.println("Sent!");
-
 			} catch (Exception e) {
 				System.out.println("Erro a enviar pacote: " + e);
 			}
+		}
+		else{
+			ServidorMulti.server.addHist(recived,message);
 		}
 	}
 
@@ -234,7 +295,27 @@ class ManageNewRequest extends Thread{
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-
+			case "criar":
+				try {
+					String commandText = "{call dbo.Criar(?,?,?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(5))); //tipo
+					stmt.setObject(2, new String(processa.get(7))); //nome
+					stmt.setObject(3, new String(processa.get(9))); //Info
+					stmt.setObject(4, new String(processa.get(11))); //Info2
+					stmt.registerOutParameter(5, Types.INTEGER);
+					stmt.registerOutParameter(6, Types.VARCHAR);
+					stmt.execute();
+					if(stmt.getInt(5) >= 0 ) protocolo = "type | criar ; user_id | " + processa.get(3) + " ; confirmation | true";
+					else protocolo = "type | criar ; user_id | " + processa.get(3) + " ; confirmation | false";
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
 			case "search":
 				try {
 					String commandText = "{call dbo.Search(?,?,?,?)}";
@@ -276,16 +357,17 @@ class ManageNewRequest extends Thread{
 
 			case "critic":
 				try {
-					String commandText = "{call dbo.WriteCritic(?,?,?,?,?)}";
+					String commandText = "{call dbo.WriteCritic(?,?,?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
-					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(1, new Integer(Integer.parseInt(processa.get(3))));
 					stmt.setObject(2, new String(processa.get(5)));
-					stmt.setObject(3, new String(processa.get(7)));
-					stmt.registerOutParameter(4, Types.INTEGER);
-					stmt.registerOutParameter(5, Types.VARCHAR);
+					stmt.setObject(3, new Integer(Integer.parseInt(processa.get(7))));
+					stmt.setObject(4, new String(processa.get(9)));
+					stmt.registerOutParameter(5, Types.INTEGER);
+					stmt.registerOutParameter(6, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(4) >= 0 ) protocolo = "type | critic ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | escrito";
+					if(stmt.getInt(5) >= 0 ) protocolo = "type | critic ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | escrito";
 					else protocolo = "type | critic ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | negado";
 					return protocolo;
 				} catch (SQLException ex) {
@@ -385,12 +467,14 @@ class ManageNewRequest extends Thread{
 				break;
 
 			case "GetAddress":
-				protocolo = "type | GetAddress ; " + MULTICAST_ADDRESS + " | 6000";
-				if(processa.get(3).compareTo("download")==0){
+				protocolo = "type | GetAddress ; user_id | " + processa.get(3) + " ; 127.0.0.1 | 6000";
+				if(processa.get(5).compareTo("download")==0){
 					EnviaMusica e = new EnviaMusica();
+					e.start();
 				}
 				else{
 					RecebeMusica r = new RecebeMusica();
+					r.start();
 				}
 				return protocolo;
 			default:
@@ -460,50 +544,67 @@ class Synch extends Thread{
 
 class RecebeMusica extends Thread{
 	DataInputStream in;
-    Socket clientSocket;
+	FileOutputStream out;
+	Socket clientSocket;
 	int PORT_USER = 6000;
     public RecebeMusica() {
-        try{
-            ServerSocket listenSocket = new ServerSocket(PORT_USER);
-			clientSocket = listenSocket.accept();
-            in = new DataInputStream(clientSocket.getInputStream());
-            this.start();
-        }catch(IOException e){System.out.println("Connection:" + e.getMessage());}
     }
     //=============================
     public void run(){
         String resposta;
         try{
-			int musica = in.read();
-			//Transformar em musica e guardar
-			//Acrescentar na BD musica nao partilhada ao utilizador
+        	try{
+			ServerSocket listenSocket = new ServerSocket(PORT_USER);
+			clientSocket = listenSocket.accept();
+			in = new DataInputStream(clientSocket.getInputStream());
+			}catch(IOException e){System.out.println("Connection:" + e.getMessage());}
+			byte[] bytes = new byte[8192];
+			out = new FileOutputStream("C:\\Users\\santa\\Desktop\\Aulas\\aqui\\" + "musica.mp3");
+        	int count;
+			while ((count = in.read(bytes)) > 0)
+			{
+				out.write(bytes, 0, count);
+			}
+			clientSocket.close();
+			out.close();
+			in.close();
         }catch(EOFException e){System.out.println("EOF:" + e);
         }catch(IOException e){System.out.println("IO:" + e);}
     }
 }
 
 class EnviaMusica extends Thread{
+	DataInputStream in;
+	FileOutputStream out;
+	Socket clientSocket;
 	int PORT_USER = 6000;
-	DataOutputStream out;
-    Socket clientSocket;
 	
     public EnviaMusica() {
-        try{
-            ServerSocket listenSocket = new ServerSocket(PORT_USER);
-			clientSocket = listenSocket.accept();
-            out = new DataOutputStream(clientSocket.getOutputStream());
-            this.start(); 
-        }catch(IOException e){System.out.println("Connection:" + e.getMessage());}
     }
     //=============================
     public void run(){
         String resposta;
-        /*try{
-			out.write(cenas);
-			//byte [] musicbyte  = new byte [(int)musica.length()];
-			//Transformar em musica e enviar
+		try{
+			ServerSocket listenSocket = new ServerSocket(PORT_USER);
+			clientSocket = listenSocket.accept();
+		}catch(IOException e){System.out.println("Connection:" + e.getMessage());}
+        try{
+        	File musica = new File("C:\\Users\\santa\\Desktop\\Aulas\\aqui\\coracaonaotemidade.mp3");
+			DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+			DataInputStream in = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
+			InputStream is = new FileInputStream(musica);
+			byte[] buffer = new byte[8192];
+			int count;
+			while ((count = is.read(buffer)) > 0) {
+				out.write(buffer, 0, count);
+			}
+			out.close();
+			in.close();
+			clientSocket.close();
         }catch(EOFException e){System.out.println("EOF:" + e);
-        }catch(IOException e){System.out.println("IO:" + e);}*/
+        }catch(IOException e) { System.out.println("IO:" + e);
+		}catch (Exception c) { System.out.println("Erro: " + c);
+		}
     }
 }
 

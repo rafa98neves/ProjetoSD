@@ -10,6 +10,7 @@ public interface DropMusic_S_I extends Remote {
 	public void UserQuit(DropMusic_C_I c, String username) throws RemoteException;
 	public void CheckNotifications(String ID, DropMusic_C_I c) throws RemoteException;
 	public String[] RegistUser(String name, String password) throws RemoteException;
+	public void Criar(String ID, String tipo, String nome, String Info, String Info2) throws RemoteException;
 	public String[] CheckUser(String username, String password) throws RemoteException;
 	public String[] Find(String ID, String name, String tipo) throws RemoteException;
 	public String[] GetDetails(String ID,String name, String tipo) throws RemoteException;
@@ -19,6 +20,6 @@ public interface DropMusic_S_I extends Remote {
 	public void AddGenero(String ID,String genero) throws RemoteException;
 	public void AlterarDados(String ID,String username, String tipo, String alvo, String alteracao, String alterado) throws RemoteException;
 	public void ShareMusic(String ID,String username) throws RemoteException;
-	public String[] TransferMusic(String ID,String username) throws RemoteException;
+	public String[] TransferMusic(String ID,String type) throws RemoteException;
 	public boolean GivePriv(String ID,boolean editor, String username) throws RemoteException;
 }
