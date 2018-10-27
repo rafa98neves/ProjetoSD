@@ -356,13 +356,14 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		protocolo = N.GetResponse();
 	}
 
-	public String[] TransferMusic(String ID, String username) throws RemoteException{
+	public String[] TransferMusic(String ID, String type) throws RemoteException{
 		String protocolo = new String();
-		protocolo = "type | GetAddress ; user_id | " + ID +" ; username | " + username;
+		protocolo = "type | GetAddress ; user_id | " + ID +" ; tipo | " + type;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 		String[] aux = protocolo.split(Pattern.quote(" ; "));
 		String[] endereco = aux[2].split(Pattern.quote(" | "));
+		System.out.println("aaaaaaaaaa!");
 		return endereco;
 	}
 

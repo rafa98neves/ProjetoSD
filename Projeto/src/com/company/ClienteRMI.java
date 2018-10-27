@@ -995,10 +995,10 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		BufferedReader reader = new BufferedReader(input);
 		
 		System.out.println("\n\n\t\t >>Upload de musica<<");
-		System.out.println("\n\n Nome da musica>> ");
+		System.out.printf("\n Nome da musica>> ");
 		String escolha;
-		String[] respostas = new String[256];
-		
+		String[] respostas = new String[3];
+
 		try{
 			escolha = reader.readLine();
 		}catch(Exception a1){
@@ -1014,53 +1014,73 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				BackUp(false);
 			}
 		}
-		
 		if(respostas[0].compareTo("none")==0) System.out.println("Nada encontrado para: " + escolha);
-		else{
-			int pos = 0;
-			while(respostas[pos] != null){
-				System.out.println(pos + ". -> " + respostas[pos+1]);
+		else {
+			int pos = 1;
+			while (respostas[pos - 1] != null) {
+				System.out.println(pos + ". -> " + respostas[pos - 1]);
+				pos++;
 			}
 			System.out.println("0. -> Back");
 			Scanner sc = new Scanner(System.in);
 			int numero = sc.nextInt();
-			if(numero!=0){
-				String localizacao;
+			if (numero != 0) {
+				String localizacao = " ";
 				String[] endereco = new String[2];
-				System.out.println("localizacao do ficheiro: ");
-				try{
-					localizacao = reader.readLine();
-				}catch(Exception a3){
-					System.out.println("Erro a escrever");
-					return;
+				File musica;
+				while (true) {
+					reader = new BufferedReader(input);
+					System.out.println("localizacao do ficheiro: ");
+					while(true) {
+						try {
+							localizacao = reader.readLine();
+							break;
+						} catch (Exception a3) {
+							System.out.println("Erro a escrever");
+						}
+					}
+
+					musica = new File(localizacao);
+					if (!musica.exists() || !musica.isFile()) {
+						System.out.println("Nao e um ficheiro: " + musica);
+					} else break;
 				}
-				File musica = new File(localizacao);
-				if (!musica.exists() || !musica.isFile()) throw new IllegalArgumentException("Nao e um ficheiro: " + musica);
-				
-				while(true){
-					try{
-						endereco = h.TransferMusic(online.GetID(), online.GetNome());
+				while (true) {
+					try {
+						endereco = h.TransferMusic(online.GetID(), "upload");
 						break;
 					} catch (Exception a2) {
+						System.out.println("...Erro: " + c);
 						BackUp(false);
 					}
 				}
-				
 				Socket s = null;
-				while(true){
-					try{
-						s = new Socket(endereco[0],Integer.parseInt(endereco[1]));
+				while (true) {
+					try {
+						System.out.println(endereco[0]);
+						System.out.println(endereco[1]);
+						s = new Socket(endereco[0], Integer.parseInt(endereco[1]));
 						DataOutputStream out = new DataOutputStream(s.getOutputStream());
-						byte [] musicbyte  = new byte [(int)musica.length()];
-						out.write(musicbyte,0,musicbyte.length);
-					}catch(Exception c){
+						DataInputStream in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
+						InputStream is = new FileInputStream(musica);
+						byte[] buffer = new byte[8192];
+						int count;
+						while ((count = is.read(buffer)) > 0) {
+							out.write(buffer, 0, count);
+						}
+						out.close();
+						in.close();
+						s.close();
+						break;
+					} catch (Exception c) {
+						System.out.println("...Erro: " + c);
 						BackUp(false);
 					}
 				}
+				System.out.println("Musica transferida!");
 			}
 		}
-	
-	
+		DropMusic();
 	}
 	
 	public static void Partilhar(){
@@ -1068,73 +1088,91 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	}
 	
 	public static void Download(){
-		System.out.println("\n\n\t\t >>Download de musica<<");
 		InputStreamReader input = new InputStreamReader(System.in);
 		BufferedReader reader = new BufferedReader(input);
-		
-		System.out.println("\n\n Nome da musica>> ");
+
+		System.out.println("\n\n\t\t >>Download de musica<<");
+		System.out.printf("\n Nome da musica>> ");
 		String escolha;
-		String[] respostas = new String[256];
-		
+		String[] respostas = new String[3];
 		try{
 			escolha = reader.readLine();
 		}catch(Exception a1){
 			System.out.println("Erro a escrever");
 			return;
 		}
-		
-		while(true){
+
+		/*while(true){
 			try{
 				respostas = h.Find(online.GetID(),escolha,"musica");
 				break;
 			} catch (Exception a2) {
 				BackUp(false);
 			}
-		}
-		
+		}*/
+		respostas[0] = "Coracao nao tem idade";
+		respostas[1] = "Coracao velhote";
 		if(respostas[0].compareTo("none")==0) System.out.println("Nada encontrado para: " + escolha);
-		else{
-			int pos = 0;
-			while(respostas[pos] != null){
-				System.out.println(pos + ". -> " + respostas[pos+1]);
+		else {
+			int pos = 1;
+			while (respostas[pos - 1] != null) {
+				System.out.println(pos + ". -> " + respostas[pos - 1]);
+				pos++;
 			}
-			Scanner sc = new Scanner(System.in);
 			System.out.println("0. -> Back");
+			Scanner sc = new Scanner(System.in);
 			int numero = sc.nextInt();
-			if(numero!=0){
+			if (numero != 0) {
 				String localizacao;
-				String[] endereco = new String[2];
-				System.out.println("localizacao de destino: ");
-				try{
-					localizacao = reader.readLine();
-				}catch(Exception a3){
-					System.out.println("Erro a escrever");
-					return;
+				String[] endereco;
+				while (true) {
+					reader = new BufferedReader(input);
+					System.out.println("Diretoria: ");
+					try {
+						localizacao = reader.readLine();
+						break;
+					} catch (Exception a3) {
+						System.out.println("Erro a escrever");
+					}
 				}
-				while(true){
-					try{
-						endereco = h.TransferMusic(online.GetID(),online.GetNome());
+				while (true) {
+					try {
+						endereco = h.TransferMusic(online.GetID(), "download");
 						break;
 					} catch (Exception a2) {
 						BackUp(false);
 					}
 				}
+
 				Socket s = null;
-				while(true){
-					try{
-						s = new Socket(endereco[0],Integer.parseInt(endereco[1]));
-						DataInputStream in = new DataInputStream(s.getInputStream());
-						int musica = in.read();
-						//guardar em localizacao
-					}catch(Exception c){
+				while (true) {
+					try {
+						s = new Socket(endereco[0], Integer.parseInt(endereco[1]));
+						FileOutputStream out = new FileOutputStream(localizacao + "\\Toy.mp3");
+						DataInputStream in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
+						byte[] bytes = new byte[8192];
+						int count;
+						while ((count = in.read(bytes)) > 0) {
+							out.write(bytes, 0, count);
+						}
+						s.close();
+						out.close();
+						in.close();
+						break;
+					} catch (EOFException e) {
+						System.out.println("EOF:" + e);
+					} catch (IOException e) {
+						System.out.println("IO:" + e);
+					}catch (Exception c){
 						BackUp(false);
 					}
 				}
-				
+				System.out.println("Musica transferida!");
 			}
 		}
+		DropMusic();
 	}
-	
+
 	public static void GivePrev(){
 		Scanner sc = new Scanner(System.in);
 		System.out.println("\n\n\t\t >>Dar previlegios<<");

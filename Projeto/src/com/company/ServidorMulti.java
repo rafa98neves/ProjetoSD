@@ -467,12 +467,14 @@ class ManageNewRequest extends Thread{
 				break;
 
 			case "GetAddress":
-				protocolo = "type | GetAddress ; " + MULTICAST_ADDRESS + " | 6000";
-				if(processa.get(3).compareTo("download")==0){
+				protocolo = "type | GetAddress ; user_id | " + processa.get(3) + " ; 127.0.0.1 | 6000";
+				if(processa.get(5).compareTo("download")==0){
 					EnviaMusica e = new EnviaMusica();
+					e.start();
 				}
 				else{
 					RecebeMusica r = new RecebeMusica();
+					r.start();
 				}
 				return protocolo;
 			default:
@@ -542,50 +544,67 @@ class Synch extends Thread{
 
 class RecebeMusica extends Thread{
 	DataInputStream in;
-    Socket clientSocket;
+	FileOutputStream out;
+	Socket clientSocket;
 	int PORT_USER = 6000;
     public RecebeMusica() {
-        try{
-            ServerSocket listenSocket = new ServerSocket(PORT_USER);
-			clientSocket = listenSocket.accept();
-            in = new DataInputStream(clientSocket.getInputStream());
-            this.start();
-        }catch(IOException e){System.out.println("Connection:" + e.getMessage());}
     }
     //=============================
     public void run(){
         String resposta;
         try{
-			int musica = in.read();
-			//Transformar em musica e guardar
-			//Acrescentar na BD musica nao partilhada ao utilizador
+        	try{
+			ServerSocket listenSocket = new ServerSocket(PORT_USER);
+			clientSocket = listenSocket.accept();
+			in = new DataInputStream(clientSocket.getInputStream());
+			}catch(IOException e){System.out.println("Connection:" + e.getMessage());}
+			byte[] bytes = new byte[8192];
+			out = new FileOutputStream("C:\\Users\\santa\\Desktop\\Aulas\\aqui\\" + "musica.mp3");
+        	int count;
+			while ((count = in.read(bytes)) > 0)
+			{
+				out.write(bytes, 0, count);
+			}
+			clientSocket.close();
+			out.close();
+			in.close();
         }catch(EOFException e){System.out.println("EOF:" + e);
         }catch(IOException e){System.out.println("IO:" + e);}
     }
 }
 
 class EnviaMusica extends Thread{
+	DataInputStream in;
+	FileOutputStream out;
+	Socket clientSocket;
 	int PORT_USER = 6000;
-	DataOutputStream out;
-    Socket clientSocket;
 	
     public EnviaMusica() {
-        try{
-            ServerSocket listenSocket = new ServerSocket(PORT_USER);
-			clientSocket = listenSocket.accept();
-            out = new DataOutputStream(clientSocket.getOutputStream());
-            this.start(); 
-        }catch(IOException e){System.out.println("Connection:" + e.getMessage());}
     }
     //=============================
     public void run(){
         String resposta;
-        /*try{
-			out.write(cenas);
-			//byte [] musicbyte  = new byte [(int)musica.length()];
-			//Transformar em musica e enviar
+		try{
+			ServerSocket listenSocket = new ServerSocket(PORT_USER);
+			clientSocket = listenSocket.accept();
+		}catch(IOException e){System.out.println("Connection:" + e.getMessage());}
+        try{
+        	File musica = new File("C:\\Users\\santa\\Desktop\\Aulas\\aqui\\coracaonaotemidade.mp3");
+			DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+			DataInputStream in = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
+			InputStream is = new FileInputStream(musica);
+			byte[] buffer = new byte[8192];
+			int count;
+			while ((count = is.read(buffer)) > 0) {
+				out.write(buffer, 0, count);
+			}
+			out.close();
+			in.close();
+			clientSocket.close();
         }catch(EOFException e){System.out.println("EOF:" + e);
-        }catch(IOException e){System.out.println("IO:" + e);}*/
+        }catch(IOException e) { System.out.println("IO:" + e);
+		}catch (Exception c) { System.out.println("Erro: " + c);
+		}
     }
 }
 
