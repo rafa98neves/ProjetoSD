@@ -1102,16 +1102,14 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			return;
 		}
 
-		/*while(true){
+		while(true){
 			try{
 				respostas = h.Find(online.GetID(),escolha,"musica");
 				break;
 			} catch (Exception a2) {
 				BackUp(false);
 			}
-		}*/
-		respostas[0] = "Coracao nao tem idade";
-		respostas[1] = "Coracao velhote";
+		}
 		if(respostas[0].compareTo("none")==0) System.out.println("Nada encontrado para: " + escolha);
 		else {
 			int pos = 1;

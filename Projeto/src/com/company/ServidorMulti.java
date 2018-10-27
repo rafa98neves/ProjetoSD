@@ -397,11 +397,74 @@ class ManageNewRequest extends Thread{
 				}
 				break;
 
-			case "share": //AINDA NAO SEI BEM, O QUE ESTA EM BAIXO ESTA MAL
-				strCmd = "DECLARE @Erro int; " +
-						"DECLARE @Description VARCHAR(1000);" +
-						"EXECUTE dbo.Share @User, @Erro OUTPUT, @Description OUTPUT;" +
-						"SELECT @Erro erro, @Description description;";
+			case "alteration":
+				try {
+					String commandText = "{call dbo.Alteration(?,?,?,?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3))); //User_id
+					stmt.setObject(2, new String(processa.get(4))); //Tipo
+					stmt.setObject(3, new String(processa.get(5))); //nome
+					stmt.setObject(4, new String(processa.get(6))); //O que vai ser alterado
+					stmt.setObject(5, new String(processa.get(7))); //alteracao
+					stmt.registerOutParameter(6, Types.INTEGER);
+					stmt.registerOutParameter(7, Types.VARCHAR);
+					stmt.execute();
+					protocolo = "type | alteration ; " + processa.get(2) +" | " + processa.get(3) + stmt.getString(7);
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
+
+			case "add":
+				try {
+					String commandText = "{call dbo.Add(?,?,?,?,?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3))); //User_id
+					stmt.setObject(2, new String(processa.get(4))); //Tipo
+					stmt.setObject(3, new String(processa.get(5))); //nome
+					stmt.setObject(4, new String(processa.get(6))); //o que vai ser adicionado
+					stmt.setObject(5, new String(processa.get(7))); //adiciona
+
+					stmt.registerOutParameter(6, Types.INTEGER);
+					stmt.registerOutParameter(7, Types.VARCHAR);
+					stmt.execute();
+					protocolo = "type | add ; " + processa.get(2) +" | " + processa.get(3) + stmt.getString(7);
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
+
+			case "remove":
+				try {
+					String commandText = "{call dbo.Generos(?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3))); //User_id
+					stmt.setObject(2, new String(processa.get(4))); //Tipo
+					stmt.setObject(3, new String(processa.get(5))); //nome
+					stmt.setObject(4, new String(processa.get(6))); //o que vai ser adicionado
+					stmt.setObject(5, new String(processa.get(7))); //adiciona
+
+					stmt.registerOutParameter(6, Types.INTEGER);
+					stmt.registerOutParameter(7, Types.VARCHAR);
+					stmt.execute();
+					protocolo = "type | remove ; " + processa.get(2) +" | " + processa.get(3) + stmt.getString(7);
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
+			case "share":
 				try {
 					String commandText = "{call dbo.Share(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -422,10 +485,6 @@ class ManageNewRequest extends Thread{
 				break;
 
 			case "getgeneros":
-				strCmd = "DECLARE @Erro int; " +
-						"DECLARE @Description VARCHAR(1000);" +
-						"EXECUTE dbo.Generos @Erro OUTPUT, @Description OUTPUT;" +
-						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.Generos(?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -433,8 +492,7 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(1, Types.INTEGER);
 					stmt.registerOutParameter(2, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(1) >= 0 ) protocolo = "type | getgeneros ; " + processa.get(2) +" | " + processa.get(3) + " ; " + stmt.getString(2) + " | " + stmt.getString(2); //(....)
-					else protocolo = "type | error ; " + processa.get(2) +" | " + processa.get(3) + " ; function | " + processa.get(1);
+					protocolo = "type | getgeneros ; "+ processa.get(2) + " | " + processa.get(3) + stmt.getString(2);
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -444,10 +502,6 @@ class ManageNewRequest extends Thread{
 				break;
 
 			case "addgenero":
-				strCmd = "DECLARE @Erro int; " +
-						"DECLARE @Description VARCHAR(1000);" +
-						"EXECUTE dbo.AddGenero @Genero, @Erro OUTPUT, @Description OUTPUT;" +
-						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.Generos(?,?)}";
 					conn = DriverManager.getConnection(con);
