@@ -155,17 +155,17 @@ class ManageNewRequest extends Thread{
 		switch(processa.get(1)){
 			case "registo":
 				try {
-					String commandText = "{call dbo.Registo(?,?,?,?)}";
+					String commandText = "{call dbo.Registo(?,?,?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(5)));
 					stmt.setObject(2, new String(processa.get(7)));
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
+					stmt.registerOutParameter(5, Types.INTEGER);
+					stmt.registerOutParameter(6, Types.BIT);
 					stmt.execute();
-					System.out.printf("\n OLA: " + stmt.getInt(3));
-					System.out.printf("\n ADEUS: " + stmt.getString(4));
-					if(stmt.getInt(3) >= 0) protocolo = "type | registo ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | true";
+					if(stmt.getInt(3) >= 0) protocolo = "type | registo ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | true ; id | " + stmt.getInt(5) + " ; editor | " + stmt.getBoolean(6);
 					else protocolo = "type | registo ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | false";
 					return protocolo;
 				} catch (SQLException ex) {
@@ -177,15 +177,17 @@ class ManageNewRequest extends Thread{
 
 			case "login":
 				try {
-					String commandText = "{call dbo.Login(?,?,?,?)}";
+					String commandText = "{call dbo.Login(?,?,?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(5)));
 					stmt.setObject(2, new String(processa.get(7)));
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
+					stmt.registerOutParameter(5, Types.INTEGER);
+					stmt.registerOutParameter(6, Types.BIT);
 					stmt.execute();
-					if(stmt.getInt(3) >= 0) protocolo = "type | login ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | true";
+					if(stmt.getInt(3) >= 0) protocolo = "type | login ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | true ; id | " + stmt.getInt(5) + " ; editor | " + stmt.getBoolean(6);
 					else protocolo = "type | login ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | false";
 					return protocolo;
 				} catch (SQLException ex) {
