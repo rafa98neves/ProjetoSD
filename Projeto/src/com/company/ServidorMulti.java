@@ -16,9 +16,13 @@ public class ServidorMulti extends Thread {
 	private static int PORT_MANAGE = 4323;
 	private static int  PORT_SEND = 4321;
 	private int PORT_RECEIVE = 4322;
+	public static ServidorMulti server;
 	private static int name;
 	private static int InCharge = 1;
 	private static int onlineServer = 0;
+	public static String[] historico = new String[1000];
+	public static int counting = 0;
+
 	//private String con = "jdbc:sqlserver://ASUSPEDRO;databaseName=SD_DB;integratedSecurity=true;";
 	//private String con = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Pedro\\GitHub\\ProjetoSD\\SD_DB.mdf;Integrated Security=True;Connect Timeout=30";
 	//String url ="jdbc:sqlserver://PC01\inst01;databaseName=DB01;integratedSecurity=true";
@@ -46,7 +50,7 @@ public class ServidorMulti extends Thread {
 		}
 		name = s.GetServerNumber();
 
-		ServidorMulti server = new ServidorMulti();
+		server = new ServidorMulti();
         try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		}
@@ -60,7 +64,6 @@ public class ServidorMulti extends Thread {
         	try {
 				Thread.sleep(3000);
 				onlineServer = s.GetMaxServers();
-				System.out.println(InCharge);
 			}catch (Exception e){
 				System.out.println("erro: " + e);
 			}
@@ -71,10 +74,17 @@ public class ServidorMulti extends Thread {
     public ServidorMulti() {
         super("Server online");
     }
-	
+
+    public synchronized void addHist(String protocolo_before, String protocolo_new){
+    	historico[counting] = protocolo_before;
+    	counting++;
+    	historico[counting] = protocolo_new;
+    	counting++;
+	}
+
     public void run() {
-		ManageNewRequest manage = null;
         MulticastSocket socket = null;
+        String last = " ";
         System.out.println(this.getName() + " " + name + " running...");
         try {
             socket = new MulticastSocket(PORT_RECEIVE);
@@ -89,33 +99,43 @@ public class ServidorMulti extends Thread {
 					if(InCharge < onlineServer){
 						InCharge++;
 						if(InCharge == name){
-							String message = manage.GetLast();
-							buffer = message.getBytes();
-							try {
-								packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
-								socket.send(packet);
-							}catch (Exception aaa){
-								System.out.println("Erro: " + aaa );
+							for(int i = 0; i<counting; i+=2) {
+								if (historico[i].compareTo(last) == 0) {
+									int j = i + 1;
+									buffer = historico[j].getBytes();
+									try {
+										System.out.println("<<<< " + historico[j]);
+										packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+										socket.send(packet);
+									} catch (Exception aaa) {
+										System.out.println("Erro: " + aaa);
+									}
+								}
 							}
 						}
-
 					}
 					else{
 						InCharge--;
 						if(InCharge == name){
-							String message = manage.GetLast();
-							buffer = message.getBytes();
-							try {
-								packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
-								socket.send(packet);
-							}catch (Exception aaa){
-								System.out.println("Erro: " + aaa );
+							for(int i = 0; i<counting; i+=2) {
+								if (historico[i].compareTo(last) == 0) {
+									int j = i + 1;
+									buffer = historico[j].getBytes();
+									try {
+										System.out.println("<<<< " + historico[j]);
+										packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+										socket.send(packet);
+									} catch (Exception aaa) {
+										System.out.println("Erro: " + aaa);
+									}
+								}
 							}
 						}
 					}
 				}
 				else{
-					manage = new ManageNewRequest(name, socket, group, packet, InCharge);
+					last =  new String(packet.getData(), 0, packet.getLength());
+					ManageNewRequest manage = new ManageNewRequest(name, socket, group, packet, InCharge);
 				}
             }
         } catch (IOException e) {
@@ -125,6 +145,7 @@ public class ServidorMulti extends Thread {
         }
     }
 }
+
 class ManageNewRequest extends Thread{
 	private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
 
@@ -134,8 +155,6 @@ class ManageNewRequest extends Thread{
 	private InetAddress group;
 	private MulticastSocket socket;
 	private int nome,InCharge;
-	private boolean fazer;
-	private String prev_proto;
 
 	public ManageNewRequest(int nome,MulticastSocket socket,InetAddress group, DatagramPacket packet, int InCharge){
 		this.nome = nome;
@@ -143,11 +162,11 @@ class ManageNewRequest extends Thread{
 		this.group = group;
 		this.packet = packet;
 		this.InCharge = InCharge;
-		this.fazer = fazer;
-		this.start();
+		this.run();
 	}
 
 	public void run(){
+		String recived = new String(packet.getData(), 0, packet.getLength());
 		String	message = ManageRequest(packet);
 
 		if(nome == InCharge) {
@@ -161,12 +180,8 @@ class ManageNewRequest extends Thread{
 			}
 		}
 		else{
-			prev_proto = message;
+			ServidorMulti.server.addHist(recived,message);
 		}
-	}
-
-	public String GetLast(){
-		return prev_proto;
 	}
 
 	public String ManageRequest(DatagramPacket packet){
@@ -265,16 +280,17 @@ class ManageNewRequest extends Thread{
 				break;
 			case "criar":
 				try {
-					String commandText = "{call dbo.Criar(?,?,?)}";
+					String commandText = "{call dbo.Criar(?,?,?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(5))); //tipo
 					stmt.setObject(2, new String(processa.get(7))); //nome
 					stmt.setObject(3, new String(processa.get(9))); //Info
-					stmt.registerOutParameter(4, Types.INTEGER);
-					stmt.registerOutParameter(5, Types.VARCHAR); //VARRAY ?
+					stmt.setObject(4, new String(processa.get(11))); //Info2
+					stmt.registerOutParameter(5, Types.INTEGER);
+					stmt.registerOutParameter(6, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(4) >= 0 ) protocolo = "type | criar ; user_id | " + processa.get(3) + " ; confirmation | true";
+					if(stmt.getInt(5) >= 0 ) protocolo = "type | criar ; user_id | " + processa.get(3) + " ; confirmation | true";
 					else protocolo = "type | criar ; user_id | " + processa.get(3) + " ; confirmation | false";
 					return protocolo;
 				} catch (SQLException ex) {
@@ -325,16 +341,17 @@ class ManageNewRequest extends Thread{
 
 			case "critic":
 				try {
-					String commandText = "{call dbo.WriteCritic(?,?,?,?,?)}";
+					String commandText = "{call dbo.WriteCritic(?,?,?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
-					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(1, new Integer(Integer.parseInt(processa.get(3))));
 					stmt.setObject(2, new String(processa.get(5)));
-					stmt.setObject(3, new String(processa.get(7)));
-					stmt.registerOutParameter(4, Types.INTEGER);
-					stmt.registerOutParameter(5, Types.VARCHAR);
+					stmt.setObject(3, new Integer(Integer.parseInt(processa.get(7))));
+					stmt.setObject(4, new String(processa.get(9)));
+					stmt.registerOutParameter(5, Types.INTEGER);
+					stmt.registerOutParameter(6, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(4) >= 0 ) protocolo = "type | critic ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | escrito";
+					if(stmt.getInt(5) >= 0 ) protocolo = "type | critic ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | escrito";
 					else protocolo = "type | critic ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | negado";
 					return protocolo;
 				} catch (SQLException ex) {

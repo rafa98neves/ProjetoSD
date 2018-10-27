@@ -71,6 +71,8 @@ class MulticastConnection extends Thread {
 						buffer = TimeOut.getBytes();
 						packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
 						socket.send(packet);
+					} catch(Exception x){
+						System.out.println("Erro? : " + x);
 					}
 				}
 			}
@@ -136,7 +138,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 				}
 			}
 		} catch (Exception re) {
-			System.out.println("Exception in Find(): " + re);
+			System.out.println("Exception in CheckNotifications(): " + re);
 		}
 	}
 
@@ -206,14 +208,15 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		}
 	}
 
-	public void Criar(String ID, String tipo, String nome, String Info) throws RemoteException{
+	public void Criar(String ID, String tipo, String nome, String Info, String Info2) throws RemoteException{
 		String protocolo = new String();
-		protocolo = "type | criar ; user_id | " + ID + " ; tipo | " + tipo + " ; nome | " + nome + " ; Info | " + Info;
+		protocolo = "type | criar ; user_id | " + ID + " ; tipo | " + tipo + " ; nome | " + nome + " ; Info | " + Info + " ; Info2 | " + Info2;
 		MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 
 
 	}
+
 	public String[] Find(String ID, String name, String tipo) throws RemoteException{
 		String protocolo = new String();
 		protocolo = "type | search ; user_id | " + ID + " ; name | " + name + " ; from | " + tipo;

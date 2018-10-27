@@ -1,5 +1,7 @@
 package com.company;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+
 import java.util.Scanner;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
@@ -349,7 +351,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				else compositor = "false";
 				while(true) {
 					try {
-						h.Criar(online.GetID(), "artista", nome, compositor);
+						h.Criar(online.GetID(), "artista", nome, compositor, " ");
 						break;
 					} catch (Exception c) {
 						BackUp(false);
@@ -376,7 +378,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				}
 				while(true) {
 					try {
-						h.Criar(online.GetID(), "album", nome, Integer.toString(year));
+						h.Criar(online.GetID(), "album", nome, Integer.toString(year), " ");
 						break;
 					} catch (Exception c) {
 						BackUp(false);
@@ -390,43 +392,84 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				}catch(Exception c){
 					System.out.println("Problemas com o reader");
 				}
-				System.out.println("\nArtista: ");
-				try{
-					artista = reader.readLine();
-				}catch(Exception c){
-					System.out.println("Problemas com o reader");
-				}
-				String[] respostas;
 				while(true){
+					System.out.println("\nArtista: ");
 					try{
-						respostas = h.Find(online.GetID(),artista,"artista");
-						break;
+						artista = reader.readLine();
 					}catch(Exception c){
-						BackUp(false);
+						System.out.println("Problemas com o reader");
 					}
-				}
-				if(respostas[0].compareTo("none")==0) System.out.println("Nada encontrado para: " + choice);
-				else{
-					int possibilidades = 0;
-					for(possibilidades = 1; possibilidades<=respostas.length; possibilidades++){
-						System.out.println(possibilidades + ". ->" + respostas[possibilidades-1]);
-					}
-					int pos = 0;
-					while (true){
-						try {
-							sc = new Scanner(System.in);
-							pos = sc.nextInt();
-							if(pos <0 && pos > respostas.length) System.out.println("Opcao Invalida");
-							else break;
-						} catch (Exception err) {
-							System.out.println("Escreva um digito por favor");
+					String[] respostas;
+					while(true){
+						try{
+							respostas = h.Find(online.GetID(),artista,"artista");
+							break;
+						}catch(Exception c){
+							BackUp(false);
 						}
 					}
-					artista = respostas[possibilidades-1];
+					if(respostas[0].compareTo("none")==0) System.out.println("Nada encontrado para: " + choice);
+					else {
+						int possibilidades;
+						for (possibilidades = 1; possibilidades <= respostas.length; possibilidades++) {
+							System.out.println(possibilidades + ". ->" + respostas[possibilidades - 1]);
+						}
+						System.out.println("0. Exit");
+						int pos = 0;
+						while (true) {
+							try {
+								sc = new Scanner(System.in);
+								pos = sc.nextInt();
+								if (pos < 0 && pos > respostas.length) System.out.println("Opcao Invalida");
+								else break;
+							} catch (Exception err) {
+								System.out.println("Escreva um digito por favor");
+							}
+						}
+						if (pos != 0) {
+							artista = respostas[possibilidades - 1];
+							break;
+						}
+					}
+				}
+				while(true){
+					System.out.println("\nGenero: ");
+					String[] respostas;
+					while(true){
+						try{
+							respostas = h.GetGeneros(online.GetID());
+							break;
+						}catch(Exception c){
+							BackUp(false);
+						}
+					}
+					if(respostas[0].compareTo("none")==0) System.out.println("Nenhum genero encontrado");
+					else {
+						int possibilidades;
+						for (possibilidades = 1; possibilidades <= respostas.length; possibilidades++) {
+							System.out.println(possibilidades + ". ->" + respostas[possibilidades - 1]);
+						}
+						System.out.println("0. Exit");
+						int pos = 0;
+						while (true) {
+							try {
+								sc = new Scanner(System.in);
+								pos = sc.nextInt();
+								if (pos < 0 && pos > respostas.length) System.out.println("Opcao Invalida");
+								else break;
+							} catch (Exception err) {
+								System.out.println("Escreva um digito por favor");
+							}
+						}
+						if (pos != 0) {
+							genero = respostas[possibilidades - 1];
+							break;
+						}
+					}
 				}
 				while(true) {
 					try {
-						h.Criar(online.GetID(), "musica", nome, artista);
+						h.Criar(online.GetID(), "musica", nome, artista,genero);
 						break;
 					} catch (Exception c) {
 						BackUp(false);
