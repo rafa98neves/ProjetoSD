@@ -53,13 +53,14 @@ class MulticastConnection extends Thread {
 
 			buffer = new byte[256];
 
-			packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
 			String received = "erro";
 			String ID_received = "no";
 			socket.setSoTimeout(5000);
 			while(ID.compareTo(ID_received) != 0) {
 				while (true) {
 					try {
+						buffer = new byte[256];
+						packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
 						socket.receive(packet);
 						received = new String(packet.getData(), 0, packet.getLength());
 						System.out.println(received);
@@ -72,7 +73,7 @@ class MulticastConnection extends Thread {
 						packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
 						socket.send(packet);
 					} catch(Exception x){
-						System.out.println("Erro? : " + x);
+						System.out.println("Erro : " + x);
 					}
 				}
 			}

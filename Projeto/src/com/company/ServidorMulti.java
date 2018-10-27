@@ -59,11 +59,20 @@ public class ServidorMulti extends Thread {
 		}
 
         server.start();
-
+		int c = 0;
+		int previous = 0;
         while(true){
         	try {
-				Thread.sleep(3000);
+				Thread.sleep(5000);
 				onlineServer = s.GetMaxServers();
+				if(c == 0) previous = onlineServer;
+
+				if(onlineServer == previous) c++;
+				else c=0;
+
+				if(c == 10){
+					CleanHist();
+				}
 			}catch (Exception e){
 				System.out.println("erro: " + e);
 			}
@@ -81,6 +90,10 @@ public class ServidorMulti extends Thread {
     	historico[counting] = protocolo_new;
     	counting++;
 	}
+	public static synchronized void CleanHist(){
+    	historico = new String[1000];
+    	counting = 0;
+	}
 
     public void run() {
         MulticastSocket socket = null;
@@ -94,17 +107,19 @@ public class ServidorMulti extends Thread {
 				byte[] buffer = new byte[256];
 				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
 				socket.receive(packet);
+
 				String Check = new String(packet.getData(), 0, packet.getLength());
 				if(Check.compareTo("TimeOutReached") == 0){
+					System.out.println("AVISO: O Servidor " + InCharge + " está inativo!");
 					if(InCharge < onlineServer){
 						InCharge++;
 						if(InCharge == name){
+							System.out.println("Informacao: Este servidor e agora responsavel pelo envio de respostas");
 							for(int i = 0; i<counting; i+=2) {
 								if (historico[i].compareTo(last) == 0) {
 									int j = i + 1;
 									buffer = historico[j].getBytes();
 									try {
-										System.out.println("<<<< " + historico[j]);
 										packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
 										socket.send(packet);
 									} catch (Exception aaa) {
@@ -117,6 +132,7 @@ public class ServidorMulti extends Thread {
 					else{
 						InCharge--;
 						if(InCharge == name){
+							System.out.println("Informacao: Este servidor e agora responsavel pelo envio de respostas");
 							for(int i = 0; i<counting; i+=2) {
 								if (historico[i].compareTo(last) == 0) {
 									int j = i + 1;
