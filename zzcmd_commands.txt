@@ -1,4 +1,0 @@
-javac DropMusic_S_I.java DropMusic_C_I.java ClienteRMI.java ServidorRMI.java ServidorRMI_Backup.java ServidorMulti.java
-start rmiregistry
-java ClienteRMI <nome>
-java ServidorRMI
