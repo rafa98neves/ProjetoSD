@@ -1,5 +1,6 @@
 package com.company;
 
+import javax.xml.transform.Result;
 import java.net.MulticastSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -143,6 +144,7 @@ class ManageNewRequest extends Thread{
 		Connection conn = null;
 		String strCmd;
 		String protocolo = new String(packet.getData(), 0, packet.getLength());
+		System.out.println(protocolo);
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		ArrayList<String> processa = new ArrayList<String>();
 		String[] aux;
@@ -198,15 +200,15 @@ class ManageNewRequest extends Thread{
 				break;
 			case "notifications":
 				try {
-					String commandText = "{call dbo.Notifications(?,?,?)}";
+					String commandText = "{call dbo.Notifications(?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3)));
-					stmt.registerOutParameter(2, Types.INTEGER);
-					stmt.registerOutParameter(3, Types.VARCHAR); //VARRAY ?
+					stmt.registerOutParameter(2, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(2) >= 0 ) protocolo = "type | notifications ; " + processa.get(2) +" | " + processa.get(3) + " ; notification_1 | "+ stmt.getString(3) +" ; notification_2 | " + "?" +" ; "; // (...)" ;
-					else protocolo = "type | notifications ; " + processa.get(2) +" | " + processa.get(3) + " ; notification_1 | none";
+					protocolo = "type | notifications ; user_id | " + processa.get(3) + stmt.getString(2);
+					System.out.println(protocolo);
+					stmt.close();
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -216,16 +218,15 @@ class ManageNewRequest extends Thread{
 				break;
 			case "add_notifications":
 				try {
-					String commandText = "{call dbo.AddNoti(?,?,?)}";
+					String commandText = "{call dbo.AddNoti(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
-					stmt.setObject(1, new String(processa.get(3)));
-					stmt.setObject(2, new String(processa.get(5)));
+					stmt.setObject(1, new String(processa.get(5)));
+					stmt.setObject(2, new String(processa.get(7)));
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(3) >= 0 ) protocolo = "type | confirmation ; " + processa.get(2) +" | " + processa.get(3) + " ; notification | add";
-					else protocolo = "type | confirmation ; " + processa.get(2) +" | " + processa.get(3) + " ; notification | error";
+					protocolo = "type | confirmation ; " + processa.get(2) +" | " + processa.get(3) + " ; notification | " + stmt.getString(4);
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -239,13 +240,12 @@ class ManageNewRequest extends Thread{
 					String commandText = "{call dbo.Search(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
-					stmt.setObject(1, new String(processa.get(3)));
-					stmt.setObject(2, new String(processa.get(5)));
+					stmt.setObject(1, new String(processa.get(5)));
+					stmt.setObject(2, new String(processa.get(7)));
 					stmt.registerOutParameter(3, Types.INTEGER);
-					stmt.registerOutParameter(4, Types.VARCHAR); //VARRAY ?
+					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(3) >= 0 ) protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + " ; possibility_1 | "+ stmt.getString(4) +" ; possibility_2 | " + "?" +" ; "; // (...)" ;
-					else protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + " ; possibility_1 | none";
+					protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + stmt.getString(4);
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -259,13 +259,13 @@ class ManageNewRequest extends Thread{
 					String commandText = "{call dbo.Details(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
-					stmt.setObject(1, new String(processa.get(3)));
-					stmt.setObject(2, new String(processa.get(5)));
+					stmt.setObject(1, new String(processa.get(5)));
+					stmt.setObject(2, new String(processa.get(7)));
 					stmt.registerOutParameter(3, Types.INTEGER);
-					stmt.registerOutParameter(4, Types.VARCHAR); //VARRAY ?
+					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
-					if(stmt.getInt(3) >= 0 ) protocolo = "type | details ; " + processa.get(2) +" | " + processa.get(3) + " ; " + stmt.getString(4) + " | " + stmt.getString(5); // (...)" ;
-					else protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + " ; details_1 | none";
+
+					protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + stmt.getString(4);
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());

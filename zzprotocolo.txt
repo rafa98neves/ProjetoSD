@@ -7,7 +7,7 @@
 >>Adicionar notificação -----------------------	type | add_notification ; user_id | xxxx  ; username | notificado ; notificacion | "asdasdsa"
 >>Encontrar musica/album/artista/genero ------- type | search ; user_id | xxxx ; name | zeca afonso* ; from | [album/music/genre/artist] 
 >>Detalhes musica/album/artista/genero -------- type | details ; user_id | xxxx ; name | zeca afonso* ; from | [album/music/artist]
->>Escrever critica a um album ----------------- type | critic ; user_id | xxxx ; album | Example* ; write | blablabla*
+>>Escrever critica a um album ----------------- type | critic ; user_id | xxxx ; album | Example* ; score | 10 ; write | blablabla*
 >>Dar/tirar previlegios ----------------------- type | privileges ; user_id | xxxx ; username | ze* ; editor | [true/false]
 >>Partilhar musica ---------------------------- type | share ; user_id | xxxx ; (...)
 >>Download_upload musica ---------------------- type | GetAddress ; user_id | xxxx ; tipo | [download/upload]
@@ -31,9 +31,9 @@
 >>Adicionar notificacao -------------------------------	type | confirmation ; user_id | xxxx ; notification | [add/error]
 >>Encontrar musica/album/artista/genero --------------- type | search ; user_id | xxxx ; possibility_1 | zeca ; possibility_2 | zecaaa
 					---------------	type | search ; user_id | xxxx ; possibility_1 | none
->>Detalhes musica/album/artista/genero ---------------- type | details ; user_id | xxxx ; nome | joao* ; idade | 22 anos*
-					---------------	type | details ; user_id | xxxx ; nome | Album Fixe ; musica | hello* ; musica | hello2*
-					---------------	type | details ; user_id | xxxx ; detail_1 | none
+>>Detalhes musica/album/artista/genero ---------------- type | details ; user_id | xxxx ; nome | joao* ; idade | 22 anos ; album | Este é do Quim ; album | Este é do Toy*
+		---------------------------------------	type | details ; user_id | xxxx ; nome | Album Fixe ; ano | 1900; artista | Pedro ; artista | Rafa ; musica | hello* ; musica | hello2*
+		---------------------------------------	type | details ; user_id | xxxx ; detail_1 | none
 >>Escrever critica a um album ------------------------- type | critic ; user_id | xxxx ; confirmation | [escrito/negado]
 >>Dar previlegios ------------------------------------- type | privileges ; user_id | xxxx ; confirmation | [done/negado]
 >>Partilhar musica ------------------------------------ type | share ; user_id | xxxx ; music | CoracaoNaoTemIdade* ; username | tintin* ; username2 | momo*
