@@ -16,6 +16,8 @@ public class ServidorMulti extends Thread {
 	private static int PORT_MANAGE = 4323;
 	private int PORT_RECEIVE = 4322;
 	private static int name;
+	private static int InCharge = 1;
+	private static int onlineServer = 0;
 	//private String con = "jdbc:sqlserver://ASUSPEDRO;databaseName=SD_DB;integratedSecurity=true;";
 	//private String con = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Pedro\\GitHub\\ProjetoSD\\SD_DB.mdf;Integrated Security=True;Connect Timeout=30";
 	//String url ="jdbc:sqlserver://PC01\inst01;databaseName=DB01;integratedSecurity=true";
@@ -52,6 +54,17 @@ public class ServidorMulti extends Thread {
 		}
 
         server.start();
+
+        while(true){
+        	try {
+				Thread.sleep(3000);
+				onlineServer = s.GetMaxServers();
+				System.out.println(InCharge);
+			}catch (Exception e){
+				System.out.println("erro: " + e);
+			}
+		}
+
     }
 	
     public ServidorMulti() {
@@ -70,8 +83,19 @@ public class ServidorMulti extends Thread {
 				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);			
 				System.out.println("Bloqueado");
 				socket.receive(packet);
+				String Check = new String(packet.getData(), 0, packet.getLength());
 			    System.out.println("Desbloqueado");
-				ManageNewRequest manage = new ManageNewRequest(name, socket, group, packet);
+				if(Check.compareTo("TimeOutReached") == 0){
+					if(InCharge < onlineServer){
+						InCharge++;
+					}
+					else{
+						InCharge--;
+					}
+				}
+				else{
+					ManageNewRequest manage = new ManageNewRequest(name, socket, group, packet, InCharge);
+				}
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -88,28 +112,30 @@ class ManageNewRequest extends Thread{
 	private DatagramPacket packet;
 	private InetAddress group;
 	private MulticastSocket socket;
-	private int nome;
+	private int nome,InCharge;
 
-	public ManageNewRequest(int nome,MulticastSocket socket,InetAddress group, DatagramPacket packet){
+	public ManageNewRequest(int nome,MulticastSocket socket,InetAddress group, DatagramPacket packet, int InCharge){
 		this.nome = nome;
 		this.socket = socket;
 		this.group = group;
 		this.packet = packet;
+		this.InCharge = InCharge;
 		this.start();
 	}
 
 	public void run() {
 		String message = ManageRequest(packet);
+		if(nome == InCharge) {
+			try {
+				byte[] buffer = new byte[256];
+				buffer = message.getBytes();
+				packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+				socket.send(packet);
+				System.out.println("Sent!");
 
-		byte[] buffer = new byte[256];
-		buffer = message.getBytes();
-		try {
-			packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
-			socket.send(packet);
-			System.out.println("Sent!");
-
-		}catch (Exception e){
-			System.out.println("Erro a enviar pacote: " + e);
+			} catch (Exception e) {
+				System.out.println("Erro a enviar pacote: " + e);
+			}
 		}
 	}
 
@@ -414,12 +440,15 @@ class Synch extends Thread{
 	private String MULTICAST_ADDRESS = "224.3.2.1";
 	private int PORT_MANAGE = 4323;
 	private boolean blocked = false;
-
+	private int Max = 0;
 	public Synch(){
 		this.start();
 	}
 	public synchronized int GetServerNumber(){
 		return server;
+	}
+	public synchronized int GetMaxServers() {
+		return Max;
 	}
 	public void run(){
 		try{
@@ -443,7 +472,13 @@ class Synch extends Thread{
 					socket.send(packet);
 				}
 				else if(!blocked){
-					if(server == Integer.parseInt(resposta)) server = Integer.parseInt(resposta)+1;
+					if(server == Integer.parseInt(resposta)){
+						server = Integer.parseInt(resposta)+1;
+						Max = server;
+					}
+				}
+				else{
+					if(Integer.parseInt(resposta) > Max) Max = Integer.parseInt(resposta);
 				}
 			}
 

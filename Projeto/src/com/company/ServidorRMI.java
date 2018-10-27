@@ -42,6 +42,7 @@ class MulticastConnection extends Thread {
         MulticastSocket socket = null;
         long counter = 0;
 		byte[] buffer = protocolo.getBytes();
+		String TimeOut = "TimeOutReached";
 		try{
 			socket = new MulticastSocket(PORT_RECEIVE);
 			InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
@@ -56,8 +57,14 @@ class MulticastConnection extends Thread {
 			String received = "erro";
 			String ID_received = "no";
 			while(ID.compareTo(ID_received) != 0) {
+				socket.setSoTimeout(5000);
 				System.out.println("Bloqueado");
-				socket.receive(packet);
+				try {
+					socket.receive(packet);
+				}catch(SocketTimeoutException e){
+
+					packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+				}
 				System.out.println("Desbloqueado");
 				received = new String(packet.getData(), 0, packet.getLength());
 				System.out.println(received);
@@ -470,7 +477,4 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			}
 		}
 	}
-
-
-
 }
