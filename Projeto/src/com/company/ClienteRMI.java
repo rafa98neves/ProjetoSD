@@ -290,7 +290,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				switch(choice){
 					case 1:	Pesquisar();
 							break;
-					case 2: Playlist();
+					case 2: Criar();
 							break;
 					case 3: Criar();
 							break;
