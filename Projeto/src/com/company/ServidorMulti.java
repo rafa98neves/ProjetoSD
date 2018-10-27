@@ -1,5 +1,6 @@
 package com.company;
 
+import javax.jws.soap.SOAPBinding;
 import javax.xml.transform.Result;
 import java.net.MulticastSocket;
 import java.net.DatagramPacket;
@@ -347,6 +348,7 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
 					protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + stmt.getString(4);
+
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -484,25 +486,35 @@ class ManageNewRequest extends Thread{
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-			case "share":
-				try {
-					String commandText = "{call dbo.Share(?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
-					CallableStatement stmt = conn.prepareCall(commandText);
-					stmt.setObject(1, new String(processa.get(3)));
-					stmt.setObject(2, new String(processa.get(5)));
-					stmt.registerOutParameter(3, Types.INTEGER);
-					stmt.registerOutParameter(4, Types.VARCHAR);
-					stmt.execute();
-					if(stmt.getInt(3) >= 0 ) protocolo = "type | privileges ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | done";
-					else protocolo = "type | privileges ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | negado";
-					return protocolo;
-				} catch (SQLException ex) {
-					System.out.println("SQLException: " + ex.getMessage());
-					System.out.println("SQLState: " + ex.getSQLState());
-					System.out.println("VendorError: " + ex.getErrorCode());
+			case "share1":
+				File folder = new File("C:\\Users\\santa\\Desktop\\Musicas_DropMusic\\privado\\" + processa.get(3));
+				File[] listOfFiles = folder.listFiles();
+				int counter = 0;
+				String[] respostas = new String[100];
+				for (int i = 0; i < listOfFiles.length; i++) {
+					if (listOfFiles[i].isFile()) {
+						respostas[counter] = listOfFiles[i].getName();
+						counter++;
+					}
 				}
-				break;
+				protocolo = "type | share1 ; user_id | " + processa.get(3) + " ; ";
+				for(int i = 0; i<counter ; i++){
+					System.out.println(i);
+					protocolo = protocolo + respostas[i] + " | ";
+					System.out.println(protocolo);
+				}
+				protocolo = protocolo + "none";
+				return protocolo;
+
+			case "share2":
+				File musicFile = new File("C:\\Users\\santa\\Desktop\\Musicas_DropMusic\\privado\\" + processa.get(3) + "\\" + processa.get(5));
+				File musicFilePublic = new File("C:\\Users\\santa\\Desktop\\Musicas_DropMusic\\publico\\" + processa.get(5));
+				try {
+					musicFilePublic.createNewFile();
+				}catch (Exception x){}
+				musicFile.delete();
+				protocolo = "type | share2 ; user_id | " + processa.get(3) + " ; confirmation | true";
+				return protocolo;
 
 			case "getgeneros":
 				try {
@@ -541,13 +553,13 @@ class ManageNewRequest extends Thread{
 				break;
 
 			case "GetAddress":
-				protocolo = "type | GetAddress ; user_id | " + processa.get(3) + " ; 127.0.0.1 | 6000";
+				protocolo = "type | GetAddress ; user_id | " + processa.get(3) + " ; 192.168.1.118 | 6000";
 				if(processa.get(5).compareTo("download")==0){
-					EnviaMusica e = new EnviaMusica();
+					EnviaMusica e = new EnviaMusica(processa.get(7),processa.get(3));
 					e.start();
 				}
 				else{
-					RecebeMusica r = new RecebeMusica();
+					RecebeMusica r = new RecebeMusica(processa.get(7),processa.get(3));
 					r.start();
 				}
 				return protocolo;
@@ -634,8 +646,11 @@ class RecebeMusica extends Thread{
 	DataInputStream in;
 	FileOutputStream out;
 	Socket clientSocket;
+	String music, User_id;
 	int PORT_USER = 6000;
-    public RecebeMusica() {
+    public RecebeMusica(String music, String User_id) {
+    	this.music = music.replaceAll("\\s+","");;
+    	this.User_id = User_id;
     }
     //=============================
     public void run(){
@@ -647,7 +662,15 @@ class RecebeMusica extends Thread{
 			in = new DataInputStream(clientSocket.getInputStream());
 			}catch(IOException e){System.out.println("Connection:" + e.getMessage());}
 			byte[] bytes = new byte[8192];
-			out = new FileOutputStream("C:\\Users\\santa\\Desktop\\Aulas\\aqui\\" + "musica.mp3");
+			File dir = new File("C:\\Users\\santa\\Desktop\\Musicas_DropMusic\\privado\\"+User_id+"\\");
+			if(!dir.exists()) {
+				try {
+					dir.mkdir();
+				} catch (Exception x) {
+					System.out.println(x);
+				}
+			}
+			out = new FileOutputStream("C:\\Users\\santa\\Desktop\\Musicas_DropMusic\\privado\\" + User_id + "\\"+music+".mp3");
         	int count;
 			while ((count = in.read(bytes)) > 0)
 			{
@@ -672,9 +695,12 @@ class EnviaMusica extends Thread{
 	DataInputStream in;
 	FileOutputStream out;
 	Socket clientSocket;
+	String music, User_id;
 	int PORT_USER = 6000;
 	
-    public EnviaMusica() {
+    public EnviaMusica(String music, String User_id) {
+    	this.music = music.replaceAll("\\s+","");
+    	this.User_id = User_id;
     }
     //=============================
     public void run(){
@@ -684,7 +710,7 @@ class EnviaMusica extends Thread{
 			clientSocket = listenSocket.accept();
 		}catch(IOException e){System.out.println("Connection:" + e.getMessage());}
         try{
-        	File musica = new File("C:\\Users\\santa\\Desktop\\Aulas\\aqui\\coracaonaotemidade.mp3");
+        	File musica = new File("C:\\Users\\santa\\Desktop\\Musicas_DropMusic\\publico\\" +music+".mp3");
 			DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
 			DataInputStream in = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
 			InputStream is = new FileInputStream(musica);

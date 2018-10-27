@@ -10,7 +10,8 @@
 >>Detalhes musica/album/artista/genero -------- type | details ; user_id | xxxx ; name | zeca afonso* ; from | [album/music/artist]
 >>Escrever critica a um album ----------------- type | critic ; user_id | xxxx ; album | Example* ; score | 10 ; write | blablabla*
 >>Dar/tirar previlegios ----------------------- type | privileges ; user_id | xxxx ; username | ze* ; editor | [true/false]
->>Partilhar musica ---------------------------- type | share ; user_id | xxxx ; (...)
+>>Partilhar musica ---------------------------- type | share1 ; user_id | xxxx
+>>Partilhar musica ---------------------------- type | share2 ; user_id | xxxx ; musica | nome
 >>Download_upload musica ---------------------- type | GetAddress ; user_id | xxxx ; tipo | [download/upload]
 >>Alterar dados ------------------------------- type | alteration ; user_id | xxxx ; [musica/album] | nome ; [artista/genero/...] | alteracao
 >>Adicionar informacao ------------------------ type | add ; user_id | xxxx ; from | album* ; named | MusicasDoToy* ; this |  CoracaoNaoTemIdade*
@@ -38,7 +39,8 @@
 		---------------------------------------	type | details ; user_id | xxxx ; detail_1 | none
 >>Escrever critica a um album ------------------------- type | critic ; user_id | xxxx ; confirmation | [escrito/negado]
 >>Dar previlegios ------------------------------------- type | privileges ; user_id | xxxx ; confirmation | [done/negado]
->>Partilhar musica ------------------------------------ type | share ; user_id | xxxx ; music | CoracaoNaoTemIdade* ; username | tintin* ; username2 | momo*
+>>Partilhar musica ------------------------------------ type | share1 ; user_id | xxxx ; musica | musica | musica | musica
+>>Partilhar musica ------------------------------------ type | share2 ; user_id | xxxx ; confirmation | true 
 >>Downloand_upload musica ----------------------------- type | GetAddress ; user_id | xxxx ; endereco | porto
 >>Alterar dados --------------------------------------- type | alteration ; user_id | xxxx ; notificate | joao ; notificate | none
 >>Get generos ----------------------------------------- type | getgeneros ; user_id | xxxx ; genero1 | genero2 | genero3 | ...
@@ -48,5 +50,4 @@
 error ----- type | error ; function | [NomeDaFuncao]
 
 
-(Faltam muitas coisa que vamos com o tempo, todos os comandos entre RMI - Multicast têm de estar aqui)
 (*) - exemplo de comando

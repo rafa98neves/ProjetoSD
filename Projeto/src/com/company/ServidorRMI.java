@@ -244,15 +244,16 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			processa.add(aux[0]);
 			processa.add(aux[1]);
 		}
-
+		System.out.println(protocolo);
 		String[] resposta = new String[(processa.size() - 4)/2];
+		System.out.println("..... " + resposta.length);
 		if(processa.get(5).compareTo("none")==0){
 			resposta[0] = "none";
 			return resposta;
 		}
 		else{
 			int counter=0;
-			for(int i = 5; i <= processa.size() ; i+=2){
+			for(int i = 5; i < processa.size() ; i+=2){
 				resposta[counter] = processa.get(i);
 				counter++;
 			}
@@ -361,21 +362,31 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		else return false;
 	}
 
-	public void ShareMusic(String ID, String username) throws RemoteException{
+	public String[] ShareMusic(String ID) throws RemoteException{
 		String protocolo = new String();
-		protocolo = "type | share ; use_id | " + ID + " ; username | " + username;
+		protocolo = "type | share1 ; user_id | " + ID;
+		MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
+
+		String [] processa = protocolo.split(Pattern.quote(" ; "));
+		String aux[] = processa[2].split(Pattern.quote(" | "));
+		return aux;
+	}
+
+	public void ShareMusic(String ID, String musica) throws RemoteException{
+		String protocolo = new String();
+		protocolo = "type | share2 ; user_id | " + ID + " ; music | " + musica;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 	}
 
-	public String[] TransferMusic(String ID, String type) throws RemoteException{
+	public String[] TransferMusic(String ID, String tipo, String musica) throws RemoteException{
 		String protocolo = new String();
-		protocolo = "type | GetAddress ; user_id | " + ID +" ; tipo | " + type;
+		protocolo = "type | GetAddress ; user_id | " + ID +" ; tipo | " + tipo + " ; music | " + musica;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 		String[] aux = protocolo.split(Pattern.quote(" ; "));
 		String[] endereco = aux[2].split(Pattern.quote(" | "));
-		System.out.println("aaaaaaaaaa!");
 		return endereco;
 	}
 
