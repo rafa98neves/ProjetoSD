@@ -154,10 +154,6 @@ class ManageNewRequest extends Thread{
 
 		switch(processa.get(1)){
 			case "registo":
-				strCmd = "DECLARE @Erro int; " +
-						"DECLARE @Description VARCHAR(1000);" +
-						"EXECUTE dbo.Registo @User, @Password, @Erro OUTPUT, @Description OUTPUT;" +
-						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.Registo(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -180,10 +176,6 @@ class ManageNewRequest extends Thread{
 				break;
 
 			case "login":
-				strCmd = "DECLARE @Erro int; " +
-						"DECLARE @Description VARCHAR(1000);" +
-						"EXECUTE dbo.Login @User, @Password, @Erro OUTPUT, @Description OUTPUT;" +
-						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.Login(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -203,10 +195,6 @@ class ManageNewRequest extends Thread{
 				}
 				break;
 			case "notifications":
-				strCmd = "DECLARE @Erro int; " +
-						"DECLARE @Description VARCHAR(1000);" +
-						"EXECUTE dbo.Notifications @User, @Erro OUTPUT, @Description OUTPUT;" +
-						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.Notifications(?,?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -225,10 +213,6 @@ class ManageNewRequest extends Thread{
 				}
 				break;
 			case "add_notifications":
-				strCmd = "DECLARE @Erro int; " +
-						"DECLARE @Description VARCHAR(1000);" +
-						"EXECUTE dbo.AddNoti @User, @Erro OUTPUT, @Description OUTPUT;" +
-						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.AddNoti(?,?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -249,10 +233,6 @@ class ManageNewRequest extends Thread{
 				break;
 
 			case "search":
-				strCmd = "DECLARE @Erro int; " +
-						"DECLARE @Description VARCHAR(1000);" +
-						"EXECUTE dbo.Search @Nome, @From, @Erro OUTPUT, @Description OUTPUT;" +
-						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.Search(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -273,10 +253,6 @@ class ManageNewRequest extends Thread{
 				break;
 
 			case "details":
-				strCmd = "DECLARE @Erro int; " +
-						"DECLARE @Description VARCHAR(1000);" +
-						"EXECUTE dbo.Details @Nome, @From, @Erro OUTPUT, @Description OUTPUT;" +
-						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.Details(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -297,10 +273,6 @@ class ManageNewRequest extends Thread{
 				break;
 
 			case "critic":
-				strCmd = "DECLARE @Erro int; " +
-						"DECLARE @Description VARCHAR(1000);" +
-						"EXECUTE dbo.WriteCritic @User, @Album, @Write, @Erro OUTPUT, @Description OUTPUT;" +
-						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.WriteCritic(?,?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -322,10 +294,6 @@ class ManageNewRequest extends Thread{
 				break;
 
 			case "privileges":
-				strCmd = "DECLARE @Erro int; " +
-						"DECLARE @Description VARCHAR(1000);" +
-						"EXECUTE dbo.Privileges @User, @Editor, @Erro OUTPUT, @Description OUTPUT;" +
-						"SELECT @Erro erro, @Description description;";
 				try {
 					String commandText = "{call dbo.Privileges(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
@@ -351,7 +319,7 @@ class ManageNewRequest extends Thread{
 						"EXECUTE dbo.Share @User, @Erro OUTPUT, @Description OUTPUT;" +
 						"SELECT @Erro erro, @Description description;";
 				try {
-					String commandText = "{call dbo.Privileges(?,?,?,?)}";
+					String commandText = "{call dbo.Share(?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3)));
