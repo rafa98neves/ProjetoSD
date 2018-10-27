@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a8395126-5d25-4111-b718-d5e961ac8304" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Projeto/com/company/ClienteRMI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Projeto/com/company/ClienteRMI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Projeto/com/company/ManageNewRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Projeto/com/company/ManageNewRequest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Projeto/com/company/ServidorMulti.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Projeto/com/company/ServidorMulti.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/ServidorRMI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/ServidorRMI.java" afterDir="false" />
-    </list>
+    <list default="true" id="a8395126-5d25-4111-b718-d5e961ac8304" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -123,27 +117,30 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/company/ServidorMulti.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4002">
-              <caret line="349" column="37" lean-forward="true" selection-start-line="349" selection-start-column="37" selection-end-line="349" selection-end-column="37" />
+            <state relative-caret-position="371">
+              <caret line="218" column="25" selection-start-line="218" selection-start-column="18" selection-end-line="218" selection-end-column="25" />
               <folding>
+                <element signature="method#addHist#0;class#ServidorMulti#0" />
+                <element signature="method#CleanHist#0;class#ServidorMulti#0" />
                 <element signature="class#Synch#0" />
-                <element signature="class#RecebeMusica#0" />
                 <element signature="method#RecebeMusica#0;class#RecebeMusica#0" />
-                <element signature="class#EnviaMusica#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/ServidorRMI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="267" column="33" lean-forward="true" selection-start-line="267" selection-start-column="33" selection-end-line="267" selection-end-column="33" />
+            <state relative-caret-position="1054">
+              <caret line="364" column="31" selection-start-line="364" selection-start-column="31" selection-end-line="364" selection-end-column="31" />
               <folding>
+                <element signature="method#MulticastConnection#0;class#MulticastConnection#0" />
+                <element signature="method#GetResponse#0;class#MulticastConnection#0" />
+                <element signature="method#run#0;class#MulticastConnection#0" />
                 <element signature="method#NewUser#0;class#ServidorRMI#0" />
                 <element signature="method#UserQuit#0;class#ServidorRMI#0" />
                 <element signature="method#CheckNotifications#0;class#ServidorRMI#0" />
@@ -152,6 +149,7 @@
                 <element signature="method#CheckUser#0;class#ServidorRMI#0" />
                 <element signature="method#Criar#0;class#ServidorRMI#0" />
                 <element signature="method#Find#0;class#ServidorRMI#0" />
+                <element signature="method#GetDetails#0;class#ServidorRMI#0" />
                 <element signature="method#AddRemoveSomething#0;class#ServidorRMI#0" />
                 <element signature="method#AlterarDados#0;class#ServidorRMI#0" />
                 <element signature="method#GetGeneros#0;class#ServidorRMI#0" />
@@ -185,8 +183,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/ClienteRMI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="311">
-              <caret line="603" column="38" selection-start-line="603" selection-start-column="38" selection-end-line="603" selection-end-column="38" />
+            <state relative-caret-position="394">
+              <caret line="1159" column="35" selection-start-line="1159" selection-start-column="35" selection-end-line="1159" selection-end-column="35" />
               <folding>
                 <element signature="method#ClienteRMI#0;class#ClienteRMI#0" />
                 <element signature="method#ping#0;class#ClienteRMI#0" />
@@ -198,6 +196,7 @@
                 <element signature="method#DropMusic#0;class#ClienteRMI#0" />
                 <element signature="method#Criar#0;class#ClienteRMI#0" />
                 <element signature="method#Pesquisar#0;class#ClienteRMI#0" />
+                <element signature="method#Pesquisar#1;class#ClienteRMI#0" />
                 <element signature="method#FazerCritica#0;class#ClienteRMI#0" />
                 <element signature="method#FazerAlteracoes#0;class#ClienteRMI#0" />
                 <element signature="method#Playlist#0;class#ClienteRMI#0" />
@@ -263,7 +262,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-7" />
-    <option name="width" value="974" />
+    <option name="width" value="827" />
     <option name="height" value="1057" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -319,23 +318,23 @@
           <select />
         </subPane>
       </pane>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="Projeto" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
       <pane id="PackagesPane">
         <subPane>
           <expand>
             <path>
               <item name="Projeto" type="58d84e3e:PackageViewProjectNode" />
               <item name="Projeto" type="616d4139:PackageViewModuleNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Projeto" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
           <select />
@@ -445,14 +444,15 @@
       <workItem from="1540425045227" duration="3855000" />
       <workItem from="1540472586985" duration="7017000" />
       <workItem from="1540502717858" duration="1080000" />
+      <workItem from="1540660871415" duration="1036000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11952000" />
+    <option name="totallyTimeSpent" value="12988000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="848" extended-state="6" />
+    <frame x="-7" y="0" width="827" height="1057" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Designer" order="0" />
@@ -460,7 +460,7 @@
       <window_info id="Capture Tool" order="2" />
       <window_info id="Favorites" order="3" sideWeight="0.5006993" side_tool="true" weight="0.16577181" />
       <window_info id="Image Layers" order="4" />
-      <window_info content_ui="combo" id="Project" order="5" sideWeight="0.4993007" visible="true" weight="0.086577184" />
+      <window_info content_ui="combo" id="Project" order="5" sideWeight="0.4993007" weight="0.086577184" />
       <window_info id="Structure" order="6" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="1" />
@@ -489,9 +489,9 @@
       <window_info id="Designer" order="0" />
       <window_info id="UI Designer" order="1" />
       <window_info id="Capture Tool" order="2" />
-      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info id="Favorites" order="3" sideWeight="0.5006993" side_tool="true" weight="0.16577181" />
       <window_info id="Image Layers" order="4" />
-      <window_info active="true" content_ui="combo" id="Project" order="5" visible="true" weight="0.16644295" />
+      <window_info active="true" content_ui="combo" id="Project" order="5" sideWeight="0.4993007" visible="true" weight="0.086577184" />
       <window_info id="Structure" order="6" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="1" />
@@ -499,8 +499,8 @@
       <window_info anchor="bottom" id="Database Changes" order="3" />
       <window_info anchor="bottom" id="Message" order="4" />
       <window_info anchor="bottom" id="Find" order="5" />
-      <window_info anchor="bottom" x="20" y="539" width="1870" height="387" id="Run" order="6" sideWeight="0.50053304" side_tool="true" weight="0.30209792" />
-      <window_info anchor="bottom" id="Debug" order="7" weight="0.4" />
+      <window_info anchor="bottom" x="20" y="539" width="1870" height="387" id="Run" order="6" sideWeight="0.50067115" side_tool="true" weight="0.21678321" />
+      <window_info anchor="bottom" id="Debug" order="7" sideWeight="0.49932885" weight="0.4" />
       <window_info anchor="bottom" id="Messages" order="8" sideWeight="0.49946696" weight="0.32893288" />
       <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="10" weight="0.4" />
@@ -573,13 +573,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/ServidorMulti.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4002">
-          <caret line="349" column="37" lean-forward="true" selection-start-line="349" selection-start-column="37" selection-end-line="349" selection-end-column="37" />
+        <state relative-caret-position="371">
+          <caret line="218" column="25" selection-start-line="218" selection-start-column="18" selection-end-line="218" selection-end-column="25" />
           <folding>
+            <element signature="method#addHist#0;class#ServidorMulti#0" />
+            <element signature="method#CleanHist#0;class#ServidorMulti#0" />
             <element signature="class#Synch#0" />
-            <element signature="class#RecebeMusica#0" />
             <element signature="method#RecebeMusica#0;class#RecebeMusica#0" />
-            <element signature="class#EnviaMusica#0" />
           </folding>
         </state>
       </provider>
@@ -600,8 +600,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/ClienteRMI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="311">
-          <caret line="603" column="38" selection-start-line="603" selection-start-column="38" selection-end-line="603" selection-end-column="38" />
+        <state relative-caret-position="394">
+          <caret line="1159" column="35" selection-start-line="1159" selection-start-column="35" selection-end-line="1159" selection-end-column="35" />
           <folding>
             <element signature="method#ClienteRMI#0;class#ClienteRMI#0" />
             <element signature="method#ping#0;class#ClienteRMI#0" />
@@ -613,6 +613,7 @@
             <element signature="method#DropMusic#0;class#ClienteRMI#0" />
             <element signature="method#Criar#0;class#ClienteRMI#0" />
             <element signature="method#Pesquisar#0;class#ClienteRMI#0" />
+            <element signature="method#Pesquisar#1;class#ClienteRMI#0" />
             <element signature="method#FazerCritica#0;class#ClienteRMI#0" />
             <element signature="method#FazerAlteracoes#0;class#ClienteRMI#0" />
             <element signature="method#Playlist#0;class#ClienteRMI#0" />
@@ -624,9 +625,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/ServidorRMI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="267" column="33" lean-forward="true" selection-start-line="267" selection-start-column="33" selection-end-line="267" selection-end-column="33" />
+        <state relative-caret-position="1054">
+          <caret line="364" column="31" selection-start-line="364" selection-start-column="31" selection-end-line="364" selection-end-column="31" />
           <folding>
+            <element signature="method#MulticastConnection#0;class#MulticastConnection#0" />
+            <element signature="method#GetResponse#0;class#MulticastConnection#0" />
+            <element signature="method#run#0;class#MulticastConnection#0" />
             <element signature="method#NewUser#0;class#ServidorRMI#0" />
             <element signature="method#UserQuit#0;class#ServidorRMI#0" />
             <element signature="method#CheckNotifications#0;class#ServidorRMI#0" />
@@ -635,6 +639,7 @@
             <element signature="method#CheckUser#0;class#ServidorRMI#0" />
             <element signature="method#Criar#0;class#ServidorRMI#0" />
             <element signature="method#Find#0;class#ServidorRMI#0" />
+            <element signature="method#GetDetails#0;class#ServidorRMI#0" />
             <element signature="method#AddRemoveSomething#0;class#ServidorRMI#0" />
             <element signature="method#AlterarDados#0;class#ServidorRMI#0" />
             <element signature="method#GetGeneros#0;class#ServidorRMI#0" />
