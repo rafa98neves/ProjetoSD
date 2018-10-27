@@ -263,7 +263,26 @@ class ManageNewRequest extends Thread{
 					System.out.println("VendorError: " + ex.getErrorCode());
 				}
 				break;
-
+			case "criar":
+				try {
+					String commandText = "{call dbo.Criar(?,?,?)}";
+					conn = DriverManager.getConnection(con);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(5))); //tipo
+					stmt.setObject(2, new String(processa.get(7))); //nome
+					stmt.setObject(3, new String(processa.get(9))); //Info
+					stmt.registerOutParameter(4, Types.INTEGER);
+					stmt.registerOutParameter(5, Types.VARCHAR); //VARRAY ?
+					stmt.execute();
+					if(stmt.getInt(4) >= 0 ) protocolo = "type | criar ; user_id | " + processa.get(3) + " ; confirmation | true";
+					else protocolo = "type | criar ; user_id | " + processa.get(3) + " ; confirmation | false";
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
 			case "search":
 				try {
 					String commandText = "{call dbo.Search(?,?,?,?)}";

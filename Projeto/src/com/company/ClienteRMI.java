@@ -239,7 +239,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		}
 		Scanner sc = new Scanner(System.in);
 		if(online.IsEditor()){
-			System.out.println("\n1.Pesquisar\n2.Criar Playlist\n3.Partilhar musicas\n4.Donwload de musicas\n5.Upload de musicas\n6.Dar previlegios\n0.Log Out");
+			System.out.println("\n1.Pesquisar\n2.Criar\n3.Partilhar musicas\n4.Donwload de musicas\n5.Upload de musicas\n6.Dar previlegios\n0.Log Out");
 			while(!exit){
 				int choice = -1;
 				while (true){
@@ -255,7 +255,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				switch(choice){
 					case 1:	Pesquisar();
 							break;
-					case 2: Playlist();
+					case 2: Criar();
 							break;
 					case 3: Partilhar();
 							break;
@@ -272,7 +272,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			}
 		}
 		else{
-			System.out.println("\n1.Pesquisar\n2.Criar Playlist\n3.Partilhar musicas\n4.Donwload de musicas\n5.Upload de musicas\n0.Log Out");
+			System.out.println("\n1.Pesquisar\n2.Criar\n3.Partilhar musicas\n4.Donwload de musicas\n5.Upload de musicas\n0.Log Out");
 			while(!exit){
 				int choice = -1;
 				while (true){
@@ -290,7 +290,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 							break;
 					case 2: Playlist();
 							break;
-					case 3: Partilhar();
+					case 3: Criar();
 							break;
 					case 4: Download();
 							break;
@@ -304,7 +304,142 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		}
 		MainScreen();
 	}
-	
+
+	public static void Criar(){
+		InputStreamReader input = new InputStreamReader(System.in);
+		BufferedReader reader = new BufferedReader(input);
+
+		System.out.println("\n\n\t\t >>Criar conteudo<<");
+		Scanner sc = new Scanner(System.in);
+		System.out.println("\n1.Criar artista\n2.Criar album\n3.Criar musica\n0.Back");
+		int choice = -1;
+		while (true){
+			try {
+				sc = new Scanner(System.in);
+				choice = sc.nextInt();
+				if(choice <0 && choice >3) System.out.println("Opcao Invalida");
+				else break;
+			} catch (Exception err) {
+				System.out.println("Escreva um digito por favor");
+			}
+		}
+		int choice2, year;
+		String nome = "", compositor, genero;
+		String artista ="";
+		switch(choice){
+			case 1: //artista
+				System.out.println("\nNome: ");
+				try{
+					nome = reader.readLine();
+				}catch(Exception aaa){
+					System.out.println("Problemas com o reader");
+				}
+				System.out.println("\n1.Compositor\n2.Nao Compoe ");
+				while (true){
+					try {
+						sc = new Scanner(System.in);
+						choice2 = sc.nextInt();
+						if(choice2 <0 && choice2 >2) System.out.println("Opcao Invalida");
+						else break;
+					} catch (Exception err) {
+						System.out.println("Escreva um digito por favor");
+					}
+				}
+				if(choice2 == 1) compositor = "true";
+				else compositor = "false";
+				while(true) {
+					try {
+						h.Criar(online.GetID(), "artista", nome, compositor);
+						break;
+					} catch (Exception c) {
+						BackUp(false);
+					}
+				}
+				break;
+			case 2: //album
+				System.out.println("\nNome: ");
+				try{
+					nome = reader.readLine();
+				}catch(Exception aaa){
+					System.out.println("Problemas com o reader");
+				}
+				System.out.println("Ano: ");
+				while (true){
+					try {
+						sc = new Scanner(System.in);
+						year = sc.nextInt();
+						if(year <0 && year >9999) System.out.println("Opcao Invalida");
+						else break;
+					} catch (Exception err) {
+						System.out.println("Escreva um digito por favor");
+					}
+				}
+				while(true) {
+					try {
+						h.Criar(online.GetID(), "album", nome, Integer.toString(year));
+						break;
+					} catch (Exception c) {
+						BackUp(false);
+					}
+				}
+				break;
+			case 3: //musica
+				System.out.println("\nNome: ");
+				try{
+					nome = reader.readLine();
+				}catch(Exception c){
+					System.out.println("Problemas com o reader");
+				}
+				System.out.println("\nArtista: ");
+				try{
+					artista = reader.readLine();
+				}catch(Exception c){
+					System.out.println("Problemas com o reader");
+				}
+				String[] respostas;
+				while(true){
+					try{
+						respostas = h.Find(online.GetID(),artista,"artista");
+						break;
+					}catch(Exception c){
+						BackUp(false);
+					}
+				}
+				if(respostas[0].compareTo("none")==0) System.out.println("Nada encontrado para: " + choice);
+				else{
+					int possibilidades = 0;
+					for(possibilidades = 1; possibilidades<=respostas.length; possibilidades++){
+						System.out.println(possibilidades + ". ->" + respostas[possibilidades-1]);
+					}
+					int pos = 0;
+					while (true){
+						try {
+							sc = new Scanner(System.in);
+							pos = sc.nextInt();
+							if(pos <0 && pos > respostas.length) System.out.println("Opcao Invalida");
+							else break;
+						} catch (Exception err) {
+							System.out.println("Escreva um digito por favor");
+						}
+					}
+					artista = respostas[possibilidades-1];
+				}
+				while(true) {
+					try {
+						h.Criar(online.GetID(), "musica", nome, artista);
+						break;
+					} catch (Exception c) {
+						BackUp(false);
+					}
+				}
+				break;
+			default: System.out.println("Opcaoo Invalida");
+		}
+
+
+
+	}
+
 	public static void Pesquisar(){
 		boolean exit = false;
 		System.out.println("\n\n\t\t >>Pesquisar<<");

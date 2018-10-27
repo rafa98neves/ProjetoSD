@@ -10,6 +10,7 @@ public interface DropMusic_S_I extends Remote {
 	public void UserQuit(DropMusic_C_I c, String username) throws RemoteException;
 	public void CheckNotifications(String ID, DropMusic_C_I c) throws RemoteException;
 	public String[] RegistUser(String name, String password) throws RemoteException;
+	public void Criar(String ID, String tipo, String nome, String Info) throws RemoteException;
 	public String[] CheckUser(String username, String password) throws RemoteException;
 	public String[] Find(String ID, String name, String tipo) throws RemoteException;
 	public String[] GetDetails(String ID,String name, String tipo) throws RemoteException;
