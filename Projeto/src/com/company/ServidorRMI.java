@@ -56,22 +56,25 @@ class MulticastConnection extends Thread {
 			packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
 			String received = "erro";
 			String ID_received = "no";
+			socket.setSoTimeout(5000);
 			while(ID.compareTo(ID_received) != 0) {
-				socket.setSoTimeout(5000);
-				System.out.println("Bloqueado");
-				try {
-					socket.receive(packet);
-				}catch(SocketTimeoutException e){
-
-					packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+				while (true) {
+					try {
+						socket.receive(packet);
+						received = new String(packet.getData(), 0, packet.getLength());
+						System.out.println(received);
+						String[] aux = received.split(Pattern.quote(" ; "));
+						String[] aux2 = aux[1].split(Pattern.quote(" | "));
+						ID_received = aux2[1];
+						break;
+					} catch (SocketTimeoutException e) {
+						buffer = TimeOut.getBytes();
+						packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+						socket.send(packet);
+					}
 				}
-				System.out.println("Desbloqueado");
-				received = new String(packet.getData(), 0, packet.getLength());
-				System.out.println(received);
-				String[] aux = received.split(Pattern.quote(" ; "));
-				String[] aux2 = aux[1].split(Pattern.quote(" | "));
-				ID_received = aux2[1];
 			}
+			System.out.println(">> " + received);
 			protocolo = received;
 		}catch(Exception c){
 			System.out.println("Exception in send/receive : " + c);

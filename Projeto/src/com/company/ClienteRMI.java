@@ -996,4 +996,5 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		}
 		MainScreen();
 	}
+
 }

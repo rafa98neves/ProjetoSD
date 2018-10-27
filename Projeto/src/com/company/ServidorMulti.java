@@ -14,6 +14,7 @@ import java.sql.*;
 public class ServidorMulti extends Thread {
 	private static String MULTICAST_ADDRESS = "224.3.2.1";
 	private static int PORT_MANAGE = 4323;
+	private static int  PORT_SEND = 4321;
 	private int PORT_RECEIVE = 4322;
 	private static int name;
 	private static int InCharge = 1;
@@ -72,6 +73,7 @@ public class ServidorMulti extends Thread {
     }
 	
     public void run() {
+		ManageNewRequest manage = null;
         MulticastSocket socket = null;
         System.out.println(this.getName() + " " + name + " running...");
         try {
@@ -80,21 +82,40 @@ public class ServidorMulti extends Thread {
 			socket.joinGroup(group);
             while (true) {
 				byte[] buffer = new byte[256];
-				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);			
-				System.out.println("Bloqueado");
+				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
 				socket.receive(packet);
 				String Check = new String(packet.getData(), 0, packet.getLength());
-			    System.out.println("Desbloqueado");
 				if(Check.compareTo("TimeOutReached") == 0){
 					if(InCharge < onlineServer){
 						InCharge++;
+						if(InCharge == name){
+							String message = manage.GetLast();
+							buffer = message.getBytes();
+							try {
+								packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+								socket.send(packet);
+							}catch (Exception aaa){
+								System.out.println("Erro: " + aaa );
+							}
+						}
+
 					}
 					else{
 						InCharge--;
+						if(InCharge == name){
+							String message = manage.GetLast();
+							buffer = message.getBytes();
+							try {
+								packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
+								socket.send(packet);
+							}catch (Exception aaa){
+								System.out.println("Erro: " + aaa );
+							}
+						}
 					}
 				}
 				else{
-					ManageNewRequest manage = new ManageNewRequest(name, socket, group, packet, InCharge);
+					manage = new ManageNewRequest(name, socket, group, packet, InCharge);
 				}
             }
         } catch (IOException e) {
@@ -113,6 +134,8 @@ class ManageNewRequest extends Thread{
 	private InetAddress group;
 	private MulticastSocket socket;
 	private int nome,InCharge;
+	private boolean fazer;
+	private String prev_proto;
 
 	public ManageNewRequest(int nome,MulticastSocket socket,InetAddress group, DatagramPacket packet, int InCharge){
 		this.nome = nome;
@@ -120,23 +143,30 @@ class ManageNewRequest extends Thread{
 		this.group = group;
 		this.packet = packet;
 		this.InCharge = InCharge;
+		this.fazer = fazer;
 		this.start();
 	}
 
-	public void run() {
-		String message = ManageRequest(packet);
+	public void run(){
+		String	message = ManageRequest(packet);
+
 		if(nome == InCharge) {
 			try {
 				byte[] buffer = new byte[256];
 				buffer = message.getBytes();
 				packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
 				socket.send(packet);
-				System.out.println("Sent!");
-
 			} catch (Exception e) {
 				System.out.println("Erro a enviar pacote: " + e);
 			}
 		}
+		else{
+			prev_proto = message;
+		}
+	}
+
+	public String GetLast(){
+		return prev_proto;
 	}
 
 	public String ManageRequest(DatagramPacket packet){
