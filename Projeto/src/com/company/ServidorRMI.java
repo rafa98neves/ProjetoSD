@@ -254,6 +254,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		else{
 			int counter=0;
 			for(int i = 5; i < processa.size() ; i+=2){
+				System.out.println(processa.get(i));
 				resposta[counter] = processa.get(i);
 				counter++;
 			}
@@ -393,7 +394,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	public boolean GivePriv(String ID, boolean editor, String username) throws RemoteException{
 		int i = 0;
 		String protocolo = new String();
-		protocolo = "type | privileges  ; username | " + username + " ; editor | " + editor;
+		protocolo = "type | privileges ; username | " + username + " ; editor | " + editor;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 

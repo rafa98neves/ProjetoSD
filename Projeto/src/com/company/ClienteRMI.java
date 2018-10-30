@@ -728,7 +728,10 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								counter = 1;
 								String[] beforeChoices = new String[256];
 								for(int i = 0; i<details.length; i+=2){
-									if(details[i].compareTo("musica")==0) System.out.println(counter + ". " + details[i+1]);
+									if(details[i].compareTo("Music")==0){
+										System.out.println(counter + ". " + details[i+1]);
+										counter++;
+									}
 									beforeChoices[counter-1] = details[i+1];
 								}
 								counter = sc.nextInt();
@@ -766,7 +769,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 									counter = sc.nextInt();
 									while(true){
 										try{
-											h.AddRemoveSomething(online.GetID(),"album", nome, respostas[counter],false); //Adiciona musica escolhida a album com nome 'nome'
+											h.AddRemoveSomething(online.GetID(),"album", nome, respostas[counter - 1],false); //Adiciona musica escolhida a album com nome 'nome'
 											break;
 										}catch(Exception re5){
 											BackUp(false);
@@ -807,13 +810,16 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 									counter = 1;
 									String[] beforeChoices = new String[256];
 									for(int i = 0; i<details.length; i+=2){
-										if(details[i].compareTo("artista")==0) System.out.println(counter + ". " + details[i+1]);
+										if(details[i].compareTo("Artist")==0) {
+											System.out.println(counter + ". " + details[i + 1]);
+											counter++;
+										}
 										beforeChoices[counter-1] = details[i+1];
 									}
 									counter = sc.nextInt();
 									while(true){
 										try{
-											h.AddRemoveSomething(online.GetID(), "artista",nome,beforeChoices[counter],true);
+											h.AddRemoveSomething(online.GetID(), "musica",nome,beforeChoices[counter],true);
 											break;
 										}catch(Exception re3){
 											BackUp(false);
@@ -846,7 +852,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 										counter = sc.nextInt();
 										while(true){
 											try{
-												h.AddRemoveSomething(online.GetID(), "musica", nome, respostas[counter],false); //Adiciona artista escolhido a musica com nome 'nome'
+												h.AddRemoveSomething(online.GetID(), "musica", nome, respostas[counter - 1],false); //Adiciona artista escolhido a musica com nome 'nome'
 												break;
 											}catch(Exception re2){
 												BackUp(false);
@@ -867,7 +873,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 								}
 								System.out.println("Novo genero: ");
 								int i = 0;
-								while(respostas[i] != null){
+								while(respostas[i] != null && respostas[i].compareTo("none")!=0){
 									System.out.println(i+1 + ". " + respostas[i]);
 									i++;
 								}

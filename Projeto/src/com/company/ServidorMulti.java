@@ -347,6 +347,7 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
+					System.out.println("Linha 350" + stmt.getString(4));
 					protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + stmt.getString(4);
 
 					return protocolo;
@@ -368,7 +369,7 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
 
-					protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + stmt.getString(4);
+					protocolo = "type | details ; " + processa.get(2) +" | " + processa.get(3) + stmt.getString(4);
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -383,9 +384,9 @@ class ManageNewRequest extends Thread{
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new Integer(Integer.parseInt(processa.get(3))));
-					stmt.setObject(2, new String(processa.get(5)));
-					stmt.setObject(3, new Integer(Integer.parseInt(processa.get(7))));
-					stmt.setObject(4, new String(processa.get(9)));
+					stmt.setObject(2, new String(processa.get(7)));
+					stmt.setObject(3, new Integer(Integer.parseInt(processa.get(9))));
+					stmt.setObject(4, new String(processa.get(11)));
 					stmt.registerOutParameter(5, Types.INTEGER);
 					stmt.registerOutParameter(6, Types.VARCHAR);
 					stmt.execute();
@@ -409,8 +410,10 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
+					System.out.println("Linha 413 " + protocolo);
 					if(stmt.getInt(3) >= 0 ) protocolo = "type | privileges ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | done";
 					else protocolo = "type | privileges ; " + processa.get(2) +" | " + processa.get(3) + " ; confirmation | negado";
+					System.out.println("Linha 416 " + protocolo);
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -425,10 +428,10 @@ class ManageNewRequest extends Thread{
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3))); //User_id
-					stmt.setObject(2, new String(processa.get(4))); //Tipo
-					stmt.setObject(3, new String(processa.get(5))); //nome
-					stmt.setObject(4, new String(processa.get(6))); //O que vai ser alterado
-					stmt.setObject(5, new String(processa.get(7))); //alteracao
+					stmt.setObject(2, new String(processa.get(6))); //Tipo
+					stmt.setObject(3, new String(processa.get(7))); //nome
+					stmt.setObject(4, new String(processa.get(8))); //O que vai ser alterado
+					stmt.setObject(5, new String(processa.get(9))); //alteracao
 					stmt.registerOutParameter(6, Types.INTEGER);
 					stmt.registerOutParameter(7, Types.VARCHAR);
 					stmt.execute();
@@ -443,14 +446,14 @@ class ManageNewRequest extends Thread{
 
 			case "add":
 				try {
-					String commandText = "{call dbo.Add(?,?,?,?,?,?,?)}";
+					String commandText = "{call dbo.AddSome(?,?,?,?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3))); //User_id
-					stmt.setObject(2, new String(processa.get(4))); //Tipo
-					stmt.setObject(3, new String(processa.get(5))); //nome
-					stmt.setObject(4, new String(processa.get(6))); //o que vai ser adicionado
-					stmt.setObject(5, new String(processa.get(7))); //adiciona
+					stmt.setObject(2, new String(processa.get(5))); //Tipo
+					stmt.setObject(3, new String(processa.get(7))); //nome
+					stmt.setObject(4, new String(processa.get(8))); //o que vai ser adicionado
+					stmt.setObject(5, new String(processa.get(9))); //adiciona
 
 					stmt.registerOutParameter(6, Types.INTEGER);
 					stmt.registerOutParameter(7, Types.VARCHAR);
@@ -466,14 +469,14 @@ class ManageNewRequest extends Thread{
 
 			case "remove":
 				try {
-					String commandText = "{call dbo.Remove(?,?,?,?,?,?,?,?)}";
+					String commandText = "{call dbo.RemoveSome(?,?,?,?,?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3))); //User_id
-					stmt.setObject(2, new String(processa.get(4))); //Tipo
-					stmt.setObject(3, new String(processa.get(5))); //nome
-					stmt.setObject(4, new String(processa.get(6))); //o que vai ser adicionado
-					stmt.setObject(5, new String(processa.get(7))); //adiciona
+					stmt.setObject(2, new String(processa.get(5))); //Tipo
+					stmt.setObject(3, new String(processa.get(7))); //nome
+					stmt.setObject(4, new String(processa.get(8))); //o que vai ser adicionado
+					stmt.setObject(5, new String(processa.get(9))); //adiciona
 
 					stmt.registerOutParameter(6, Types.INTEGER);
 					stmt.registerOutParameter(7, Types.VARCHAR);
@@ -535,10 +538,10 @@ class ManageNewRequest extends Thread{
 
 			case "addgenero":
 				try {
-					String commandText = "{call dbo.AddGenero(?,?)}";
+					String commandText = "{call dbo.AddGenero(?,?,?)}";
 					conn = DriverManager.getConnection(con);
 					CallableStatement stmt = conn.prepareCall(commandText);
-					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(1, new String(processa.get(5)));
 					stmt.registerOutParameter(2, Types.INTEGER);
 					stmt.registerOutParameter(3, Types.VARCHAR);
 					stmt.execute();
