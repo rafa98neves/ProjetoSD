@@ -507,11 +507,7 @@ class ManageNewRequest extends Thread{
 
 			case "share2":
 				File musicFile = new File("C:\\Users\\santa\\Desktop\\Musicas_DropMusic\\privado\\" + processa.get(3) + "\\" + processa.get(5));
-				File musicFilePublic = new File("C:\\Users\\santa\\Desktop\\Musicas_DropMusic\\publico\\" + processa.get(5));
-				try {
-					musicFilePublic.createNewFile();
-				}catch (Exception x){}
-				musicFile.delete();
+				musicFile.renameTo(new File("C:\\Users\\santa\\Desktop\\Musicas_DropMusic\\publico\\" + processa.get(5)));
 				protocolo = "type | share2 ; user_id | " + processa.get(3) + " ; confirmation | true";
 				return protocolo;
 
@@ -552,7 +548,7 @@ class ManageNewRequest extends Thread{
 				break;
 
 			case "GetAddress":
-				protocolo = "type | GetAddress ; user_id | " + processa.get(3) + " ; 192.168.1.118 | 6000";
+				protocolo = "type | GetAddress ; user_id | " + processa.get(3) + " ; 0.0.0.0 | 6000";
 				if(processa.get(5).compareTo("download")==0){
 					EnviaMusica e = new EnviaMusica(processa.get(7),processa.get(3));
 					e.start();

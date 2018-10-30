@@ -22,7 +22,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	private static User online;
 	private static ClienteRMI c;
 	public static DropMusic_S_I h;
-	private static String Server = "rmi://192.168.99.1/Drop1";
+	private static String Server = "Drop1";
 	private static int PORT = 7000;
 
 	ClienteRMI() throws RemoteException {
@@ -652,13 +652,21 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 						}
 					}
 					for (int i = 0; i < details2.length; i += 2) {
-						System.out.println(details2[i] + ": " + details2[i + 1]);
+						if(details2[i].compareTo("Critica") == 0){
+							System.out.println(details2[i+1] + " pontuou o album com " + details[i+2] + " pontos e fez a critica: \n" + details[i+3] + "\n");
+							i += 2;
+						}
+						else System.out.println(details2[i] + ": " + details2[i + 1]);
 					}
 				}
 			}
 			else if(!flag && details[0].compareTo("none")!=0){
 				for(int i = 0; i<details.length; i+=2){
-					System.out.println(details[i] + ": " + details[i+1]);
+					if(details[i].compareTo("Critica") == 0){
+						System.out.println(details[i+1] + " pontuou o album com " + details[i+2] + " pontos e fez a critica: \n" + details[i+3] + "\n");
+						i += 2;
+					}
+					else System.out.println(details[i] + ": " + details[i + 1]);
 				}
 			}
 			if(escolha.compareTo("album")==0) FazerCritica(respostas[numero-1]);
@@ -1046,7 +1054,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 
 		while(true){
 			try{
-				respostas = h.Find(online.GetID(),escolha,"music");
+				respostas = h.Find(online.GetID(),escolha,"musica");
 				break;
 			} catch (Exception a2) {
 				BackUp(false);
@@ -1096,8 +1104,6 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 				Socket s = null;
 				while (true) {
 					try {
-						System.out.println(endereco[0]);
-						System.out.println(endereco[1]);
 						s = new Socket(endereco[0], Integer.parseInt(endereco[1]));
 						DataOutputStream out = new DataOutputStream(s.getOutputStream());
 						DataInputStream in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
@@ -1183,7 +1189,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 
 		while(true){
 			try{
-				respostas = h.Find(online.GetID(),escolha,"music");
+				respostas = h.Find(online.GetID(),escolha,"musica");
 				break;
 			} catch (Exception a2) {
 				BackUp(false);

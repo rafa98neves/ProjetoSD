@@ -464,17 +464,16 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 
 			ServidorRMI s2 = new ServidorRMI();
 			Registry r2 = LocateRegistry.createRegistry(7001);
-			r2.rebind("rmi://192.168.99.1/Drop2", s2);
+			r2.rebind("Drop2", s2);
 			port = 7001;
 			secundario = true;
 			System.out.println("DropMusic RMI Secundary Server ready.");
 		}catch(Exception c1){
 			try {
 				h = (DropMusic_S_I) LocateRegistry.getRegistry(7001).lookup("Drop2");
-
 				ServidorRMI s = new ServidorRMI();
 				Registry r = LocateRegistry.createRegistry(7000);
-				r.rebind("rmi://192.168.99.1/Drop1", s);
+				r.rebind("Drop1", s);
 				port = 7000;
 				secundario = true;
 				System.out.println("DropMusic RMI Secundary Server ready.");
