@@ -227,7 +227,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 
-
+		System.out.println(protocolo);
 	}
 
 	public String[] Find(String ID, String name, String tipo) throws RemoteException{

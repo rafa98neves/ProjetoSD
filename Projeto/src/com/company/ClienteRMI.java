@@ -247,7 +247,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 		}
 		Scanner sc = new Scanner(System.in);
 		if(online.IsEditor()){
-			System.out.println("\n1.Pesquisar\n2.Criar\n3.Partilhar musicas\n4.Donwload de musicas\n5.Upload de musicas\n6.Dar previlegios\n0.Log Out");
+			System.out.println("\n1.Pesquisar\n2.Criar\n3.Partilhar musicas\n4.Download de musicas\n5.Upload de musicas\n6.Dar previlegios\n0.Log Out");
 			while(!exit){
 				int choice = -1;
 				while (true){
@@ -486,7 +486,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			default: System.out.println("Opcaoo Invalida");
 		}
 
-
+	DropMusic();
 
 	}
 

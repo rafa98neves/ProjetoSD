@@ -347,7 +347,6 @@ class ManageNewRequest extends Thread{
 					stmt.registerOutParameter(3, Types.INTEGER);
 					stmt.registerOutParameter(4, Types.VARCHAR);
 					stmt.execute();
-					System.out.println("Linha 350" + stmt.getString(4));
 					protocolo = "type | search ; " + processa.get(2) +" | " + processa.get(3) + stmt.getString(4);
 
 					return protocolo;
