@@ -143,7 +143,6 @@ public class ServidorMulti extends Thread {
 									int j = i + 1;
 									buffer = historico[j].getBytes();
 									try {
-										System.out.println("<<<< " + historico[j]);
 										packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
 										socket.send(packet);
 									} catch (Exception aaa) {
@@ -502,9 +501,7 @@ class ManageNewRequest extends Thread{
 				}
 				protocolo = "type | share1 ; user_id | " + processa.get(3) + " ; ";
 				for(int i = 0; i<counter ; i++){
-					System.out.println(i);
 					protocolo = protocolo + respostas[i] + " | ";
-					System.out.println(protocolo);
 				}
 				protocolo = protocolo + "none";
 				return protocolo;

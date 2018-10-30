@@ -48,6 +48,7 @@ class MulticastConnection extends Thread {
         MulticastSocket socket = null;
         long counter = 0;
 		byte[] buffer = protocolo.getBytes();
+		System.out.println("Protcolo enviado: " + protocolo);
 		String TimeOut = "TimeOutReached";
 		try{
 			socket = new MulticastSocket(PORT_RECEIVE);
@@ -69,7 +70,7 @@ class MulticastConnection extends Thread {
 						packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
 						socket.receive(packet);
 						received = new String(packet.getData(), 0, packet.getLength());
-						System.out.println(received);
+						System.out.println("Protocolo recebido: " + received);
 						String[] aux = received.split(Pattern.quote(" ; "));
 						String[] aux2 = aux[1].split(Pattern.quote(" | "));
 						ID_received = aux2[1];
@@ -119,6 +120,17 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		users_online[i] = username;
 	}
 
+	public void CleanUsers() throws RemoteException{
+		for(int i=0; i<online.length;i++){
+			try{
+				if(online[i] != null) online[i].ping();
+			}catch(Exception off){
+				online[i] = null;
+				users_online[i] = " ";
+			}
+		}
+	}
+
 	public void UserQuit(DropMusic_C_I c, String username) throws RemoteException {
 		int i = 0;
 		while(users_online[i].compareTo(username) != 0) i++;
@@ -142,12 +154,12 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		}
 
 		try {
-			if(processa.get(5).compareTo("none")==0) c.Print("\nInformacao: Nenhuma notificacao pendente");
+			if(processa.get(5).compareTo("none")==0) return;
 			else{
 				int n = (processa.size() - 4)/2;
 				c.Print("\nInformacao: Tem " + n + " notificacoes pendentes");
 				for(int i = 5; i <= processa.size() ; i+=2){
-					c.Print("\n\t ." + processa.get(i));
+					c.Print("\t ." + processa.get(i));
 				}
 			}
 		} catch (Exception re) {
@@ -244,9 +256,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			processa.add(aux[0]);
 			processa.add(aux[1]);
 		}
-		System.out.println(protocolo);
 		String[] resposta = new String[(processa.size() - 4)/2];
-		System.out.println("..... " + resposta.length);
 		if(processa.get(5).compareTo("none")==0){
 			resposta[0] = "none";
 			return resposta;
@@ -254,7 +264,6 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		else{
 			int counter=0;
 			for(int i = 5; i < processa.size() ; i+=2){
-				System.out.println(processa.get(i));
 				resposta[counter] = processa.get(i);
 				counter++;
 			}
@@ -314,18 +323,24 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
                     processa.add(aux[0]);
                     processa.add(aux[1]);
 		}
-		int counter = 5;
-		int i = 0;
+		int counter = 5, i= 0;
+		boolean notificou = false;
 		while(processa.get(counter).compareTo("none") != 0){ //Notificar editores anteriores
-			while(users_online[i] != null){
-				if(users_online[i].compareTo(processa.get(counter)) == 0){
-						try{
+			for(i = 0; i<users_online.length; i++){
+				if(users_online[i]!=null && !users_online[i].isEmpty()) {
+					if (users_online[i].compareTo(processa.get(counter)) == 0) {
+						try {
 							online[i].Print("O editor " + username + " alterou informacao + " + alteracao + " no(a) " + tipo + " - " + alvo);
-						}catch(Exception c1){
+						} catch (Exception c1) {
 							AddNotification(ID, processa.get(counter), ("O editor " + username + " alterou informacao + " + alteracao + " no(a) " + tipo + " - " + alvo));
+							CleanUsers();
 						}
+						notificou = true;
+						break;
+					}
+					if (!notificou)
+						AddNotification(ID, processa.get(counter), ("O editor " + username + " alterou informacao + " + alteracao + " no(a) " + tipo + " - " + alvo));
 				}
-				i++;
 			}
 			counter++;
 		}
@@ -399,31 +414,35 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		protocolo = N.GetResponse();
 
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
-		String[] aux = processar[1].split(Pattern.quote(" | "));
+		String[] aux = processar[2].split(Pattern.quote(" | "));
 		if(aux[1].compareTo("done")==0){
-			while(users_online[i] != null){
-				if(users_online[i].compareTo(username) == 0){
-					if(editor){
-						try{
-							online[i].Print("Parabens, foi promovido a editor!");
-							online[i].ChangeUserToEditor(true);
-						}catch(Exception c1){
-							AddNotification(ID,username, "Parabens, foi promovido a editor!");
+			for(i = 0; i<users_online.length;i++){
+				if(users_online[i] != null && !users_online[i].isEmpty()) {
+					System.out.println("######################### " + users_online[i]);
+					if (users_online[i].compareTo(username) == 0) {
+						if (editor) {
+							try {
+								online[i].Print("Parabens, foi promovido a editor!");
+								online[i].ChangeUserToEditor(true);
+							} catch (Exception c1) {
+								AddNotification(ID, username, "Parabens, foi promovido a editor!");
+								CleanUsers();
+							}
+						} else {
+							try {
+								online[i].Print("Um editor tirou os seu previlegios");
+								online[i].ChangeUserToEditor(false);
+							} catch (Exception c2) {
+								AddNotification(ID, username, "Um editor tirou os seu previlegios");
+								CleanUsers();
+							}
 						}
+						return true;
 					}
-					else{
-						try{
-							online[i].Print("Um editor tirou os seu previlegios");
-							online[i].ChangeUserToEditor(false);
-						}catch(Exception c2){
-							AddNotification(ID,username, "Um editor tirou os seu previlegios");
-						}
-					}
-					return true;
 				}
-				i++;
 			}
-			if(users_online[i] == null){
+			if(i == users_online.length){
+				System.out.println("2");
 				if(editor) AddNotification(ID,username, "Parabens, foi promovido a editor!");
 				else AddNotification(ID,username, "Um editor tirou os seu previlegios");
 				return true;
