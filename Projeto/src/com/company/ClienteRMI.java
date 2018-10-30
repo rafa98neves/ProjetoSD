@@ -22,7 +22,7 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 	private static User online;
 	private static ClienteRMI c;
 	public static DropMusic_S_I h;
-	private static String Server = "Drop1";
+	private static String Server = "rmi://192.168.99.1/Drop1";
 	private static int PORT = 7000;
 
 	ClienteRMI() throws RemoteException {
