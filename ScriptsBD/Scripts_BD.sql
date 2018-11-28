@@ -264,6 +264,67 @@ INSERT INTO dbo.Banda
 		'@info2',
 		'@info3'
 	)
+	
+--Criar Concerto
+--@nome = Nome da banda / artista, @bitChoose = true - artista ou false - banda, @data = Data do Concerto, @preco = Preço do concerto, @local = id do local onde se vai realizar o concerto
+INSERT INTO dbo.Concerto
+(
+	Data,
+	Preco,
+	LocalID
+)
+VALUES
+(
+	CAST('@data' as datetime),
+	CAST('@preco' AS float),
+	CAST('@local' AS int)
+)
+
+IF @bitChoose = 'true'
+BEGIN
+	INSERT INTO dbo.Concerto_Artista
+	(
+		ConcertoID,
+		ArtistaID
+	)
+	VALUES
+	(
+		(SELECT TOP 1 conc.ConcertoID
+			FROM dbo.Concerto conc ORDER BY conc.ConcertoID DESC),
+		(SELECT Findartist.ArtistID
+			FROM dbo.Artist Findartist
+			WHERE Findartist.Name = '@nome')
+	)
+END
+ELSE
+BEGIN
+	INSERT INTO dbo.Concerto_Banda
+	(
+		ConcertoID,
+		BandaID
+	)
+	VALUES
+	(
+		(SELECT TOP 1 conc.ConcertoID
+			FROM dbo.Concerto conc ORDER BY conc.ConcertoID DESC),
+		(SELECT ban.BandaID
+			FROM dbo.Banda ban
+			WHERE ban.Nome = '@nome')
+	)
+END
+
+--Criar Localidade
+--@cidade = nome da cidade onde vai decorrer o concerto, @pais = pais da respetiva cidade
+INSERT INTO dbo.LOCAL
+(
+	Cidade,
+	Pais
+)
+VALUES
+(
+	@cidade,
+	@pais
+)
 
 --Fazer Critica a um album	
 --@User = ID do utilizador que fez a critica
@@ -332,6 +393,23 @@ VALUES
 		WHERE MusInf.Titulo = '@NomeMusica')
 )
 
+--Associar artista a uma banda
+--@nomeBanda = Nome da banda a que o artista vai ser adicionado, @nomeArtista = Nome da artista em questão
+
+INSERT INTO dbo.Banda_Artista
+(
+	BandaID,
+	ArtistaID
+)
+VALUES
+(
+	(SELECT ban.BandaID
+		FROM dbo.Banda ban
+		WHERE ban.Nome = '@nomeBanda'),
+	(SELECT Findartist.ArtistID
+		FROM dbo.Artist Findartist
+		WHERE Findartist.Name = '@nomeArtista')
+)
 
 
 
@@ -510,6 +588,37 @@ WHERE AlbInf.AlbumInfoID = Alb.AlbumInfo AND Alb.Music IN (
 		)
 	)
 GROUP BY AlbInf.Name
+
+--Obter artistas presentes numa banda
+--@nomeBanda = Nome da banda
+SELECT art.Name
+	FROM dbo.Banda_Artista ban, dbo.Artist art
+	WHERE ban.BandaID = (SELECT ban.BandaID
+		FROM dbo.Banda ban
+		WHERE ban.Nome = '@nomeBanda')
+	AND ban.ArtistaID = art.ArtistID
+	
+--Obter lista de concertos de uma certa banda / artista
+--@nome = nome da banda / artista, @bitChoose = true - artista ou false - banda
+	
+IF @bitChoose = 'true'
+BEGIN
+	SELECT loc.Cidade, loc.Pais, conc.Data, conc.Preco
+	FROM dbo.Concerto conc, dbo.Local loc
+	WHERE conc.LocalID = loc.LocalID
+	AND conc.ConcertoID IN (SELECT ConArt.ConcertoID
+					FROM dbo.Concerto_Artista ConArt, dbo.Artist Art
+					WHERE ConArt.ArtistaID = Art.ArtistID AND Art.Name = '@nome')
+END
+ELSE
+BEGIN
+	SELECT loc.Cidade, loc.Pais, conc.Data, conc.Preco
+	FROM dbo.Concerto conc, dbo.Local loc
+	WHERE conc.LocalID = loc.LocalID
+	AND conc.ConcertoID IN (SELECT ConBan.Concerto_BandaID
+					FROM dbo.Concerto_Banda ConBan, dbo.Banda Ban
+					WHERE ConBan.BandaID = Ban.BandaID AND Ban.Nome = '@nome')
+END
 
 
 --Obter todos os generos existentes
