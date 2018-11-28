@@ -193,4 +193,266 @@ BEGIN
 END
 
 
---Começar ficheiro dbo.Details
+--Acrescentar detalhes de um alvo
+--@tipo = tipo de alvo (album,musica,..)
+--@nome = nome do alvo
+--@info e @info2 = Outras informações
+
+IF @tipo = 'artista'
+	BEGIN
+		IF @info = 'true'
+			BEGIN
+				SET @aux = 1;
+			END
+		IF @info = 'false'
+			BEGIN
+				SET @aux = 0;
+			END
+		
+		INSERT INTO dbo.Artist
+		(
+			Name,
+			Composer
+		)
+		VALUES
+		(
+			@nome,
+			@aux
+		)
+	END
+IF @tipo = 'album'
+	BEGIN
+		INSERT INTO dbo.Albuminfo
+		(
+			Name,
+			Year
+		)
+		VALUES
+		(
+			@nome,
+			cast(@info AS int)
+		)
+	END	
+	
+IF @tipo = 'musica'
+	BEGIN
+		INSERT INTO dbo.MusicInfo
+		(
+			Titulo,
+			Genero
+		)
+		VALUES
+		(
+			@nome,
+			(SELECT Findgen.GenreID
+				FROM dbo.Genre Findgen
+				WHERE Findgen.Name = @info2),
+		)
+		
+		
+		
+		INSERT INTO dbo.Music
+		(
+			Musicinfo,
+			Artist
+		)
+		VALUES
+		(
+			(SELECT Findmusic.MusicInfoID
+				FROM dbo.MusicInfo Findmusic
+				WHERE Findmusic.Titulo = @nome),
+			(SELECT Findartist.ArtistID
+				FROM dbo.Artist Findartist
+				WHERE Findartist.Name = @info)
+		)
+	END	
+--Returnar todos os generos existentes
+
+SELECT Gen.Name FROM dbo.Genre Gen
+
+
+--Verificar se utilizador existe na base de dados para fazer Login
+--@User = username inserido
+--@Password = password inserida
+
+SELECT UsersTa.UserID, UsersTa.admin 
+	FROM dbo.Users UsersTa 
+	WHERE UsersTa.username = @User AND UsersTa.password = @Password;
+	
+	
+	
+--Adicionar ao Histórico editor que fez alterações
+--@Tipo = Tipo de alteração (A musica, a album, ...)
+--@Nome = Nome do alvo
+--@UserID = ID do utilizador que fez a alteração
+INSERT INTO dbo.Historicoo
+	(
+		Tipo,
+		Nome,
+		UsernameID
+	)
+	VALUES
+	(
+		@Tipo,
+		@Nome,
+		@UserID
+	)
+
+	
+	
+--Verificar se um utilizador tem notificações e apaga-las.
+--@User = Id do utilizador
+
+SELECT Notif.Message
+	FROM dbo.Notification Notif
+	WHERE Notif.UserID = @User;
+
+DELETE FROM dbo.Notification
+	WHERE dbo.Notification.UserID = @User;
+
+	
+	
+--Dar/retirar privilégios de editor a um utilizador
+--@User = Id do utilizador
+
+SELECT Usr.UserID, Usr.admin
+	FROM dbo.Users Usr
+	WHERE Usr.username = @User
+
+	IF Usr.admin = 0
+	BEGIN
+		SET Usr.admin = 1
+	END
+
+	IF Usr.admin = 1
+	BEGIN
+		SET Usr.admin = 0
+	END
+
+	UPDATE dbo.Users
+	SET admin = Usr.admin
+	WHERE UserID = @UserID
+
+--Registar Utilizador
+--@User = username inserido pelo utilizador
+--@Password = password inserida pelo utilizador
+
+IF (SELECT COUNT(*) FROM dbo.Users UsersTa 
+	WHERE UsersTa.username = @User) = 0
+	BEGIN
+		IF (SELECT COUNT(*) FROM dbo.Users ) = 0
+			BEGIN
+				INSERT INTO dbo.Users
+				(
+					username,
+					password,
+					admin
+				)
+				VALUES
+				(
+					@User,
+					@Password,
+					1
+				)
+			END
+		IF (SELECT COUNT(*) FROM dbo.Users) > 0
+			BEGIN
+				INSERT INTO dbo.Users
+				(
+					username,
+					password,
+					admin
+				)
+				VALUES
+				(
+					@User,
+					@Password,
+					0
+				)
+			END
+	END	
+
+	
+	
+--Remover informação de uma música ou album
+--@Tipo = Tipo de alvo (Musica ou album)
+--@Nome = Nome do alvo
+--@AdicionaNome = Nome do artista (??)
+IF @Tipo = 'musica'
+	BEGIN
+		DELETE FROM dbo.Music
+		WHERE MusicInfo = (SELECT MusInf.MusicInfoID
+			FROM dbo.MusicInfo MusInf
+			WHERE MusInf.Titulo =  @Nome)
+		AND Artist = (SELECT Art.ArtistID
+			FROM dbo.Artist Art
+			WHERE @AdicionaNome = Art.Name)
+	END
+
+IF @Tipo = 'album'
+	BEGIN
+		DELETE FROM dbo.Album
+		WHERE AlbumInfo = (SELECT AlbInf.AlbumInfoID
+			FROM dbo.AlbumInfo AlbInf
+			WHERE @Nome = AlbInf.Name)
+		AND Music = (SELECT MusInf.MusicInfoID
+			FROM dbo.MusicInfo MusInf
+			WHERE @AdicionaNome = MusInf.Titulo)
+	END
+
+	
+--Procurar
+--@TipoSearch = Tipo do alvo a ser procurado (album,musica,..)
+--@Nome = Nome do alvo
+
+IF @TipoSearch = 'album'
+	BEGIN
+		SELECT AlbInf.Name
+		FROM dbo.AlbumInfo AlbInf
+		WHERE AlbInf.Name LIKE '%'+@Nome+'%'
+	END
+
+IF @TipoSearch = 'musica'
+	BEGIN
+		SELECT MusInf.Titulo
+		FROM dbo.MusicInfo MusInf
+		WHERE MusInf.Titulo LIKE '%'+@Nome+'%'
+	END
+
+IF @TipoSearch = 'genero'
+	BEGIN
+		SELECT GenInf.Name
+		FROM dbo.Genre GenInf
+		WHERE GenInf.Name LIKE '%'+@Nome+'%'
+	END
+
+IF @TipoSearch = 'artista'
+	BEGIN
+		SELECT ArtInf.Name
+		FROM dbo.Artist ArtInf
+		WHERE ArtInf.Name LIKE '%'+@Nome+'%'
+	END
+
+	
+--Fazer Critica a um album	
+--@User = utilizador que fez a critica
+--@Album = nome do album a ser criticado
+--@Critica = Critica feita pelo utilizador
+--@PONT = pontuação dada pelo utilizador	
+
+INSERT INTO dbo.Review
+(
+	UsernameID,
+	Album,
+	Comment,
+	Score
+)
+VALUES
+(
+	@User,
+	(SELECT Findalbum.AlbumInfoID
+		FROM dbo.AlbumInfo Findalbum
+		WHERE Findalbum.Name = @Album),
+	@Critica,
+	@PONT
+)
