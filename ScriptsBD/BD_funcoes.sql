@@ -194,6 +194,23 @@ BEGIN
 	)
 END
 
+--Criar Banda
+--@nome = Nome da banda, @info = Ano Criação, @info2 = Ano Fim, @info3 = História da Banda
+INSERT INTO dbo.Banda
+	(
+		Nome,
+		DataCriacao,
+		DataFim,
+		Historia
+	)
+	VALUES
+	(
+		'@nome',
+		'@info',
+		'@info2',
+		'@info3'
+	)
+
 --Obter detalhes de um Álbum
 --@Nome = Nome do Album
 	--Obter Cabeçalho de um Album
@@ -409,7 +426,6 @@ BEGIN
 
 END	
 
-	
 	
 --Remover informação de uma música ou album
 --@Tipo = Tipo de alvo (Musica ou album)
