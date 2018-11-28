@@ -194,18 +194,3 @@ END
 
 
 --Começar ficheiro dbo.Details
-
-
-		
--- GET Albuns de um Artista
-SELECT AlbInf.Name
-FROM dbo.AlbumInfo AlbInf, dbo.Album Alb
-WHERE AlbInf.AlbumInfoID = Alb.AlbumInfo AND Alb.Music IN (
-	SELECT DISTINCT Mus.MusicInfo
-	FROM dbo.Music Mus
-	WHERE Mus.Artist = ( SELECT ArtInf.ArtistID
-		FROM dbo.Artist ArtInf
-		WHERE ArtInf.Name LIKE '%'+'@Nome'+'%'
-		)
-	)
-GROUP BY AlbInf.Name
