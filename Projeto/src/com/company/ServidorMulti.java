@@ -109,7 +109,7 @@ public class ServidorMulti extends Thread {
 			InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
 			socket.joinGroup(group);
             while (true) {
-				byte[] buffer = new byte[256];
+				byte[] buffer = new byte[2048];
 				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
 				socket.receive(packet);
 
@@ -199,7 +199,7 @@ class ManageNewRequest extends Thread{
 
 		if(nome == InCharge) {
 			try {
-				byte[] buffer = new byte[256];
+				byte[] buffer;
 				buffer = message.getBytes();
 				packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
 				socket.send(packet);
@@ -492,11 +492,15 @@ class ManageNewRequest extends Thread{
 				File[] listOfFiles = folder.listFiles();
 				int counter = 0;
 				String[] respostas = new String[100];
-				for (int i = 0; i < listOfFiles.length; i++) {
-					if (listOfFiles[i].isFile()) {
-						respostas[counter] = listOfFiles[i].getName();
-						counter++;
+				try {
+					for (int i = 0; i < listOfFiles.length; i++) {
+						if (listOfFiles[i].isFile()) {
+							respostas[counter] = listOfFiles[i].getName();
+							counter++;
+						}
 					}
+				}catch (Exception n){
+					return "type | share1 ; user_id | " + processa.get(3) + " ; none";
 				}
 				protocolo = "type | share1 ; user_id | " + processa.get(3) + " ; ";
 				for(int i = 0; i<counter ; i++){
@@ -644,7 +648,7 @@ class RecebeMusica extends Thread{
 	String music, User_id;
 	int PORT_USER = 6000;
     public RecebeMusica(String music, String User_id) {
-    	this.music = music.replaceAll("\\s+","");;
+    	this.music = music.replaceAll("\\s+","");
     	this.User_id = User_id;
     }
     //=============================
@@ -700,8 +704,9 @@ class EnviaMusica extends Thread{
     //=============================
     public void run(){
         String resposta;
+        ServerSocket listenSocket = null;
 		try{
-			ServerSocket listenSocket = new ServerSocket(PORT_USER);
+			listenSocket = new ServerSocket(PORT_USER);
 			clientSocket = listenSocket.accept();
 		}catch(IOException e){System.out.println("Connection:" + e.getMessage());}
         try{
