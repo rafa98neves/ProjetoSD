@@ -8,7 +8,10 @@
       <change beforePath="$PROJECT_DIR$/out/production/Projeto/com/company/ManageNewRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Projeto/com/company/ManageNewRequest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Projeto/com/company/MulticastConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Projeto/com/company/MulticastConnection.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Projeto/com/company/RecebeMusica.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Projeto/com/company/RecebeMusica.class" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/out/production/Projeto/com/company/ServidorMulti.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Projeto/com/company/ServidorMulti.class" afterDir="false" />
+=======
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
       <change beforePath="$PROJECT_DIR$/out/production/Projeto/com/company/Synch.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Projeto/com/company/Synch.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/ClienteRMI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/ClienteRMI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/ServidorMulti.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/ServidorMulti.java" afterDir="false" />
@@ -44,12 +47,13 @@
     <session id="1041640136">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="4" />
+          <entry key="project.closed" value="6" />
           <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.11" value="1" />
+          <entry key="project.open.time.12" value="1" />
           <entry key="project.open.time.16" value="1" />
           <entry key="project.open.time.8" value="1" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -70,14 +74,14 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="2067" />
+          <entry key="java" value="2170" />
           <entry key="sql" value="24" />
           <entry key="txt" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="2067" />
+          <entry key="JAVA" value="2170" />
           <entry key="PLAIN_TEXT" value="6" />
           <entry key="Scratch" value="24" />
         </counts>
@@ -136,6 +140,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/company/ServidorMulti.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="356">
               <caret line="519" column="25" selection-start-line="519" selection-start-column="25" selection-end-line="519" selection-end-column="25" />
               <folding>
@@ -146,6 +151,11 @@
                 <element signature="class#Synch#0" />
                 <element signature="method#run#0;class#Synch#0" />
                 <element signature="class#RecebeMusica#0" />
+=======
+            <state relative-caret-position="691">
+              <caret line="687" column="3" selection-start-line="687" selection-start-column="3" selection-end-line="687" selection-end-column="3" />
+              <folding>
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
                 <element signature="class#EnviaMusica#0" />
               </folding>
             </state>
@@ -155,6 +165,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/ServidorRMI.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="1683">
               <caret line="388" column="19" selection-start-line="388" selection-start-column="19" selection-end-line="388" selection-end-column="19" />
               <folding>
@@ -162,20 +173,22 @@
                 <element signature="method#NewUser#0;class#ServidorRMI#0" />
                 <element signature="method#UserQuit#0;class#ServidorRMI#0" />
                 <element signature="method#CheckNotifications#0;class#ServidorRMI#0" />
+=======
+            <state relative-caret-position="918">
+              <caret line="66" column="30" selection-start-line="66" selection-start-column="30" selection-end-line="66" selection-end-column="30" />
+              <folding>
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
                 <element signature="method#AddNotification#0;class#ServidorRMI#0" />
                 <element signature="method#RegistUser#0;class#ServidorRMI#0" />
                 <element signature="method#CheckUser#0;class#ServidorRMI#0" />
-                <element signature="method#Criar#0;class#ServidorRMI#0" />
                 <element signature="method#Find#0;class#ServidorRMI#0" />
                 <element signature="method#GetDetails#0;class#ServidorRMI#0" />
                 <element signature="method#AddRemoveSomething#0;class#ServidorRMI#0" />
                 <element signature="method#AlterarDados#0;class#ServidorRMI#0" />
-                <element signature="method#GetGeneros#0;class#ServidorRMI#0" />
-                <element signature="method#AddGenero#0;class#ServidorRMI#0" />
                 <element signature="method#Write#0;class#ServidorRMI#0" />
+                <element signature="method#ShareMusic#0;class#ServidorRMI#0" />
+                <element signature="method#ShareMusic#1;class#ServidorRMI#0" />
                 <element signature="method#TransferMusic#0;class#ServidorRMI#0" />
-                <element signature="method#GivePriv#0;class#ServidorRMI#0" />
-                <element signature="method#main#0;class#ServidorRMI#0" />
               </folding>
             </state>
           </provider>
@@ -184,6 +197,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/ClienteRMI.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="1088">
               <caret line="1142" column="13" selection-start-line="1142" selection-start-column="13" selection-end-line="1142" selection-end-column="13" />
               <folding>
@@ -206,6 +220,10 @@
                 <element signature="method#GivePrev#0;class#ClienteRMI#0" />
                 <element signature="method#main#0;class#ClienteRMI#0" />
               </folding>
+=======
+            <state relative-caret-position="11135">
+              <caret line="668" column="21" selection-start-line="668" selection-start-column="21" selection-end-line="668" selection-end-column="21" />
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
             </state>
           </provider>
         </entry>
@@ -248,7 +266,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+<<<<<<< HEAD
       <find>nome do</find>
+=======
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
       <find>nome do artista</find>
       <find>alterat</find>
       <find>counter</find>
@@ -277,7 +298,12 @@
       <find>System.out</find>
       <find>Pesquisar</find>
       <find>Find</find>
+<<<<<<< HEAD
       <find>byte</find>
+=======
+      <find>detai</find>
+      <find>new by</find>
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -290,9 +316,9 @@
         <option value="$PROJECT_DIR$/src/com/company/User.java" />
         <option value="$PROJECT_DIR$/src/com/company/DropMusic_C_I.java" />
         <option value="$PROJECT_DIR$/src/com/company/DropMusic_S_I.java" />
-        <option value="$PROJECT_DIR$/src/com/company/ServidorRMI.java" />
         <option value="$PROJECT_DIR$/src/com/company/ClienteRMI.java" />
         <option value="$PROJECT_DIR$/src/com/company/ServidorMulti.java" />
+        <option value="$PROJECT_DIR$/src/com/company/ServidorRMI.java" />
       </list>
     </option>
   </component>
@@ -303,9 +329,15 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
+<<<<<<< HEAD
     <option name="x" value="-10" />
     <option name="width" value="1035" />
     <option name="height" value="1050" />
+=======
+    <option name="x" value="-7" />
+    <option name="width" value="974" />
+    <option name="height" value="1057" />
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -342,8 +374,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.ClienteRMI">
-    <configuration name="ClienteRMI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Application.ServidorMulti">
+    <configuration name="ClienteRMI" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.company.ClienteRMI" />
       <module name="Projeto" />
       <extension name="coverage">
@@ -397,13 +429,12 @@
     </configuration>
     <list>
       <item itemvalue="Application.ServidorMulti" />
+      <item itemvalue="Application.ClienteRMI" />
       <item itemvalue="Application.Main" />
       <item itemvalue="Application.ServidorRMI" />
-      <item itemvalue="Application.ClienteRMI" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ClienteRMI" />
         <item itemvalue="Application.ServidorRMI" />
       </list>
     </recent_temporary>
@@ -423,6 +454,7 @@
       <workItem from="1540502717858" duration="1080000" />
       <workItem from="1540660871415" duration="8058000" />
       <workItem from="1540841381961" duration="20397000" />
+<<<<<<< HEAD
       <workItem from="1543242964449" duration="333000" />
       <workItem from="1543252369732" duration="1741000" />
       <workItem from="1543343368086" duration="107000" />
@@ -430,11 +462,19 @@
       <workItem from="1543439757137" duration="2729000" />
       <workItem from="1543448595389" duration="43000" />
       <workItem from="1543849729286" duration="194000" />
+=======
+      <workItem from="1540913621056" duration="1796000" />
+      <workItem from="1541521684223" duration="1763000" />
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="45958000" />
+=======
+    <option name="totallyTimeSpent" value="43966000" />
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -446,7 +486,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="848" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
     <layout>
       <window_info id="Designer" order="0" />
       <window_info id="UI Designer" order="1" />
@@ -461,8 +501,13 @@
       <window_info anchor="bottom" id="Database Changes" order="3" sideWeight="0.49731544" weight="0.32867134" />
       <window_info anchor="bottom" id="Message" order="4" />
       <window_info anchor="bottom" id="Find" order="5" />
+<<<<<<< HEAD
       <window_info anchor="bottom" x="20" y="539" width="1870" height="387" id="Run" order="6" sideWeight="0.50201344" side_tool="true" weight="0.32867134" />
       <window_info anchor="bottom" id="Debug" order="7" sideWeight="0.49731544" weight="0.4" />
+=======
+      <window_info anchor="bottom" x="20" y="539" width="1870" height="387" id="Run" order="6" sideWeight="0.5021882" side_tool="true" weight="0.7311111" />
+      <window_info anchor="bottom" id="Debug" order="7" sideWeight="0.49781182" weight="0.4" />
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
       <window_info anchor="bottom" id="Messages" order="8" sideWeight="0.49946696" weight="0.32867134" />
       <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="10" weight="0.4" />
@@ -569,6 +614,7 @@
     <entry file="file://$PROJECT_DIR$/.idea/libraries/mssql_jdbc_6_4_0_jre7.xml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/src/com/company/ServidorRMI.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1683">
@@ -619,12 +665,21 @@
             <element signature="method#Download#0;class#ClienteRMI#0" />
             <element signature="method#GivePrev#0;class#ClienteRMI#0" />
             <element signature="method#main#0;class#ClienteRMI#0" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/com/company/ServidorMulti.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="691">
+          <caret line="687" column="3" selection-start-line="687" selection-start-column="3" selection-end-line="687" selection-end-column="3" />
+          <folding>
+            <element signature="class#EnviaMusica#0" />
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/DropMusic_S_I.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="527">
           <caret line="31" column="34" selection-start-line="31" selection-start-column="16" selection-end-line="31" selection-end-column="34" />
         </state>
@@ -648,11 +703,29 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
           <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+=======
+        <state relative-caret-position="918">
+          <caret line="66" column="30" selection-start-line="66" selection-start-column="30" selection-end-line="66" selection-end-column="30" />
+          <folding>
+            <element signature="method#AddNotification#0;class#ServidorRMI#0" />
+            <element signature="method#RegistUser#0;class#ServidorRMI#0" />
+            <element signature="method#CheckUser#0;class#ServidorRMI#0" />
+            <element signature="method#Find#0;class#ServidorRMI#0" />
+            <element signature="method#GetDetails#0;class#ServidorRMI#0" />
+            <element signature="method#AddRemoveSomething#0;class#ServidorRMI#0" />
+            <element signature="method#AlterarDados#0;class#ServidorRMI#0" />
+            <element signature="method#Write#0;class#ServidorRMI#0" />
+            <element signature="method#ShareMusic#0;class#ServidorRMI#0" />
+            <element signature="method#ShareMusic#1;class#ServidorRMI#0" />
+            <element signature="method#TransferMusic#0;class#ServidorRMI#0" />
+          </folding>
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/ServidorMulti.java">
+    <entry file="file://$PROJECT_DIR$/src/com/company/ClienteRMI.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="356">
           <caret line="519" column="25" selection-start-line="519" selection-start-column="25" selection-end-line="519" selection-end-column="25" />
           <folding>
@@ -665,6 +738,31 @@
             <element signature="class#RecebeMusica#0" />
             <element signature="class#EnviaMusica#0" />
           </folding>
+=======
+        <state relative-caret-position="11135">
+          <caret line="668" column="21" selection-start-line="668" selection-start-column="21" selection-end-line="668" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/DropMusic_S_I.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="31" column="34" selection-start-line="31" selection-start-column="16" selection-end-line="31" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/DropMusic_C_I.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="3" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="24" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
         </state>
       </provider>
     </entry>

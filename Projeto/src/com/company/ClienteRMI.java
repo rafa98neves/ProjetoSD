@@ -662,9 +662,10 @@ public class ClienteRMI extends UnicastRemoteObject implements DropMusic_C_I{
 			}
 			else if(!flag && details[0].compareTo("none")!=0){
 				for(int i = 0; i<details.length; i+=2){
+					System.out.println("Palavra : " + details[i]);
 					if(details[i].compareTo("Critica") == 0){
 						System.out.println(details[i+1] + " pontuou o album com " + details[i+2] + " pontos e fez a critica: \n" + details[i+3] + "\n");
-						i += 2;
+						i += 4;
 					}
 					else System.out.println(details[i] + ": " + details[i + 1]);
 				}

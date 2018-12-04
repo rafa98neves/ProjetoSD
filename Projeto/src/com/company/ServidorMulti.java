@@ -368,6 +368,7 @@ class ManageNewRequest extends Thread{
 					stmt.execute();
 
 					protocolo = "type | details ; " + processa.get(2) +" | " + processa.get(3) + stmt.getString(4);
+					System.out.println(protocolo);
 					return protocolo;
 				} catch (SQLException ex) {
 					System.out.println("SQLException: " + ex.getMessage());
@@ -660,7 +661,7 @@ class RecebeMusica extends Thread{
 			clientSocket = listenSocket.accept();
 			in = new DataInputStream(clientSocket.getInputStream());
 			}catch(IOException e){System.out.println("Connection:" + e.getMessage());}
-			byte[] bytes = new byte[8192];
+			byte[] bytes = new byte[20000];
 			File dir = new File("C:\\Users\\santa\\Desktop\\Musicas_DropMusic\\privado\\"+User_id+"\\");
 			if(!dir.exists()) {
 				try {

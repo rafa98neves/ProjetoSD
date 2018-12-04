@@ -58,7 +58,11 @@ class MulticastConnection extends Thread {
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
 			socket.send(packet);
 
+<<<<<<< HEAD
 			buffer = new byte[2048];
+=======
+			buffer = new byte[4000];
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
 
 			String received = "erro";
 			String ID_received = "no";
@@ -66,7 +70,11 @@ class MulticastConnection extends Thread {
 			while(ID.compareTo(ID_received) != 0) {
 				while (true) {
 					try {
+<<<<<<< HEAD
 						buffer = new byte[2048];
+=======
+						buffer = new byte[4000];
+>>>>>>> ab65174b41cd993b89d823b57a34e78f74c0cbb5
 						packet = new DatagramPacket(buffer, buffer.length, group, PORT_RECEIVE);
 						socket.receive(packet);
 						received = new String(packet.getData(), 0, packet.getLength());
