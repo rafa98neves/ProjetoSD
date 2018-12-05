@@ -12,13 +12,9 @@ public class LoginAction extends ActionSupport implements SessionAware {
 
 	@Override
 	public String execute() {
-		// any username is accepted without confirmation (should check using RMI)
-		if(this.username != null && !username.equals("")) {
-			this.getHeyBean().setUsername(this.username);
-			this.getHeyBean().setPassword(this.password);
-			session.put("username", username);
-			session.put("loggedin", true); // this marks the user as logged in
-			return SUCCESS;
+		if(this.username != null && !username.equals("") && !password.equals("") && this.password != null) {
+			if(HeyBean.CheckUser(username,password) == true) return SUCCESS;
+			else return LOGIN;
 		}
 		else
 			return LOGIN;
