@@ -9,13 +9,22 @@
 <title>DropMusic</title>
 </head>
 <body>
-<p><a href="<s:url action="dropmusic" />">DROPMUSIC</a></p>
-	<li><p><a href="<s:url action="ToPesquisa" />">Pesquisar</a></p>
-	<li><p><a href="<s:url action="ToPlaylist" />">Playlist</a></p>
-	<li><p><a href="<s:url action="ToShare" />">Partilhar Música</a></p>
-	<li><p><a href="<s:url action="ToDownload" />">Download</a></p>
-	<li><p><a href="<s:url action="ToUpload" />">Upload</a></p>
-	<%--<br><p><a href="<s:url action="ToCriar" />">DROPMUSIC</a></p>--%>
-	<%--<br><p><a href="<s:url action="ToPrev" />">DROPMUSIC</a></p>--%>
+<div title="header">
+	<p><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></p>
+	<s:textfield name="Pesquisa" />
+	<s:submit type="button">
+		<s:text name="Procurar"></s:text>
+	</s:submit>
+</div>
+
+<div title="body">
+	<li><p><a href="<s:url action="ToPlaylist" />"><span style="color:black">Playlist</span></a></p>
+	<li><p><a href="<s:url action="ToShare" />"><span style="color:black">Partilhar Música</span></a></p>
+	<li><p><a href="<s:url action="ToDownload" />"><span style="color:black">Download</span></a></p>
+	<li><p><a href="<s:url action="ToUpload" />"><span style="color:black">Upload</span></a></p>
+	<%--<li><p><a href="<s:url action="ToCriar" />"><span style="color:black">Criar</span></a></p>--%>
+	<%--<li><p><a href="<s:url action="ToPrev" />"><span style="color:black">Dar Previlegios</span></a></p></p>--%>
+	<li><p><a href="<s:url action="LogOut" />"><span style="color:black">Log out</span></a></p>
+</div>
 </body>
 </html>
