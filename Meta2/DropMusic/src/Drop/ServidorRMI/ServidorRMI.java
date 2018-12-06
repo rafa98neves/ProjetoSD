@@ -112,7 +112,9 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		super();
 	}
 
-	public void ping() throws RemoteException {}
+	public void ping() throws RemoteException {
+		System.out.println("ping");
+	}
 
 	public void NewUser(DropMusic_C_I c, String username) throws RemoteException {
 		int i = 0;
@@ -209,7 +211,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	}
 
 	public String[] CheckUser(String username, String password) throws RemoteException{
-		String protocolo = new String();
+		/*String protocolo = new String();
 		String proto_id = UUID.randomUUID().toString();
 		protocolo = "type | login ; protocolo_id | " + proto_id + " ; username | " + username + " ; password | " + password;
         MulticastConnection N = new MulticastConnection(protocolo);
@@ -234,7 +236,12 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			String[] Info = new String[1];
 			Info[0] = "false";
 			return Info;
-		}
+		}*/
+		String[] resposta = new String[3];
+		resposta[0] = "true";
+		resposta[1] = "0";
+		resposta[2] = "true";
+		return resposta;
 	}
 
 	public void Criar(String ID, String tipo, String nome, String Info, String Info2) throws RemoteException{

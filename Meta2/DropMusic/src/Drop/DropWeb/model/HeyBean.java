@@ -17,14 +17,14 @@ public class HeyBean {
 
 	public HeyBean() {
 		try {
-			server = (DropMusic_S_I) Naming.lookup("Drop1");
+			server = (DropMusic_S_I) LocateRegistry.getRegistry(PORT).lookup(Server);
 		}
-		catch(NotBoundException|MalformedURLException|RemoteException e) {
+		catch(NotBoundException|RemoteException e) {
 			e.printStackTrace(); // what happens *after* we reach this line?
 		}
 	}
 
-	public static void BackUp(boolean preRegisto){
+	public static void BackUp(){
 		int connection = 0;
 		int counter = 0;
 
@@ -59,12 +59,16 @@ public class HeyBean {
 
 	public static boolean CheckUser(String user, String password){
 		String[] resposta = new String[3];
-		try {
-			resposta = server.CheckUser(user, password);
-		}catch (Exception c) {
-			BackUp(true);
+		while(true) {
+			try {
+				server.ping();
+				resposta = server.CheckUser(user, password);
+				break;
+			} catch (Exception c) {
+				BackUp();
+			}
 		}
-		if(resposta[0].compareTo("true") == 0 ) return true;
+		if (resposta[0].compareTo("true") == 0) return true;
 		else return false;
 	}
 
