@@ -7,12 +7,18 @@
     <title>DropMusic</title>
 </head>
 <body>
+    <p>REGISTAR</p>
+    <br>
     <s:form method="GET" action="AuthRegist">
-        <s:text name="Username:" />
+        <li><s:text name="Username:" />
         <s:textfield name="username" />
-        <s:text name="Password:" />
+        <li><s:text name="Password:" />
         <s:password name="password" />
-        <s:submit />
+        <br><s:submit type="button">
+            <s:text name="Fazer registo"></s:text>
+        </s:submit>
     </s:form>
+
+    <p><a href="login.jsp"><span style="color:black">Fazer Login</span></a></p>
 </body>
 </html>

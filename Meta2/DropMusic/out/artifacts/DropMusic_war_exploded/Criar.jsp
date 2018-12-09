@@ -18,9 +18,9 @@
     <s:url action="GenreCreat" var="GenreCreatUrl" />
 
     O que queres criar?<br/>
-    <s:a href="%{carSearchUrl}" >Musica</s:a> <br/>
-    <s:a href="%{laptopSearchUrl}" >Album </s:a>  <br/>
-    <s:a href="%{shoesSearchUrl}" >Artista</s:a> <br/>
-    <s:a href="%{shoesSearchUrl}" >Genero</s:a> <br/>
+    <s:a href="%{MusicCreatUrl}" >Musica</s:a> <br/>
+    <s:a href="%{AlbumCreatUrl}" >Album </s:a>  <br/>
+    <s:a href="%{ArtistCreatUrl}" >Artista</s:a> <br/>
+    <s:a href="%{GenreCreatUrl}" >Genero</s:a> <br/>
 </body>
 </html>

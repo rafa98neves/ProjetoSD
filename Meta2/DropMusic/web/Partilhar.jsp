@@ -1,16 +1,21 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: santa
-  Date: 06/12/2018
-  Time: 15:08
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+         pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>DropMusic</title>
 </head>
 <body>
+<div title="header">
+    <p><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></p>
+</div>
 
+<div title="main">
+        <p>Qual música pretende partilhar?:<p>
+        <p>Nenhuma para mostrar<p>
+</div>
 </body>
 </html>
