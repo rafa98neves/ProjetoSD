@@ -20,7 +20,16 @@
     </s:form>
 </div>
 <div title="main">
-    <c:choose>
+    <p>Sort:</p>
+    <select>
+        <option value="all">Todos</option>
+        <option value="musica">Música</option>
+        <option value="album">Álbum</option>
+        <option value="artista">Artista</option>
+    </select>
+
+    <p>Nenhum resultado para a sua pesquisa</p>
+    <%--<c:choose>
         <c:when test="${results == null}">
             Problema durante a pesquisa!
         </c:when>
@@ -37,7 +46,7 @@
                 <br />
             </c:forEach>
         </c:otherwise>
-    </c:choose>
+    </c:choose>--%>
 </div>
 </body>
 </html>

@@ -1,10 +1,7 @@
-package Drop.DropWeb.model;
+package model.interfaces;
 
 import java.rmi.registry.LocateRegistry;
-import java.util.ArrayList;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
-import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import Drop.ServidorRMI.DropMusic_S_I;
 
@@ -57,12 +54,12 @@ public class HeyBean {
 		}
 	}
 
-	public static boolean CheckUser(String user, String password){
+	public static boolean CheckUser(String user, String password, boolean registar){
 		String[] resposta = new String[3];
 		while(true) {
 			try {
-				server.ping();
-				resposta = server.CheckUser(user, password);
+				if(registar) resposta = server.RegistUser(user, password);
+				else resposta = server.CheckUser(user, password);
 				break;
 			} catch (Exception c) {
 				BackUp();

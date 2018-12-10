@@ -1,9 +1,9 @@
-package Drop.DropWeb.action;
+package action;
 
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.interceptor.SessionAware;
 import java.util.Map;
-import Drop.DropWeb.model.HeyBean;
+import model.interfaces.HeyBean;
 
 public class LoginAction extends ActionSupport implements SessionAware {
 	private static final long serialVersionUID = 4L;
@@ -13,7 +13,7 @@ public class LoginAction extends ActionSupport implements SessionAware {
 	@Override
 	public String execute() {
 		if(this.username != null && !username.equals("") && !password.equals("") && this.password != null) {
-			if(HeyBean.CheckUser(username,password) == true) return SUCCESS;
+			if(HeyBean.CheckUser(username,password,false) == true) return SUCCESS;
 			else return LOGIN;
 		}
 		else
