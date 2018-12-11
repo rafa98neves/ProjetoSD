@@ -29,25 +29,23 @@
     </select>
 
     <c:choose>
-        <c:when test="${sort.value == 'musica'}">
-            <c:when test="${results == null}">
-                Problema durante a pesquisa!
-            </c:when>
-            <c:when test="${results.isEmpty()}">
-                Não foram encontrados resultados para a pesquisa!
-            </c:when>
-            <c:otherwise>
-                <br />
-                <br>
-                <br>
-                <c:forEach items="${results}" var="item">
-                    <div>
-                        Nome: <c:out value="${item}" /> <br />
-                    </div>
-                    <br />
-                </c:forEach>
-            </c:otherwise>
+        <c:when test="${results == null}">
+            Problema durante a pesquisa!
         </c:when>
+        <c:when test="${results.isEmpty()}">
+            Não foram encontrados resultados para a pesquisa!
+        </c:when>
+        <c:otherwise>
+            <br />
+            <br>
+            <br>
+            <c:forEach items="${results}" var="item">
+                <div>
+                    Nome: <c:out value="${item}" /> <br />
+                </div>
+                <br />
+            </c:forEach>
+        </c:otherwise>
     </c:choose>
 </div>
 </body>

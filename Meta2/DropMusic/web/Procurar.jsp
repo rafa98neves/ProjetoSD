@@ -28,7 +28,7 @@
         <option value="artista">Artista</option>
     </select>
 
-<c:choose>
+    <c:choose>
         <c:when test="${results == null}">
             Problema durante a pesquisa!
         </c:when>
