@@ -13,11 +13,28 @@ public class RegisterAction extends ActionSupport implements SessionAware{
     @Override
     public String execute() {
         if(this.username != null && !username.equals("") && !password.equals("") && this.password != null) {
-            if(HeyBean.CheckUser(username,password,true) == true) return SUCCESS;
-            else return NONE;
+            String[] respostas = HeyBean.CheckUser(username,password,true);
+            if(respostas[0].compareTo("true") == 0) {
+                getHeyBean().setUsername(username);
+                session.put("username",username);
+                session.put("loggedin",true);
+                if (respostas[2].compareTo("true") == 0) return "editor";
+                else return "success";
+            }
+            else return "failed";
         }
         else
-            return NONE;
+            return "failed";
+    }
+
+    public HeyBean getHeyBean() {
+        if(!session.containsKey("heyBean"))
+            this.setHeyBean(new HeyBean());
+        return (HeyBean) session.get("heyBean");
+    }
+
+    public void setHeyBean(HeyBean heyBean) {
+        this.session.put("heyBean", heyBean);
     }
 
     @Override

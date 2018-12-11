@@ -8,7 +8,7 @@
 <body>
     <p>LOGIN</p>
     <br>
-    <s:form method="GET" action="AuthLogin">
+    <s:form method="post" action="AuthLogin">
         <li><s:text name="Username:" />
         <s:textfield name="username" />
         <li><s:text name="Password:" />

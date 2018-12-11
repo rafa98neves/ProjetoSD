@@ -13,21 +13,21 @@ public class LoginAction extends ActionSupport implements SessionAware {
 	@Override
 	public String execute() {
 		if(this.username != null && !username.equals("") && !password.equals("") && this.password != null) {
-			if(HeyBean.CheckUser(username,password,false) == true) return SUCCESS;
-			else return LOGIN;
+			String[] respostas = HeyBean.CheckUser(username,password,false);
+			if(respostas[0].compareTo("true") == 0) {
+				getHeyBean().setUsername(username);
+				session.put("username",username);
+				session.put("loggedin",true);
+				if (respostas[2].compareTo("true") == 0) session.put("editor",true);
+				else session.put("editor",false);
+				return "success";
+			}
+			else return "failed";
 		}
 		else
-			return LOGIN;
-	}
-	
-	public void setUsername(String username) {
-		this.username = username; // will you sanitize this input? maybe use a prepared statement?
+			return "failed";
 	}
 
-	public void setPassword(String password) {
-		this.password = password; // what about this input? 
-	}
-	
 	public HeyBean getHeyBean() {
 		if(!session.containsKey("heyBean"))
 			this.setHeyBean(new HeyBean());
@@ -36,6 +36,13 @@ public class LoginAction extends ActionSupport implements SessionAware {
 
 	public void setHeyBean(HeyBean heyBean) {
 		this.session.put("heyBean", heyBean);
+	}
+
+	public void setUsername(String username){
+		this.username=username;
+	}
+	public void setPassword(String password){
+		this.password=password;
 	}
 
 	@Override

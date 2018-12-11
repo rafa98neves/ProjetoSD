@@ -9,15 +9,14 @@ public class HeyBean {
 	private static DropMusic_S_I server;
 	private static String Server = "Drop1";
 	private static int PORT = 7000;
-	private String username; // username and password supplied by the user
-	private String password;
+	private String username;
 
 	public HeyBean() {
 		try {
 			server = (DropMusic_S_I) LocateRegistry.getRegistry(PORT).lookup(Server);
 		}
 		catch(NotBoundException|RemoteException e) {
-			e.printStackTrace(); // what happens *after* we reach this line?
+			e.printStackTrace();
 		}
 	}
 
@@ -54,7 +53,7 @@ public class HeyBean {
 		}
 	}
 
-	public static boolean CheckUser(String user, String password, boolean registar){
+	public static String[] CheckUser(String user, String password, boolean registar){
 		String[] resposta = new String[3];
 		while(true) {
 			try {
@@ -65,15 +64,24 @@ public class HeyBean {
 				BackUp();
 			}
 		}
-		if (resposta[0].compareTo("true") == 0) return true;
-		else return false;
+		return resposta;
+	}
+
+	public static String[] Procura(String nome, String tipo){
+		String[] respostas;
+		while(true){
+			try{
+				respostas = server.Find("0",nome,tipo);
+				break;
+			} catch (Exception re) {
+				BackUp();
+			}
+		}
+		return respostas;
 	}
 
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
-	public void setPassword(String password) {
-		this.password = password;
-	}
+
 }

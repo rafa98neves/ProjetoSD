@@ -3,31 +3,21 @@ package model;
 import model.interfaces.SearchModel;
 
 public class Musica implements SearchModel {
-    private String Nome;
-    private String Artista;
+    private String Music_name;
 
-    public Musica(String Nome, String Artista) {
-        setMusicName(Nome);
-        setArtistName(Artista);
+    public Musica(String Music_name) {
+        setMusicName(Music_name);
     }
 
     public Musica() {
-        this(null, null);
+        this(null);
     }
 
     public String getMusicName() {
-        return Nome;
+        return Music_name;
     }
 
-    public void setMusicName(String Nome) {
-        this.Nome = Nome;
-    }
-
-    public String getArtista() {
-        return Artista;
-    }
-
-    public void setArtistName(String Artista) {
-        this.Artista = Artista;
+    public void setMusicName(String Music_name) {
+        this.Music_name = Music_name;
     }
 }

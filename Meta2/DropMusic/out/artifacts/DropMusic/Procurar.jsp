@@ -12,8 +12,8 @@
 <div title="header">
     <p><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></p>
 
-    <s:form method="GET" action="Pesquisar">
-        <s:textfield name="Pesquisa" />
+    <s:form method="get" action="Pesquisar">
+        <s:textfield name="inputObject.musicName" label="MusicName"/>
         <s:submit type="button">
             <s:text name="Procurar"></s:text>
         </s:submit>
@@ -21,32 +21,34 @@
 </div>
 <div title="main">
     <p>Sort:</p>
-    <select>
-        <option value="all">Todos</option>
+
+    <select name='sort'>
         <option value="musica">Música</option>
         <option value="album">Álbum</option>
         <option value="artista">Artista</option>
     </select>
 
-    <p>Nenhum resultado para a sua pesquisa</p>
-    <%--<c:choose>
-        <c:when test="${results == null}">
-            Problema durante a pesquisa!
-        </c:when>
-        <c:when test="${results.isEmpty()}">
-            Não foram encontrados resultados para a pesquisa!
-        </c:when>
-        <c:otherwise>
-            Found ${results.size()} products!
-            <br />
-            <c:forEach items="${results}" var="item">
-                <div>
-                    Nome: <c:out value="${item.Nome}" /> <br />
-                </div>
+    <c:choose>
+        <c:when test="${sort.value == 'musica'}">
+            <c:when test="${results == null}">
+                Problema durante a pesquisa!
+            </c:when>
+            <c:when test="${results.isEmpty()}">
+                Não foram encontrados resultados para a pesquisa!
+            </c:when>
+            <c:otherwise>
                 <br />
-            </c:forEach>
-        </c:otherwise>
-    </c:choose>--%>
+                <br>
+                <br>
+                <c:forEach items="${results}" var="item">
+                    <div>
+                        Nome: <c:out value="${item}" /> <br />
+                    </div>
+                    <br />
+                </c:forEach>
+            </c:otherwise>
+        </c:when>
+    </c:choose>
 </div>
 </body>
 </html>

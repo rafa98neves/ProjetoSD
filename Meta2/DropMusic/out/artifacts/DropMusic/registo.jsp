@@ -9,7 +9,7 @@
 <body>
     <p>REGISTAR</p>
     <br>
-    <s:form method="GET" action="AuthRegist">
+    <s:form method="post" action="AuthRegist">
         <li><s:text name="Username:" />
         <s:textfield name="username" />
         <li><s:text name="Password:" />

@@ -2,15 +2,17 @@ package action;
 
 import com.opensymphony.xwork2.ActionSupport;
 import model.interfaces.SearchModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import services.interfaces.SearchService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchAction extends ActionSupport {
 
-    private SearchModel inputObject;     /* Object holding the user's input */
+    private SearchModel inputObject;
 
-    //private SearchService searchService;
+    private SearchService searchService;
 
     /* Search results to be populated by this action */
     private List<Object> results;
@@ -22,7 +24,7 @@ public class SearchAction extends ActionSupport {
 
     public String execute()
     {
-        //setResults(getSearchService().search(getInputObject()));
+        setResults(getSearchService().search(getInputObject()));
         return SUCCESS;
     }
 
@@ -32,13 +34,12 @@ public class SearchAction extends ActionSupport {
 
     public void setInputObject(SearchModel inputObject) { this.inputObject = inputObject; }
 
-    /*public SearchService getSearchService() {
+    public SearchService getSearchService() {
         return searchService;
     }
-
     public void setSearchService(SearchService searchService) {
         this.searchService = searchService;
-    }*/
+    }
 
     public List<Object> getResults() {
         return results;

@@ -8,11 +8,8 @@
 <title>DropMusic</title>
 </head>
 <body>
-    <s:url action="Login" var="LoginUrl" />
-    <s:url action="Register" var="RegistoUrl" />
-
     <p> DROPMUSIC </p>
-    <br> <s:a href="%{LoginUrl}">Fazer Login</s:a> <br/>
-    <br> <s:a href="%{RegistoUrl}" >Registar</s:a> <br/>
+    <br> <s:a href="login.jsp">Fazer Login</s:a> <br/>
+    <br> <s:a href="registo.jsp" >Registar</s:a> <br/>
 </body>
 </html>

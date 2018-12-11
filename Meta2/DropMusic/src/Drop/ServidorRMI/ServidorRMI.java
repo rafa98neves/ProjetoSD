@@ -211,6 +211,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	}
 
 	public String[] CheckUser(String username, String password) throws RemoteException{
+		System.out.println("> " + username + "\n> " + password);
 		/*String protocolo = new String();
 		String proto_id = UUID.randomUUID().toString();
 		protocolo = "type | login ; protocolo_id | " + proto_id + " ; username | " + username + " ; password | " + password;
@@ -254,7 +255,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	}
 
 	public String[] Find(String ID, String name, String tipo) throws RemoteException{
-		String protocolo = new String();
+		/*String protocolo = new String();
 		protocolo = "type | search ; user_id | " + ID + " ; name | " + name + " ; from | " + tipo;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
@@ -279,7 +280,9 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 				counter++;
 			}
 			return resposta;
-		}
+		}*/
+		String[] respostas = {"ola","ola2","ola3"};
+		return respostas;
 	}
 
 	public String[] GetDetails(String ID, String name, String tipo) throws RemoteException{
