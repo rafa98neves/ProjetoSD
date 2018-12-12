@@ -19,7 +19,6 @@
             <option value="album">Álbum</option>
             <option value="artista">Artista</option>
         </select>
-        <s:combobox list=""
         <s:submit type="button">
             <s:text name="Criar"></s:text>
         </s:submit>

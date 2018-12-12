@@ -20,7 +20,7 @@
             <option value="artista">Artista</option>
         </select>
         <s:submit type="button">
-            <s:text name="Procurar"></s:text>
+            <s:text name="Criar"></s:text>
         </s:submit>
     </s:form>
 </div>
