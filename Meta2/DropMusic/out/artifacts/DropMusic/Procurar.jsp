@@ -12,13 +12,12 @@
 <div title="header">
     <h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
 
-    <s:form method="get" action="Pesquisar">
-        <s:textfield name="inputObject.musicName" label="MusicName"/>
-
-        <select name='sort'>
-            <option value="musica" selected>Música</option>
-            <option value="album" selected>Álbum</option>
-            <option value="artista" selected>Artista</option>
+    <s:form method="GET" action="Pesquisar">
+        <s:textfield name="inputObject.searching" label="Music_name"/>
+        <select id="info1" name="inputObject.tipo">
+            <option value="musica">Música</option>
+            <option value="album">Álbum</option>
+            <option value="artista">Artista</option>
         </select>
 
         <s:submit type="button">
@@ -29,7 +28,6 @@
 </div>
 <div title="main">
 
-    <c:out value="${requestScope.get(sort)}">
     <c:choose>
         <c:when test="${results == null}">
             Problema durante a pesquisa!
@@ -42,9 +40,10 @@
             <br>
             <br>
             Resultado da pesquisa:
+            <br>
             <c:forEach items="${results}" var="item">
-                <div>
-                    >> <c:out value="${item}" /> <br />
+                <br>
+                    >> 	<a href="<s:url action="GetDetails" />">${item}</a></br>
                 </div>
                 <br />
             </c:forEach>

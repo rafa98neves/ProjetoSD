@@ -6,7 +6,7 @@
     <title>DropMusic</title>
 </head>
 <body>
-    <h2>LOGIN</h2>
+    <h2 style="color:darksalmon">LOGIN</h2>
     <br>
     <s:form method="post" action="AuthLogin">
         <li><s:text name="Username:" />

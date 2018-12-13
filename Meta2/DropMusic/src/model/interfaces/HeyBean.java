@@ -91,6 +91,24 @@ public class HeyBean {
 		}
 	}
 
+	public static boolean GivePerm(String nome){
+		while(true) {
+			try {
+				return server.GivePriv("0",true,nome);
+			} catch (Exception c) {
+				BackUp();
+			}
+		}
+	}
+	public static String[] GetDetails(String nome, String tipo){
+		while(true) {
+			try {
+				return server.GetDetails("0",nome,tipo);
+			} catch (Exception c) {
+				BackUp();
+			}
+		}
+	}
 	public void setUsername(String username) {
 		this.username = username;
 	}

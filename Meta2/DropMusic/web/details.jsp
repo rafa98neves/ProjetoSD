@@ -33,17 +33,17 @@
             Problema durante a pesquisa!
         </c:when>
         <c:when test="${results.isEmpty()}">
-            Não foram encontrados resultados para a pesquisa!
+            Não foram encontrados detalhes para a pesquisa!
         </c:when>
         <c:otherwise>
             <br />
             <br>
             <br>
-            Resultado da pesquisa:
+            "${param.item}":
             <br>
             <c:forEach items="${results}" var="item">
                 <br>
-                    >> 	<a href="<s:url action="GetDetails" />">${item}</a></br>
+                    >> item
                 </div>
                 <br />
             </c:forEach>

@@ -8,20 +8,8 @@ public class CreatAction extends ActionSupport{
 
     @Override
     public String execute() {
-
-        System.out.println(creating);
-        System.out.println(info1);
-        System.out.println(info2);
-        System.out.println(info3);
         if(this.creating != null && this.info1 != null && this.info2 != null && this.info3 != null) {
-            //if(HeyBean.Cria(creating,info1,info2,info3)) return "success";
-            if(true){
-                System.out.println(creating);
-                System.out.println(info1);
-                System.out.println(info2);
-                System.out.println(info3);
-                return "success";
-            }
+            if(HeyBean.Cria(creating,info1,info2,info3)) return "success";
             else return "failed";
         }
         else

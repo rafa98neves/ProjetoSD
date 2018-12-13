@@ -286,7 +286,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 	}
 
 	public String[] GetDetails(String ID, String name, String tipo) throws RemoteException{
-		String protocolo = new String();
+		/*String protocolo = new String();
 		protocolo = "type | details ; user_id | " + ID + " ; name | " + name + " ; from | " + tipo;
         MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
@@ -312,7 +312,9 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 				counter++;
 			}
 			return resposta;
-		}
+		}*/
+		String[] lol = {"é","muito","giro"};
+		return lol;
 	}
 
 	public void AddRemoveSomething(String ID,String tipo, String nome, String dado_add_removido, boolean remove) throws RemoteException{

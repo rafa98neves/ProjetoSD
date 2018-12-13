@@ -3,6 +3,7 @@ package action;
 import com.opensymphony.xwork2.ActionSupport;
 import model.interfaces.SearchModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import services.DetailsService;
 import services.interfaces.SearchService;
 
 import java.util.ArrayList;

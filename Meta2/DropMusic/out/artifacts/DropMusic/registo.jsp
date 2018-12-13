@@ -6,7 +6,7 @@
     <title>DropMusic</title>
 </head>
 <body>
-    <h2>REGISTAR</h2>
+    <h2 style="color:darksalmon">REGISTAR</h2>
     <br>
     <s:form method="post" action="AuthRegist">
         <li><s:text name="Username:" />

@@ -17,20 +17,20 @@ public class SearchService implements services.interfaces.SearchService {
         if (query instanceof SearchingModel) {
             String[] results_aux;
             List<Object> results = new ArrayList<Object>();
-
             //Procurar Musicas
-            results.add("#musicas");
-            results_aux = HeyBean.Procura(((SearchingModel) query).getSearching(),"musica");
-            for(String s:results_aux) results.add(s);
+            if(((SearchingModel) query).getTipo().compareTo("musica")==0)
+                results_aux = HeyBean.Procura(((SearchingModel) query).getSearching(), "musica");
 
             //Procurar Artistas
-            results.add("#artistas");
-            results_aux = HeyBean.Procura(((SearchingModel) query).getSearching(),"musica");
-            for(String s:results_aux) results.add(s);
+            else if(((SearchingModel) query).getTipo().compareTo("artista")==0)
+                results_aux = HeyBean.Procura(((SearchingModel) query).getSearching(), "artista");
 
             //Procurar Albuns
-            results.add("#albuns");
-            results_aux = HeyBean.Procura(((SearchingModel) query).getSearching(),"musica");
+            else if(((SearchingModel) query).getTipo().compareTo("album")==0)
+            results_aux = HeyBean.Procura(((SearchingModel) query).getSearching(),"album");
+
+            else return null;
+
             for(String s:results_aux) results.add(s);
             return results;
         }
