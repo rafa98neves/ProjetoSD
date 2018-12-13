@@ -80,8 +80,18 @@ public class HeyBean {
 		return respostas;
 	}
 
+	public static boolean Cria(String nome, String tipo, String info1, String info2){
+		while(true) {
+			try {
+				server.Criar("0", tipo, nome, info1,info2);
+				return true;
+			} catch (Exception c) {
+				BackUp();
+			}
+		}
+	}
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
 }

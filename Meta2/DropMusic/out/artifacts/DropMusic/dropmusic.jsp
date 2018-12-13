@@ -12,9 +12,15 @@
 </head>
 <body>
 <div title="header">
-    <p><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></p>
+	<h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
     <s:form method="GET" action="Pesquisar">
-		<s:textfield name="inputObject.musicName" label="Music_name"/>
+		<s:textfield name="inputObject.searching" label="Music_name"/>
+		<select id="sort" name="sort">
+			<option value="musica">Música</option>
+			<option value="album">Álbum</option>
+			<option value="artista">Artista</option>
+		</select>
+
         <s:submit type="button">
             <s:text name="Procurar"></s:text>
         </s:submit>

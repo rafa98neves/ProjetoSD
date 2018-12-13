@@ -10,23 +10,24 @@
 </head>
 <body>
 <div title="header">
-    <p><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></p>
+    <h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
 
     <s:form method="get" action="Pesquisar">
         <s:textfield name="inputObject.musicName" label="MusicName"/>
+
+        <select name='sort'>
+            <option value="musica" selected>Música</option>
+            <option value="album" selected>Álbum</option>
+            <option value="artista" selected>Artista</option>
+        </select>
+
         <s:submit type="button">
             <s:text name="Procurar"></s:text>
         </s:submit>
     </s:form>
+
 </div>
 <div title="main">
-    <p>Sort:</p>
-
-    <select name='sort'>
-        <option value="musica">Música</option>
-        <option value="album">Álbum</option>
-        <option value="artista">Artista</option>
-    </select>
 
     <c:choose>
         <c:when test="${results == null}">
@@ -39,14 +40,16 @@
             <br />
             <br>
             <br>
+            Resultado da pesquisa:
             <c:forEach items="${results}" var="item">
                 <div>
-                    Nome: <c:out value="${item}" /> <br />
+                    >> <c:out value="${item}" /> <br />
                 </div>
                 <br />
             </c:forEach>
         </c:otherwise>
     </c:choose>
+
 </div>
 </body>
 </html>

@@ -10,7 +10,7 @@
 </head>
 <body>
 <div title="header">
-    <p><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></p>
+    <h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
 </div>
 
 <div title="main">

@@ -8,7 +8,7 @@
 <title>DropMusic</title>
 </head>
 <body>
-    <p> DROPMUSIC </p>
+    <h1> DROPMUSIC </h1>
     <br> <s:a href="login.jsp">Fazer Login</s:a> <br/>
     <br> <s:a href="registo.jsp" >Registar</s:a> <br/>
 </body>
