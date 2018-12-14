@@ -13,7 +13,7 @@
     <h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
 
     <s:form method="GET" action="Pesquisar">
-        <s:textfield name="inputObject.searching" label="Music_name"/>
+        <s:textfield name="inputObject.searching"/>
         <select id="info1" name="inputObject.tipo">
             <option value="musica">Música</option>
             <option value="album">Álbum</option>
@@ -42,10 +42,11 @@
             Resultado da pesquisa:
             <br>
             <c:forEach items="${results}" var="item">
-                <br>
-                    >> 	<a href="<s:url action="GetDetails" />">${item}</a></br>
-                </div>
-                <br />
+                    <s:url var="alvo" action="GetDetails">
+                        <s:param name="inputObject.alvo">${item}</s:param>
+                    </s:url>
+                    <a href="${alvo}">${item}</a>
+                    <br />
             </c:forEach>
         </c:otherwise>
     </c:choose>

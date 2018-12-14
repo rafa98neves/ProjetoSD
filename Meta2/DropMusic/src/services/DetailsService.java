@@ -1,25 +1,25 @@
 package services;
 
-import model.SearchingModel;
+import model.GetDetailsModel;
 import model.interfaces.HeyBean;
 import model.interfaces.SearchModel;
+import org.apache.struts2.interceptor.SessionAware;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-
-public class DetailsService implements services.interfaces.SearchService {
-
+public class DetailsService implements services.interfaces.SearchService{
     public DetailsService() { }
 
     @Override
-    public List<Object> search(SearchModel query) {
-        if (query instanceof SearchingModel) {
+    public List<Object> search(SearchModel query, Map<String, Object> Session) {
+        if (query instanceof GetDetailsModel) {
             String[] respostas;
+
             List<Object> results = new ArrayList<Object>();
-            System.out.println(((SearchingModel) query).getTipo());
-            System.out.println(((SearchingModel) query).getSearching());
-            respostas = HeyBean.GetDetails(((SearchingModel) query).getSearching(), ((SearchingModel) query).getTipo());
+            respostas = HeyBean.GetDetails((String) Session.get("ID"),((GetDetailsModel) query).getAlvo(),(String) Session.get("LastSearchType"));
+
             if (respostas[0] == "none") return null;
             else {
                 for (String s : respostas) {
@@ -30,4 +30,6 @@ public class DetailsService implements services.interfaces.SearchService {
         }
         return null;
     }
+
+
 }

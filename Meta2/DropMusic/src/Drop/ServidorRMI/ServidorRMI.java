@@ -240,7 +240,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		}*/
 		String[] resposta = new String[3];
 		resposta[0] = "true";
-		resposta[1] = "0";
+		resposta[1] = "30";
 		resposta[2] = "true";
 		return resposta;
 	}

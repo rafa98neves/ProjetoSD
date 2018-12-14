@@ -17,9 +17,11 @@ public class RegisterAction extends ActionSupport implements SessionAware{
             if(respostas[0].compareTo("true") == 0) {
                 getHeyBean().setUsername(username);
                 session.put("username",username);
+                session.put("ID",respostas[1]);
                 session.put("loggedin",true);
-                if (respostas[2].compareTo("true") == 0) return "editor";
-                else return "success";
+                if (respostas[2].compareTo("true") == 0) session.put("editor",true);
+                else session.put("editor",false);
+                return "success";
             }
             else return "failed";
         }
@@ -31,6 +33,14 @@ public class RegisterAction extends ActionSupport implements SessionAware{
         if(!session.containsKey("heyBean"))
             this.setHeyBean(new HeyBean());
         return (HeyBean) session.get("heyBean");
+    }
+
+    public void setUsername(String username){
+        this.username=username;
+    }
+
+    public void setPassword(String password){
+        this.password=password;
     }
 
     public void setHeyBean(HeyBean heyBean) {

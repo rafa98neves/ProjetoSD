@@ -1,15 +1,14 @@
 package model;
 
 public class GetDetailsModel implements model.interfaces.SearchModel {
-    private String alvo, tipo;
+    private String alvo;
 
-    public GetDetailsModel(String alvo, String tipo) {
+    public GetDetailsModel(String alvo) {
         setAlvo(alvo);
-        setTipo(tipo);
     }
 
     public GetDetailsModel() {
-        this(null, null);
+        this(null);
     }
 
     public String getAlvo() {
@@ -18,14 +17,6 @@ public class GetDetailsModel implements model.interfaces.SearchModel {
 
     public void setAlvo(String alvo) {
         this.alvo = alvo;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 
 }

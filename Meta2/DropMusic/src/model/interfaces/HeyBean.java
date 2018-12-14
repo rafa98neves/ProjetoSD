@@ -67,7 +67,7 @@ public class HeyBean {
 		return resposta;
 	}
 
-	public static String[] Procura(String nome, String tipo){
+	public static String[] Procura(String ID, String nome, String tipo){
 		String[] respostas;
 		while(true){
 			try{
@@ -80,7 +80,7 @@ public class HeyBean {
 		return respostas;
 	}
 
-	public static boolean Cria(String nome, String tipo, String info1, String info2){
+	public static boolean Cria(String ID, String nome, String tipo, String info1, String info2){
 		while(true) {
 			try {
 				server.Criar("0", tipo, nome, info1,info2);
@@ -91,7 +91,7 @@ public class HeyBean {
 		}
 	}
 
-	public static boolean GivePerm(String nome){
+	public static boolean GivePerm(String ID, String nome){
 		while(true) {
 			try {
 				return server.GivePriv("0",true,nome);
@@ -100,7 +100,8 @@ public class HeyBean {
 			}
 		}
 	}
-	public static String[] GetDetails(String nome, String tipo){
+
+	public static String[] GetDetails(String ID, String nome, String tipo){
 		while(true) {
 			try {
 				return server.GetDetails("0",nome,tipo);
@@ -109,6 +110,7 @@ public class HeyBean {
 			}
 		}
 	}
+
 	public void setUsername(String username) {
 		this.username = username;
 	}

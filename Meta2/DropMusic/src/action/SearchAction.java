@@ -1,15 +1,18 @@
 package action;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import model.interfaces.SearchModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import services.DetailsService;
+import org.apache.struts2.interceptor.SessionAware;
 import services.interfaces.SearchService;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class SearchAction extends ActionSupport {
+public class SearchAction extends ActionSupport implements SessionAware{
+    private Map<String, Object> session;
 
     private SearchModel inputObject;
 
@@ -25,7 +28,8 @@ public class SearchAction extends ActionSupport {
 
     public String execute()
     {
-        setResults(getSearchService().search(getInputObject()));
+        Map<String, Object> session = ActionContext.getContext().getSession();
+        setResults(getSearchService().search(getInputObject(),session));
         return SUCCESS;
     }
 
@@ -50,4 +54,9 @@ public class SearchAction extends ActionSupport {
         this.results = results;
     }
 
+
+    @Override
+    public void setSession(Map<String, Object> map) {
+        this.session = session;
+    }
 }

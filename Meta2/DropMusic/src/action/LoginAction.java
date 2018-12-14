@@ -17,6 +17,7 @@ public class LoginAction extends ActionSupport implements SessionAware {
 			if(respostas[0].compareTo("true") == 0) {
 				getHeyBean().setUsername(username);
 				session.put("username",username);
+				session.put("ID",respostas[1]);
 				session.put("loggedin",true);
 				if (respostas[2].compareTo("true") == 0) session.put("editor",true);
 				else session.put("editor",false);

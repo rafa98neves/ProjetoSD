@@ -13,7 +13,7 @@
     <h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
 
     <s:form method="GET" action="Pesquisar">
-        <s:textfield name="inputObject.searching" label="Music_name"/>
+        <s:textfield name="inputObject.searching"/>
         <select id="info1" name="inputObject.tipo">
             <option value="musica">Música</option>
             <option value="album">Álbum</option>
@@ -36,15 +36,11 @@
             Não foram encontrados detalhes para a pesquisa!
         </c:when>
         <c:otherwise>
-            <br />
-            <br>
-            <br>
-            "${param.item}":
-            <br>
+            <br><br/>
+            Detalhes:
+            <br><br />
             <c:forEach items="${results}" var="item">
-                <br>
-                    >> item
-                </div>
+                    >> ${item}
                 <br />
             </c:forEach>
         </c:otherwise>
