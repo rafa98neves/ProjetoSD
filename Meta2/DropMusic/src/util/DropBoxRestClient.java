@@ -34,7 +34,7 @@ public class DropBoxRestClient {
 	private static final String API_USER_TOKEN = "";
 
 	public static void main(String[] args) {
-
+		System.out.println("YO");
 		Scanner in = new Scanner(System.in);
 
 		OAuthService service = new ServiceBuilder()

@@ -14,13 +14,13 @@ import uc.sd.apis.DropBoxApi2;
 import java.util.Map;
 import java.util.Scanner;
 
-public class DropBoxAction extends ActionSupport implements SessionAware {
+public class DropBoxCallbackAction extends ActionSupport implements SessionAware {
     private static final long serialVersionUID = 4L;
     private Map<String, Object> session;
     private static final String API_APP_KEY = "ay4b0xio8wtgpja";
     private static final String API_APP_SECRET = "z7dzhg7ihti9w3x";
-    public static String dropUrl;
-    // Access codes #2: per user per application
+    public static String code;
+
     private static final String API_USER_TOKEN = "";
 
     @Override
@@ -35,15 +35,23 @@ public class DropBoxAction extends ActionSupport implements SessionAware {
                 .build();
 
         try {
-            if ( API_USER_TOKEN.equals("") ) {
-                setDropUrl(service.getAuthorizationUrl(null));
-                return "redirect";
-            }
+            Verifier verifier = new Verifier(code);
+            Token accessToken = service.getAccessToken(null, verifier);
+            System.out.println("TOKEN: " + accessToken.getToken() + "\nSECRET: " + accessToken.getSecret());
+
+            /*listFiles(service, accessToken);
+            addFile("teste.txt", service, accessToken);
+            listFiles(service, accessToken);
+            deleteFile("teste.txt", service, accessToken);
+            listFiles(service, accessToken);*/
+
         } catch(OAuthException e) {
             e.printStackTrace();
             return "error";
+        } finally {
+            in.close();
         }
-        return "redirect";
+        return "success";
     }
 
     private static void listFiles(OAuthService service, Token accessToken) {
@@ -84,11 +92,12 @@ public class DropBoxAction extends ActionSupport implements SessionAware {
         // TODO
     }
 
-    public void setDropUrl(String dropUrl){
-        this.dropUrl = dropUrl;
+    public void setCode(String code){
+        this.code = code;
     }
-    public String getDropUrl(){
-        return dropUrl;
+
+    public String getCode(){
+        return code;
     }
     @Override
     public void setSession(Map<String, Object> session) {
