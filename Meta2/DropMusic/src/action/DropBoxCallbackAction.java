@@ -1,15 +1,16 @@
 package action;
 
-import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.model.*;
-import com.github.scribejava.core.oauth.OAuthService;
+import com.opensymphony.xwork2.ActionContext;
+import util.scribejava.core.builder.ServiceBuilder;
+import util.scribejava.core.exceptions.OAuthException;
+import util.scribejava.core.model.*;
+import util.scribejava.core.oauth.OAuthService;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.interceptor.SessionAware;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import uc.sd.apis.DropBoxApi2;
+import util.scribejava.apis.DropBoxApi2;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -20,8 +21,6 @@ public class DropBoxCallbackAction extends ActionSupport implements SessionAware
     private static final String API_APP_KEY = "ay4b0xio8wtgpja";
     private static final String API_APP_SECRET = "z7dzhg7ihti9w3x";
     public static String code;
-
-    private static final String API_USER_TOKEN = "";
 
     @Override
     public String execute() {
@@ -37,7 +36,9 @@ public class DropBoxCallbackAction extends ActionSupport implements SessionAware
         try {
             Verifier verifier = new Verifier(code);
             Token accessToken = service.getAccessToken(null, verifier);
-            System.out.println("TOKEN: " + accessToken.getToken() + "\nSECRET: " + accessToken.getSecret());
+            Map<String, Object> session = ActionContext.getContext().getSession();
+            session.put("token",accessToken);
+            session.put("InDrop",true);
 
             /*listFiles(service, accessToken);
             addFile("teste.txt", service, accessToken);

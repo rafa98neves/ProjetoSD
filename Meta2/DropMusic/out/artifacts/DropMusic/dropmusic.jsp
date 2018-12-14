@@ -33,24 +33,24 @@
 	<li><p><a href="Download.jsp"><span style="color:black">Download</span></a></p>
 	<li><p><a href="Upload.jsp"><span style="color:black">Upload</span></a></p>
 	<c:choose>
-		<c:when test="${session.InDrop == false}">
-			<s:form action="LogInDropBox">
-				<s:submit  value="Log in Dropbox" type="button"/>
-			</s:form>
-		</c:when>
-		<c:otherwise>
-			<s:form action="LogOutDropBox">
-				<s:submit  value="Log out Dropbox" type="button"/>
-			</s:form>
-		</c:otherwise>
-	</c:choose>
-	<c:choose>
 		<c:when test="${session.editor == true}">
 			<li><p><a href="Criar.jsp"><span style="color:black">Criar</span></a></p>
 			<li><p><a href="GivePrev.jsp"><span style="color:black">Dar Previlegios</span></a></p>
 		</c:when>
 	</c:choose>
 	<li><p><a href="index.jsp"><span style="color:black">Log out</span></a></p>
+	<c:choose>
+	<c:when test="${session.InDrop == false}">
+	<s:form action="LogInDropBox">
+		<s:submit  value="Log in Dropbox" type="button"/>
+	</s:form>
+	</c:when>
+	<c:otherwise>
+	<s:form action="LogOutDropBox">
+		<s:submit  value="Log out Dropbox" type="button"/>
+	</s:form>
+	</c:otherwise>
+	</c:choose>
 </div>
 </body>
 </html>
