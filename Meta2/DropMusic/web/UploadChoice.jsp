@@ -27,13 +27,13 @@
             <br>
             Músicas:
             <br>
-            <s:form method="post" action="upload">
-                <select id="info1" name="inputObject.tipo">
+            <s:form method="post" action="UploadAction">
+                <select id="info" name="musica">
                     <c:forEach items="${results}" var="item">
                         <option value="${item}">${item}</option>
                     </c:forEach>
                 </select>
-                <s:textfield name="inputObject.dir"/>
+                <s:textfield name="dir"/>
                 <s:submit type="button">
                     <s:text name="Upload"></s:text>
                 </s:submit>

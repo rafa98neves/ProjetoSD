@@ -19,6 +19,7 @@ public class LoginAction extends ActionSupport implements SessionAware {
 				session.put("username",username);
 				session.put("ID",respostas[1]);
 				session.put("loggedin",true);
+				session.put("InDrop",false);
 				if(!session.containsKey("InDrop")) session.put("InDrop",false);
 				if (respostas[2].compareTo("true") == 0) session.put("editor",true);
 				else session.put("editor",false);

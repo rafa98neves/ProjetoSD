@@ -29,7 +29,7 @@ public class SearchingModel implements model.interfaces.SearchModel {
         this.Tipo = Tipo;
     }
 
-    public String getFalg() {
+    public String getFlag() {
         return Flag;
     }
 

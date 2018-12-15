@@ -13,6 +13,7 @@
     <h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
 
     <s:form method="GET" action="Pesquisar">
+        <input type='hidden' name='inputObject.flag' value='pesquisar'/>
         <s:textfield name="inputObject.searching"/>
         <select id="info1" name="inputObject.tipo">
             <option value="musica">Música</option>

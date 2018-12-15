@@ -14,6 +14,7 @@
 <div title="header">
 	<h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
     <s:form method="GET" action="Pesquisar">
+		<input type='hidden' name='inputObject.flag' value='pesquisar'/>
 		<s:textfield name="inputObject.searching" />
 			<select id="info1" name="inputObject.tipo">
 				<option value="musica">Música</option>
@@ -29,9 +30,18 @@
 
 <div title="main">
 	<li><p><a href="Playlist.jsp"><span style="color:black">Playlists</span></a></p>
-	<li><p><a href="Partilhar.jsp"><span style="color:black">Partilhar Música</span></a></p>
-	<li><p><a href="Download.jsp"><span style="color:black">Download</span></a></p>
-	<li><p><a href="Upload.jsp"><span style="color:black">Upload</span></a></p>
+	<c:choose>
+		<c:when test="${session.InDrop == false}">
+			<li><p><a onclick="return alert('Tem que primero fazer log in na DropBox')">Partilhar Música</a></p>
+			<li><p><a onclick="return alert('Tem que primero fazer log in na DropBox')">Download</a></p>
+			<li><p><a onclick="return alert('Tem que primero fazer log in na DropBox')">Upload</a></p>
+		</c:when>
+		<c:otherwise>
+			<li><p><a href="Partilhar.jsp"><span style="color:black">Partilhar Música</span></a></p>
+			<li><p><a href="Download.jsp"><span style="color:black">Download</span></a></p>
+			<li><p><a href="Upload.jsp"><span style="color:black">Upload</span></a></p>
+		</c:otherwise>
+	</c:choose>
 	<c:choose>
 		<c:when test="${session.editor == true}">
 			<li><p><a href="Criar.jsp"><span style="color:black">Criar</span></a></p>
