@@ -1,15 +1,16 @@
 package model;
 
 public class SearchingModel implements model.interfaces.SearchModel {
-    private String Searching, Tipo;
+    private String Searching, Tipo, Flag;
 
-    public SearchingModel(String Searching, String Tipo) {
+    public SearchingModel(String Searching, String Tipo, String Flag) {
         setSearching(Searching);
         setTipo(Tipo);
+        setFlag(Flag);
     }
 
     public SearchingModel() {
-        this(null, null);
+        this(null, null, null);
     }
 
     public String getSearching() {
@@ -28,4 +29,11 @@ public class SearchingModel implements model.interfaces.SearchModel {
         this.Tipo = Tipo;
     }
 
+    public String getFalg() {
+        return Flag;
+    }
+
+    public void setFlag(String Flag) {
+        this.Flag = Flag;
+    }
 }

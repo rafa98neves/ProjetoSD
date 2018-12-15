@@ -22,6 +22,8 @@ public class SearchService implements services.interfaces.SearchService {
             //Procurar Musicas
             if(((SearchingModel) query).getTipo().compareTo("musica")==0) {
                 session.put("LastSearchType","musica");
+                System.out.println(((SearchingModel) query).getFalg());
+                if(((SearchingModel) query).getFalg().compareTo("upload")==0) results.add("TRUE");
                 results_aux = HeyBean.Procura((String) session.get("ID"), ((SearchingModel) query).getSearching(), "musica");
             }
             //Procurar Artistas

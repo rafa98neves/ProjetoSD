@@ -13,8 +13,18 @@
     <h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
 </div>
 
-<div title="main">
-    <p>Nenhuma para mostrar<p>
+<br title="main">
+    <br>
+    Procure uma música para associar ao seu upload!
+    </br>
+    <s:form method="GET" action="Pesquisar">
+        <input type='hidden' name='inputObject.tipo' value='musica'/>
+        <input type='hidden' name='inputObject.flag' value='upload'/>
+        <s:textfield name="inputObject.searching"/>
+        <s:submit type="button">
+            <s:text name="Procurar"></s:text>
+        </s:submit>
+    </s:form>
 </div>
 </body>
 </html>

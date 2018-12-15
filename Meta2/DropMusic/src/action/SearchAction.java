@@ -30,6 +30,10 @@ public class SearchAction extends ActionSupport implements SessionAware{
     {
         Map<String, Object> session = ActionContext.getContext().getSession();
         setResults(getSearchService().search(getInputObject(),session));
+        if(results.get(0)=="TRUE"){
+            results.remove(0);
+            return "upload";
+        }
         return SUCCESS;
     }
 
@@ -42,6 +46,7 @@ public class SearchAction extends ActionSupport implements SessionAware{
     public SearchService getSearchService() {
         return searchService;
     }
+
     public void setSearchService(SearchService searchService) {
         this.searchService = searchService;
     }
@@ -53,7 +58,6 @@ public class SearchAction extends ActionSupport implements SessionAware{
     public void setResults(List<Object> results) {
         this.results = results;
     }
-
 
     @Override
     public void setSession(Map<String, Object> map) {

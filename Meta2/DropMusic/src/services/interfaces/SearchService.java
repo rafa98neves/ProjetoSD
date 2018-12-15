@@ -1,7 +1,6 @@
 package services.interfaces;
 
 import model.interfaces.SearchModel;
-import org.apache.struts2.interceptor.SessionAware;
 
 import java.util.List;
 import java.util.Map;
