@@ -32,6 +32,8 @@ public class WebSocketAnnotation {
             String[] divider = message.split(" ");
             this.username = divider[1];
             users.add(this);
+            for(WebSocketAnnotation s : users)
+                System.out.println(s.username);
         }
         else sendMessage(message);
     }

@@ -45,8 +45,9 @@
         function onMessage(message) { // print the received message
             console.log(message);
             if(message != null && message.length>0)
-				${session.n_notificacoes = session.n_notificacoes+1};
+                "<s:set var="${session.n_notificacoes}" value="${session.n_notificacoes+1}"/>";
         }
+
         function doSend() {
             var alvo = document.getElementById('Sendto').value;
             if (alvo != '')
