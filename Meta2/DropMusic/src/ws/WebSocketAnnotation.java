@@ -45,7 +45,7 @@ public class WebSocketAnnotation {
 
     private void sendMessage(String text) {
         String[] divide = new String[2];
-        divide = text.split(" | ");
+        divide = text.split(" : ");
         System.out.println(divide[0]);
     	try {
 			for(WebSocketAnnotation s : users){

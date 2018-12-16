@@ -12,7 +12,6 @@
 
 	<script type="text/javascript">
         var websocket = null;
-
         window.onload = function() {
             connect('ws://' + window.location.host + '/ws');
         }
@@ -36,22 +35,23 @@
         function onOpen(event) {
             websocket.send("# " + "${session.username}");
             document.getElementById('Sendto').onkeydown = function(key) {
-                if (key.keyCode == 13) {
+                if (key.keyCode == 13 && document.getElementById('Sendto').value != '') {
                     doSend();
                 }
             };
         }
 
-        function onMessage(message) { // print the received message
-            console.log(message);
-            if(message != null && message.length>0)
-                "<s:set var="${session.n_notificacoes}" value="${session.n_notificacoes+1}"/>";
+        function onMessage(message) {
+            if(message.data.localeCompare("Parabéns, foi promovido a editor") === 1){
+                <%--<s:set var="${session.editor}" value="true" />--%>
+			}
+			alert(message.data);
         }
 
         function doSend() {
             var alvo = document.getElementById('Sendto').value;
             if (alvo != '')
-                websocket.send(alvo + " | Parabéns, foi promovido a editor!");
+                websocket.send(alvo + " : Parabéns, foi promovido a editor!");
 
             document.getElementById('Sendto').value = '';
         }
@@ -72,6 +72,7 @@
 <div title="header">
 
 	<h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
+
     <s:form method="GET" action="Pesquisar">
 		<input type='hidden' name='inputObject.flag' value='pesquisar'/>
 		<s:textfield name="inputObject.searching" />
@@ -121,7 +122,6 @@
 	</s:form>
 	</c:otherwise>
 	</c:choose>
-
 
 </div>
 </body>

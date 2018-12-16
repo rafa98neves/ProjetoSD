@@ -49,7 +49,7 @@ public class UploadAction extends ActionSupport implements SessionAware {
 				.build();
 
 		Token accessToken = (Token) session.get("token");
-		boolean answer = addFile("musica.mp3", service, accessToken);
+		boolean answer = addFile("DropMusic/"+musica+".mp3", service, accessToken);
 		return answer;
 	}
 	public void setDir(String dir){
@@ -69,27 +69,26 @@ public class UploadAction extends ActionSupport implements SessionAware {
 	}
 
 	private boolean addFile(String path, OAuthService service, Token accessToken) {
-		OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.dropboxapi.com/2/files/list_folder", service);
-		request.addHeader("authorization", "Bearer " + accessToken.getToken());
-		request.addHeader("Content-Type",  "application/json");
-		request.addPayload("{\n" +
-				"    \"path\": \"\",\n" +
-				"    \"recursive\": false,\n" +
-				"    \"include_media_info\": false,\n" +
-				"    \"include_deleted\": false,\n" +
-				"    \"include_has_explicit_shared_members\": false,\n" +
-				"    \"include_mounted_folders\": true\n" +
-				"}");
+		OAuthRequest request = new OAuthRequest(Verb.POST, "https://content.dropboxapi.com/2/files/upload_session/start\n", service);
+		request.addHeader("Content-Type",  "application/octet-stream");
+		request.addHeader("Authorization", "Bearer " + accessToken.getToken());
+		request.addHeader("Dropbox-API-Arg",
+						"{\"path\": \"/"+path+"\", " +
+						"\"mode\": \"add\", " +
+						"\"autorename\": true, " +
+						"\"mute\": false, " +
+						"\"strict_conflict\": false}");
+
 		Response response = request.send();
-		JSONObject rj = (JSONObject) JSONValue.parse(response.getBody());
 
+		System.out.println("path: /"+path);
+		System.out.println("\n\nSENT REQUEST FOR ADDING NEW FILE!--------------------------!-----------------");
+		System.out.println(response.getCode());
+		System.out.println("\n");
+		System.out.println(response.getBody());
+		System.out.println("----------------!----------------");
 		String data = readFile();
-		if(data == null) return false;
-
-		JSONObject newarray = (JSONObject) rj.get("array");
-		newarray.put(0,data);
-
-		if(writeFile(data)) return true;
+		writeFile(data);
 
 		return false;
 	}
