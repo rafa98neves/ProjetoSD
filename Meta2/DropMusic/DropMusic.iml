@@ -30,5 +30,6 @@
     <orderEntry type="library" name="javax.servlet:jstl:1.2" level="project" />
     <orderEntry type="library" name="javassist:javassist:3.11.0.GA" level="project" />
     <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="javax.websocket:javax.websocket-api:1.11" level="project" />
   </component>
 </module>

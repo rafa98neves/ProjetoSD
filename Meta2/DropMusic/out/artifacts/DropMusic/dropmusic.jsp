@@ -9,9 +9,67 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>DropMusic</title>
+
+	<script type="text/javascript">
+        var websocket = null;
+
+        window.onload = function() {
+            connect('ws://' + window.location.host + '/ws');
+        }
+
+        function connect(host) {
+            if ('WebSocket' in window)
+                websocket = new WebSocket(host);
+            else if ('MozWebSocket' in window)
+                websocket = new MozWebSocket(host);
+            else {
+                console.log('Get a real browser which supports WebSocket.');
+                return;
+            }
+
+            websocket.onopen    = onOpen; // set the event listeners below
+            websocket.onclose   = onClose;
+            websocket.onmessage = onMessage;
+            websocket.onerror   = onError;
+        }
+
+        function onOpen(event) {
+            websocket.send("# " + "${session.username}");
+            document.getElementById('Sendto').onkeydown = function(key) {
+                if (key.keyCode == 13) {
+                    doSend();
+                }
+            };
+        }
+
+        function onMessage(message) { // print the received message
+            console.log(message);
+            if(message != null && message.length>0)
+				${session.n_notificacoes = session.n_notificacoes+1};
+        }
+        function doSend() {
+            var alvo = document.getElementById('Sendto').value;
+            if (alvo != '')
+                websocket.send(alvo + " | Parabéns, foi promovido a editor!");
+
+            document.getElementById('Sendto').value = '';
+        }
+
+        function onClose(event) {
+            console.log('WebSocket closed.');
+            document.getElementById('Sendto').onkeydown = null;
+        }
+
+        function onError(event) {
+            console.log('WebSocket error (' + event.data + ').');
+            document.getElementById('Sendto').onkeydown = null;
+        }
+
+	</script>
 </head>
 <body>
 <div title="header">
+
 	<h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
     <s:form method="GET" action="Pesquisar">
 		<input type='hidden' name='inputObject.flag' value='pesquisar'/>
@@ -45,9 +103,10 @@
 	<c:choose>
 		<c:when test="${session.editor == true}">
 			<li><p><a href="Criar.jsp"><span style="color:black">Criar</span></a></p>
-			<li><p><a href="GivePrev.jsp"><span style="color:black">Dar Previlegios</span></a></p>
+			Dar permissões: <p><input type="text" placeholder="nome do utilizador" id="Sendto"></p>
 		</c:when>
 	</c:choose>
+	<li><p><a href="index.jsp"><span style="color:black">Notificações[${session.n_notificacoes}]</span></a></p>
 	<li><p><a href="index.jsp"><span style="color:black">Log out</span></a></p>
 	<c:choose>
 	<c:when test="${session.InDrop == false}">
@@ -61,6 +120,8 @@
 	</s:form>
 	</c:otherwise>
 	</c:choose>
+
+
 </div>
 </body>
 </html>

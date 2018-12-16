@@ -40,12 +40,6 @@ public class DropBoxCallbackAction extends ActionSupport implements SessionAware
             session.put("token",accessToken);
             session.put("InDrop",true);
 
-            /*listFiles(service, accessToken);
-            addFile("teste.txt", service, accessToken);
-            listFiles(service, accessToken);
-            deleteFile("teste.txt", service, accessToken);
-            listFiles(service, accessToken);*/
-
         } catch(OAuthException e) {
             e.printStackTrace();
             return "error";
@@ -53,44 +47,6 @@ public class DropBoxCallbackAction extends ActionSupport implements SessionAware
             in.close();
         }
         return "success";
-    }
-
-    private static void listFiles(OAuthService service, Token accessToken) {
-        OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.dropboxapi.com/2/files/list_folder", service);
-        request.addHeader("authorization", "Bearer " + accessToken.getToken());
-        request.addHeader("Content-Type",  "application/json");
-        request.addPayload("{\n" +
-                "    \"path\": \"\",\n" +
-                "    \"recursive\": false,\n" +
-                "    \"include_media_info\": false,\n" +
-                "    \"include_deleted\": false,\n" +
-                "    \"include_has_explicit_shared_members\": false,\n" +
-                "    \"include_mounted_folders\": true\n" +
-                "}");
-
-        Response response = request.send();
-        System.out.println("Got it! Lets see what we found...");
-        System.out.println("HTTP RESPONSE: =============");
-        System.out.println(response.getCode());
-        System.out.println(response.getBody());
-        System.out.println("END RESPONSE ===============");
-
-
-        JSONObject rj = (JSONObject) JSONValue.parse(response.getBody());
-        JSONArray contents = (JSONArray) rj.get("entries");
-        for (int i=0; i<contents.size(); i++) {
-            JSONObject item = (JSONObject) contents.get(i);
-            String path = (String) item.get("name");
-            System.out.println(" - " + path);
-        }
-    }
-
-    private static void addFile(String path, OAuthService service, Token accessToken) {
-        // TODO
-    }
-
-    private static void deleteFile(String path, OAuthService service, Token accessToken) {
-        // TODO
     }
 
     public void setCode(String code){
