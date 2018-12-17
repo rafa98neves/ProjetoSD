@@ -31,9 +31,11 @@
 
     <c:choose>
         <c:when test="${results == null}">
-            Problema durante a pesquisa!
+            <br>
+            Não foram encontrados resultados para a pesquisa!
         </c:when>
         <c:when test="${results.isEmpty()}">
+            <br>
             Não foram encontrados resultados para a pesquisa!
         </c:when>
         <c:otherwise>

@@ -120,10 +120,17 @@ public class HeyBean {
 //				BackUp();
 //			}
 //		}
-		System.out.println("-" + ID + "-" + nome + "-" + tipo + "-" + alvo + "-" + alteracao + "-" + alterado);
 		return true;
 	}
-
+	public static boolean Critica(String ID,String user,int pontuacao, String texto, String alvo){
+		while(true) {
+			try {
+				return server.Write(ID,user,pontuacao,texto,alvo);
+			} catch (Exception c) {
+				BackUp();
+			}
+		}
+	}
 	public void setUsername(String username) {
 		this.username = username;
 	}

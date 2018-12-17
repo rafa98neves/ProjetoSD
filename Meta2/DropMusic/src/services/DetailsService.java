@@ -22,10 +22,19 @@ public class DetailsService implements services.interfaces.SearchService{
             respostas = HeyBean.GetDetails((String) Session.get("ID"),((GetDetailsModel) query).getAlvo(),(String) Session.get("LastSearchType"));
             Session.put("LastSearched",((GetDetailsModel) query).getAlvo());
 
-            if (respostas[0] == "none") return null;
+            if (respostas[0].compareTo("none")==0) return null;
             else {
-                for (String s : respostas) {
-                    results.add(s);
+                for(int i=0;i<respostas.length;i++) {
+                    String s = respostas[i];
+                    if(s.compareTo("Critica")==0){
+                        s = "Utilizador " + respostas[i+1] + " pontuou o album com " + respostas[i+2] + " pontos e fez a critica: "+respostas[i+3];
+                        results.add(s);
+                        i+=3;
+                        results.add(" ");
+                    }
+                    else {
+                        results.add(s);
+                    }
                 }
                 return results;
             }
