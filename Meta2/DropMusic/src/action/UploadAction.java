@@ -5,6 +5,7 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+
 import util.scribejava.apis.DropBoxApi;
 import util.scribejava.apis.DropBoxApi2;
 import util.scribejava.core.builder.ServiceBuilder;
@@ -69,28 +70,20 @@ public class UploadAction extends ActionSupport implements SessionAware {
 	}
 
 	private boolean addFile(String path, OAuthService service, Token accessToken) {
-		OAuthRequest request = new OAuthRequest(Verb.POST, "https://content.dropboxapi.com/2/files/upload_session/start\n", service);
+		OAuthRequest request = new OAuthRequest(Verb.POST, "https://content.dropboxapi.com/2/files/upload\n", service);
 		request.addHeader("Content-Type",  "application/octet-stream");
 		request.addHeader("Authorization", "Bearer " + accessToken.getToken());
 		request.addHeader("Dropbox-API-Arg",
-						"{\"path\": \"/"+path+"\", " +
+				"{\"path\": \"/"+path+"\", " +
 						"\"mode\": \"add\", " +
 						"\"autorename\": true, " +
 						"\"mute\": false, " +
 						"\"strict_conflict\": false}");
 
+		String file = readFile();
+		request.addPayload(file);
 		Response response = request.send();
-
-		System.out.println("path: /"+path);
-		System.out.println("\n\nSENT REQUEST FOR ADDING NEW FILE!--------------------------!-----------------");
-		System.out.println(response.getCode());
-		System.out.println("\n");
-		System.out.println(response.getBody());
-		System.out.println("----------------!----------------");
-		String data = readFile();
-		writeFile(data);
-
-		return false;
+		return true;
 	}
 
 	public String readFile() {
@@ -108,17 +101,6 @@ public class UploadAction extends ActionSupport implements SessionAware {
 			return null;
 		}
 		return filedata;
-	}
-
-	public boolean writeFile(String data) {
-		try {
-			FileOutputStream fos = new FileOutputStream(this.dir, false);
-			PrintStream ps = new PrintStream(fos);
-			ps.append(data.toString());
-		}catch (Exception c){
-			return false;
-		}
-		return true;
 	}
 
 	@Override

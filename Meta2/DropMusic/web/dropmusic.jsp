@@ -98,7 +98,7 @@
 		</c:when>
 		<c:otherwise>
 			<li><p><a href="Partilhar.jsp"><span style="color:black">Partilhar Música</span></a></p>
-			<li><p><a href="Download.jsp"><span style="color:black">Download</span></a></p>
+			<li><p><a href="<s:url action="Download" />"><span style="color:black">Download</span></a></p>
 			<li><p><a href="Upload.jsp"><span style="color:black">Upload</span></a></p>
 		</c:otherwise>
 	</c:choose>

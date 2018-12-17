@@ -30,9 +30,11 @@ public class SearchAction extends ActionSupport implements SessionAware{
     {
         Map<String, Object> session = ActionContext.getContext().getSession();
         setResults(getSearchService().search(getInputObject(),session));
-        if(results.get(0)=="TRUE"){
-            results.remove(0);
-            return "upload";
+        if(results != null) {
+            if (results.get(0) == "TRUE") {
+                results.remove(0);
+                return "upload";
+            }
         }
         return SUCCESS;
     }

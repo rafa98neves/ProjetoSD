@@ -14,7 +14,28 @@
 </div>
 
 <div title="main">
-    <p>Nenhuma para mostrar<p>
+    <c:choose>
+        <c:when test="${results == null}">
+            Problema durante a pesquisa!
+        </c:when>
+        <c:when test="${results.isEmpty()}">
+            Não foram encontradas musicas!
+        </c:when>
+        <c:otherwise>
+            <br />
+            <br>
+            <br>
+            Musicas:
+            <br>
+            <c:forEach items="${results}" var="item">
+                <s:url var="alvo" action="GetDetails">
+                    <s:param name="inputObject.alvo">${item}</s:param>
+                </s:url>
+                <a href="${alvo}">${item}</a>
+                <br />
+            </c:forEach>
+        </c:otherwise>
+    </c:choose>
 </div>
 </body>
 </html>

@@ -24,16 +24,16 @@
         <c:otherwise>
             <br />
             <br>
-            <br>
-            Músicas:
-            <br>
             <s:form method="post" action="UploadAction">
-                <select id="info" name="musica">
+                Musicas: <select id="info" name="musica">
                     <c:forEach items="${results}" var="item">
                         <option value="${item}">${item}</option>
                     </c:forEach>
                 </select>
-                <s:textfield name="dir"/>
+                <br>
+                <td>
+                    Diretoria: <s:textfield name="dir" placeholder="C:\Isto\e\um\exemplo.mp3" size="40"/>
+                </td>
                 <s:submit type="button">
                     <s:text name="Upload"></s:text>
                 </s:submit>
