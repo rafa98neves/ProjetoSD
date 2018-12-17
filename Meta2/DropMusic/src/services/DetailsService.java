@@ -1,6 +1,7 @@
 package services;
 
 import model.GetDetailsModel;
+import model.SearchingModel;
 import model.interfaces.HeyBean;
 import model.interfaces.SearchModel;
 import org.apache.struts2.interceptor.SessionAware;
@@ -19,6 +20,7 @@ public class DetailsService implements services.interfaces.SearchService{
 
             List<Object> results = new ArrayList<Object>();
             respostas = HeyBean.GetDetails((String) Session.get("ID"),((GetDetailsModel) query).getAlvo(),(String) Session.get("LastSearchType"));
+            Session.put("LastSearched",((GetDetailsModel) query).getAlvo());
 
             if (respostas[0] == "none") return null;
             else {

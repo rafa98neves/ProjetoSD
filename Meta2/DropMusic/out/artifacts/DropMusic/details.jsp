@@ -40,10 +40,38 @@
             <br><br/>
             Detalhes:
             <br><br />
-            <c:forEach items="${results}" var="item">
-                    >> ${item}
-                <br />
-            </c:forEach>
+            <c:choose>
+                <c:when test="${session.editor == true}">
+                    <s:form method="get" action="AlterarDetalhes">
+                            <c:forEach items="${results}" var="item" varStatus="loop">
+                                <c:choose>
+                                    <c:when test="${loop.index== 0}">
+                                        info1 :<s:textfield name="info1" placeholder="${item}" size="30"/>
+                                    </c:when>
+                                    <c:when test="${loop.index == 1}">
+                                        info2 : <s:textfield name="info2" placeholder="${item}" size="30"/>
+                                    </c:when>
+                                    <c:when test="${loop.index == 2}">
+                                        info3 : <s:textfield name="info3" placeholder="${item}" size="30"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        info4 : <s:textfield name="info4" placeholder="${item}" size="30"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <br></br>
+                            </c:forEach>
+                        <s:submit type="button">
+                            <s:text name="Alterar Detalhes"></s:text>
+                        </s:submit>
+                    </s:form>
+                </c:when>
+                <c:otherwise>
+                    <c:forEach items="${results}" var="item">
+                        >> ${item}
+                        <br />
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
         </c:otherwise>
     </c:choose>
 
