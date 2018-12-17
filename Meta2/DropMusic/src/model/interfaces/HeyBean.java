@@ -148,6 +148,7 @@ public class HeyBean {
 			try {
 				return server.AddToken(ID,token);
 			} catch (Exception c) {
+				System.out.println(c);
 				BackUp();
 			}
 		}
@@ -156,7 +157,9 @@ public class HeyBean {
 	public static String GetToken(String ID){
 		while(true) {
 			try {
-				return server.GetToken(ID);
+				String resposta = server.GetToken(ID);
+				System.out.println(resposta);
+				return resposta;
 			} catch (Exception c) {
 				System.out.println(c);
 				BackUp();

@@ -42,14 +42,14 @@ public class LoginAction extends ActionSupport implements SessionAware {
 				}
 				else session.put("n_notificacoes",0);
 
-//                //Ve se o utilizador tem conta DropBox associada
-//				String token = HeyBean.GetToken(respostas[1]);
-//				if(token != null){
-//				    session.put("InDrop",true);
-//				    session.put("token",token);
-//                }
-//                else session.put("InDrop",false);
-//                System.out.println("RETURNOU");
+                //Ve se o utilizador tem conta DropBox associada
+				String token = HeyBean.GetToken(respostas[1]);
+				if(token.compareTo("none")!=0){
+				    session.put("InDrop",true);
+				    session.put("token",token);
+                }
+                else session.put("InDrop",false);
+                System.out.println("RETURNOU");
 				return "success";
 			}
 			else return "failed";

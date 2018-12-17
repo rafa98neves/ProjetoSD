@@ -79,6 +79,7 @@ class MulticastConnection extends Thread {
 						ID_received = aux2[1];
 						break;
 					} catch (SocketTimeoutException e) {
+                        System.out.println(e);
 						buffer = TimeOut.getBytes();
 						packet = new DatagramPacket(buffer, buffer.length, group, PORT_SEND);
 						socket.send(packet);
@@ -473,6 +474,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		String[] aux = processar[1].split(Pattern.quote(" | "));
+        System.out.println(aux[1]);
 		return aux[1];
 	}
 

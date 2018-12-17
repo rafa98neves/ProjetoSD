@@ -576,6 +576,7 @@ class ManageNewRequest extends Thread{
                     stmt.registerOutParameter(2, Types.VARCHAR);
                     stmt.execute();
                     protocolo = "type | getToken ; token | " + stmt.getString(2);
+                    System.out.println("samnsajn : " + protocolo);
                     return protocolo;
                 } catch (SQLException ex) {
                     System.out.println("SQLException: " + ex.getMessage());
