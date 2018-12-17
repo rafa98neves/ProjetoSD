@@ -172,6 +172,40 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		}
 	}
 
+	public String[] CheckNotifications(String ID) throws RemoteException{
+		String protocolo = new String();
+		protocolo = "type | notifications ; user_id  | " + ID;
+		MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
+
+		String[] processar = protocolo.split(Pattern.quote(" ; "));
+		ArrayList<String> processa = new ArrayList<String>();
+		String[] aux;
+		for(String s : processar){
+			aux = s.split(Pattern.quote(" | "));
+			processa.add(aux[0]);
+			processa.add(aux[1]);
+		}
+
+		String[] respostas = new String[20];
+		try {
+			if(processa.get(5).compareTo("none")==0) return null;
+			else{
+				int n = (processa.size() - 4)/2;
+				respostas[0] =  Integer.toString(n);
+				int counter = 1;
+				for(int i = 5; i <= processa.size() ; i+=2){
+					respostas[counter] = processa.get(i);
+					counter++;
+				}
+			}
+		} catch (Exception re) {
+			System.out.println("Exception in CheckNotifications(): " + re);
+			return null;
+		}
+		return respostas;
+	}
+
 	public void AddNotification(String ID, String notificado, String notificacao){
 		String protocolo = new String();
 		protocolo = "type | add_notifications ; user_id | " + ID + " ; notificado | " + notificado + " ; notification | " + notificacao;
@@ -332,25 +366,9 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 		int counter = 5, i= 0;
 		boolean notificou = false;
 		while(processa.get(counter).compareTo("none") != 0){ //Notificar editores anteriores
-			for(i = 0; i<users_online.length; i++){
-				if(users_online[i]!=null && !users_online[i].isEmpty()) {
-					if (users_online[i].compareTo(processa.get(counter)) == 0) {
-						try {
-							online[i].Print("O editor " + username + " alterou informacao + " + alteracao + " no(a) " + tipo + " - " + alvo);
-						} catch (Exception c1) {
-							AddNotification(ID, processa.get(counter), ("O editor " + username + " alterou informacao + " + alteracao + " no(a) " + tipo + " - " + alvo));
-							CleanUsers();
-						}
-						notificou = true;
-						break;
-					}
-					if (!notificou)
-						AddNotification(ID, processa.get(counter), ("O editor " + username + " alterou informacao + " + alteracao + " no(a) " + tipo + " - " + alvo));
-				}
-			}
+			AddNotification(ID, processa.get(counter), ("O editor " + username + " alterou informacao + " + alteracao + " no(a) " + tipo + " - " + alvo));
 			counter++;
 		}
-
 	}
 
 	public String[] GetGeneros(String ID) throws RemoteException{
@@ -421,38 +439,14 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 
 		String[] processar = protocolo.split(Pattern.quote(" ; "));
 		String[] aux = processar[2].split(Pattern.quote(" | "));
+
 		if(aux[1].compareTo("done")==0){
-			for(i = 0; i<users_online.length;i++){
-				if(users_online[i] != null && !users_online[i].isEmpty()) {
-					System.out.println("######################### " + users_online[i]);
-					if (users_online[i].compareTo(username) == 0) {
-						if (editor) {
-							try {
-								online[i].Print("Parabens, foi promovido a editor!");
-								online[i].ChangeUserToEditor(true);
-							} catch (Exception c1) {
-								AddNotification(ID, username, "Parabens, foi promovido a editor!");
-								CleanUsers();
-							}
-						} else {
-							try {
-								online[i].Print("Um editor tirou os seu previlegios");
-								online[i].ChangeUserToEditor(false);
-							} catch (Exception c2) {
-								AddNotification(ID, username, "Um editor tirou os seu previlegios");
-								CleanUsers();
-							}
-						}
-						return true;
-					}
-				}
+			if(editor){
+				System.out.println("AQUI");
+				AddNotification(ID,username, "Parabens, foi promovido a editor!");
 			}
-			if(i == users_online.length){
-				System.out.println("2");
-				if(editor) AddNotification(ID,username, "Parabens, foi promovido a editor!");
-				else AddNotification(ID,username, "Um editor tirou os seu previlegios");
-				return true;
-			}
+			else AddNotification(ID,username, "Um editor tirou os seu previlegios");
+			return true;
 		}
 		return false;
 	}

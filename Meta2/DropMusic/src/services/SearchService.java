@@ -38,6 +38,7 @@ public class SearchService implements services.interfaces.SearchService {
             }
             else return null;
 
+            if(results_aux[0].compareTo("none")==0) return null;
             for(String s:results_aux) results.add(s);
             return results;
         }

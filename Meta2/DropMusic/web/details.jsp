@@ -28,7 +28,8 @@
 
 </div>
 <div title="main">
-
+    <s:set var="index" value="1"></s:set>
+    <s:set var="index2" value="1"></s:set>
     <c:choose>
         <c:when test="${results == null}">
             Problema durante a pesquisa!
@@ -42,23 +43,24 @@
             <br><br />
             <c:choose>
                 <c:when test="${session.editor == true}">
-                    <s:form method="get" action="AlterarDetalhes">
+                    <s:form method="post" action="AlterarDetalhes">
                             <c:forEach items="${results}" var="item" varStatus="loop">
                                 <c:choose>
-                                    <c:when test="${loop.index== 0}">
-                                        info1 :<s:textfield name="info1" placeholder="${item}" size="30"/>
-                                    </c:when>
-                                    <c:when test="${loop.index == 1}">
-                                        info2 : <s:textfield name="info2" placeholder="${item}" size="30"/>
-                                    </c:when>
-                                    <c:when test="${loop.index == 2}">
-                                        info3 : <s:textfield name="info3" placeholder="${item}" size="30"/>
+                                    <c:when test="${loop.index%2== 0}">
+                                        <p><font color="#00008b">${item}</font></p>
+                                        <input type='hidden' name="item_${index2}" value='${item}'/>
+                                        <s:set var="index2" value="%{#index2 + 1}"></s:set>
                                     </c:when>
                                     <c:otherwise>
-                                        info4 : <s:textfield name="info4" placeholder="${item}" size="30"/>
+                                        <c:choose>
+                                            <c:when test="${item != ' '}">
+                                                <s:textfield name="info%{#index}" placeholder="${item}" />
+                                                <s:set var="index" value="%{#index + 1}"></s:set>
+                                                <br></br>
+                                            </c:when>
+                                        </c:choose>
                                     </c:otherwise>
                                 </c:choose>
-                                <br></br>
                             </c:forEach>
                         <s:submit type="button">
                             <s:text name="Alterar Detalhes"></s:text>
@@ -66,15 +68,28 @@
                     </s:form>
                 </c:when>
                 <c:otherwise>
-                    <c:forEach items="${results}" var="item">
-                        >> ${item}
-                        <br />
+                    <c:forEach items="${results}" var="item" varStatus="loop">
+                        <c:choose>
+                            <c:when test="${loop.index%2== 0}">
+                                <p><font color="#00008b">${item}</font></p>
+                            </c:when>
+                            <c:otherwise>
+                                ${item}
+                                <br></br>
+                            </c:otherwise>
+                        </c:choose>
                     </c:forEach>
                 </c:otherwise>
             </c:choose>
         </c:otherwise>
     </c:choose>
+    <br></br>
 
+    <c:choose>
+        <c:when test="${session.LastSearchType == 'album'}">
+            <a href="Critica.jsp"><button>Fazer Critica</button></a>
+        </c:when>
+    </c:choose>
 </div>
 </body>
 </html>
