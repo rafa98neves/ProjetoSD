@@ -453,7 +453,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 
 	public boolean AddToken(String ID, String token) throws  RemoteException{
 		String protocolo = new String();
-		protocolo = "type | getToken ; user_id | " + ID + " ; token | " + token;
+		protocolo = "type | addToken ; user_id | " + ID + " ; token | " + token;
 		MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 
@@ -467,7 +467,7 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 
 	public String GetToken(String ID) throws RemoteException {
 		String protocolo = new String();
-		protocolo = "type | addToken ; user_id | " + ID;
+		protocolo = "type | getToken ; user_id | " + ID;
 		MulticastConnection N = new MulticastConnection(protocolo);
 		protocolo = N.GetResponse();
 

@@ -1,6 +1,8 @@
 package action;
 
 import com.opensymphony.xwork2.ActionContext;
+import model.interfaces.HeyBean;
+import sun.awt.HeadlessToolkit;
 import util.scribejava.core.builder.ServiceBuilder;
 import util.scribejava.core.exceptions.OAuthException;
 import util.scribejava.core.model.*;
@@ -38,6 +40,7 @@ public class DropBoxCallbackAction extends ActionSupport implements SessionAware
             Token accessToken = service.getAccessToken(null, verifier);
             Map<String, Object> session = ActionContext.getContext().getSession();
             session.put("token",accessToken);
+            HeyBean.AddToken((String) session.get("ID"), accessToken.getToken());
             session.put("InDrop",true);
 
         } catch(OAuthException e) {

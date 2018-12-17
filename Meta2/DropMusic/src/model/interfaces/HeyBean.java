@@ -111,6 +111,7 @@ public class HeyBean {
 			}
 		}
 	}
+
 	public static boolean Critica(String ID,String user,int pontuacao, String texto, String alvo){
 		while(true) {
 			try {
@@ -120,6 +121,7 @@ public class HeyBean {
 			}
 		}
 	}
+
 	public static void GivePrev(String ID,String user){
 		while(true) {
 			try {
@@ -130,6 +132,7 @@ public class HeyBean {
 			}
 		}
 	}
+
 	public static String[] CheckNotifications(String ID){
 		while(true) {
 			try {
@@ -139,6 +142,28 @@ public class HeyBean {
 			}
 		}
 	}
+
+	public static boolean AddToken(String ID, String token){
+		while(true) {
+			try {
+				return server.AddToken(ID,token);
+			} catch (Exception c) {
+				BackUp();
+			}
+		}
+	}
+
+	public static String GetToken(String ID){
+		while(true) {
+			try {
+				return server.GetToken(ID);
+			} catch (Exception c) {
+				System.out.println(c);
+				BackUp();
+			}
+		}
+	}
+
 	public void setUsername(String username) {
 		this.username = username;
 	}

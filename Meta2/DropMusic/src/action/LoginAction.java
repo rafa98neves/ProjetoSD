@@ -21,7 +21,12 @@ public class LoginAction extends ActionSupport implements SessionAware {
 				session.put("username",username);
 				session.put("ID",respostas[1]);
 				session.put("loggedin",true);
-				session.put("InDrop",false);
+
+				//Ve se o utilizador é editor
+                if (respostas[2].compareTo("true") == 0) session.put("editor",true);
+                else session.put("editor",false);
+
+                //Ve se o utilizador tem notificacoes pendentes
 				String[] notificacoes = HeyBean.CheckNotifications(respostas[1]);
 				if(notificacoes != null) {
 					session.put("n_notificacoes", notificacoes[0]);
@@ -36,9 +41,15 @@ public class LoginAction extends ActionSupport implements SessionAware {
 					}
 				}
 				else session.put("n_notificacoes",0);
-				if(!session.containsKey("InDrop")) session.put("InDrop",false);
-				if (respostas[2].compareTo("true") == 0) session.put("editor",true);
-				else session.put("editor",false);
+
+//                //Ve se o utilizador tem conta DropBox associada
+//				String token = HeyBean.GetToken(respostas[1]);
+//				if(token != null){
+//				    session.put("InDrop",true);
+//				    session.put("token",token);
+//                }
+//                else session.put("InDrop",false);
+//                System.out.println("RETURNOU");
 				return "success";
 			}
 			else return "failed";

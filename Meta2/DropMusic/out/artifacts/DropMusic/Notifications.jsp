@@ -8,10 +8,14 @@
 </head>
 <body>
 <h2><a href="<s:url action="dropmusic" />"><span style="color:darkblue">DROPMUSIC</span></a></h2>
-<br>
+<br></br>
+    NOTIFICAÇÕES:
+    <br></br>
     <c:forEach items="${session.noti}" var="item">
-        .${item}
+        .  ${item}
+        <br></br>
     </c:forEach>
+
     <a href="dropmusic.jsp" class="button">Back</a>
 </body>
 </html>
