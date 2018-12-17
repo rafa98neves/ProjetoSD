@@ -54,7 +54,7 @@ public class ServidorMulti extends Thread {
 			System.out.println("Erro na thread sleep: " + main2);
 		}
 		name = s.GetServerNumber();
-
+		System.out.println("NUMERO : " + name);
 		server = new ServidorMulti();
         try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -175,7 +175,11 @@ public class ServidorMulti extends Thread {
  */
 
 class ManageNewRequest extends Thread{
-	private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
+    private String [] con = {"jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30",
+            "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB2;user=sddb@pedro-sd;password=sd_db123!;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30",
+            "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB3;user=sddb@pedro-sd;password=sd_db123!;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30"};
+	//private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
+	//private String con = "jdbc:sqlserver://pedro-sd.database.windows.net:1433;database=SQDB;user=sddb@pedro-sd;password=sd_db123!;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
 
 	private static String MULTICAST_ADDRESS = "224.3.2.1";
 	private int PORT_SEND = 4321;
@@ -239,7 +243,7 @@ class ManageNewRequest extends Thread{
 			case "registo":
 				try {
 					String commandText = "{call dbo.Registo(?,?,?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(5)));
 					stmt.setObject(2, new String(processa.get(7)));
@@ -261,7 +265,7 @@ class ManageNewRequest extends Thread{
 			case "login":
 				try {
 					String commandText = "{call dbo.Login(?,?,?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(5)));
 					stmt.setObject(2, new String(processa.get(7)));
@@ -282,7 +286,7 @@ class ManageNewRequest extends Thread{
 			case "notifications":
 				try {
 					String commandText = "{call dbo.Notifications(?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3)));
 					stmt.registerOutParameter(2, Types.VARCHAR);
@@ -300,7 +304,7 @@ class ManageNewRequest extends Thread{
 			case "add_notifications":
 				try {
 					String commandText = "{call dbo.AddNoti(?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(5)));
 					stmt.setObject(2, new String(processa.get(7)));
@@ -318,7 +322,7 @@ class ManageNewRequest extends Thread{
 			case "criar":
 				try {
 					String commandText = "{call dbo.Criar(?,?,?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(5))); //tipo
 					stmt.setObject(2, new String(processa.get(7))); //nome
@@ -339,7 +343,7 @@ class ManageNewRequest extends Thread{
 			case "search":
 				try {
 					String commandText = "{call dbo.Search(?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(5)));
 					stmt.setObject(2, new String(processa.get(7)));
@@ -359,7 +363,7 @@ class ManageNewRequest extends Thread{
 			case "details":
 				try {
 					String commandText = "{call dbo.Details(?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(5)));
 					stmt.setObject(2, new String(processa.get(7)));
@@ -380,7 +384,7 @@ class ManageNewRequest extends Thread{
 			case "critic":
 				try {
 					String commandText = "{call dbo.WriteCritic(?,?,?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new Integer(Integer.parseInt(processa.get(3))));
 					stmt.setObject(2, new String(processa.get(7)));
@@ -402,7 +406,7 @@ class ManageNewRequest extends Thread{
 			case "privileges":
 				try {
 					String commandText = "{call dbo.Privileges(?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3)));
 					stmt.setObject(2, new String(processa.get(5)));
@@ -424,7 +428,7 @@ class ManageNewRequest extends Thread{
 			case "alteration":
 				try {
 					String commandText = "{call dbo.Alteration(?,?,?,?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3))); //User_id
 					stmt.setObject(2, new String(processa.get(6))); //Tipo
@@ -446,7 +450,7 @@ class ManageNewRequest extends Thread{
 			case "add":
 				try {
 					String commandText = "{call dbo.AddSome(?,?,?,?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3))); //User_id
 					stmt.setObject(2, new String(processa.get(5))); //Tipo
@@ -469,7 +473,7 @@ class ManageNewRequest extends Thread{
 			case "remove":
 				try {
 					String commandText = "{call dbo.RemoveSome(?,?,?,?,?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(3))); //User_id
 					stmt.setObject(2, new String(processa.get(5))); //Tipo
@@ -519,7 +523,7 @@ class ManageNewRequest extends Thread{
 			case "getgeneros":
 				try {
 					String commandText = "{call dbo.GetGeneros(?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.registerOutParameter(1, Types.INTEGER);
 					stmt.registerOutParameter(2, Types.VARCHAR);
@@ -536,7 +540,7 @@ class ManageNewRequest extends Thread{
 			case "addgenero":
 				try {
 					String commandText = "{call dbo.AddGenero(?,?,?)}";
-					conn = DriverManager.getConnection(con);
+					conn = DriverManager.getConnection(con[nome-1]);
 					CallableStatement stmt = conn.prepareCall(commandText);
 					stmt.setObject(1, new String(processa.get(5)));
 					stmt.registerOutParameter(2, Types.INTEGER);
@@ -563,6 +567,22 @@ class ManageNewRequest extends Thread{
 					r.start();
 				}
 				return protocolo;
+            case "getToken":
+                try {
+                    String commandText = "{call dbo.GetToken(?,?)}";
+                    conn = DriverManager.getConnection(con[nome - 1]);
+                    CallableStatement stmt = conn.prepareCall(commandText);
+                    stmt.setObject(1, new String(processa.get(5)));
+                    stmt.registerOutParameter(2, Types.VARCHAR);
+                    stmt.execute();
+                    protocolo = "type | getToken ; token | " + processa.get(3) + stmt.getString(2) + "none";
+                    return protocolo;
+                } catch (SQLException ex) {
+                    System.out.println("SQLException: " + ex.getMessage());
+                    System.out.println("SQLState: " + ex.getSQLState());
+                    System.out.println("VendorError: " + ex.getErrorCode());
+                }
+                break;
 			default:
 				protocolo = "type | error ; " + processa.get(2) +" | " + processa.get(3) + " ; function | " + processa.get(1);
 				return protocolo;

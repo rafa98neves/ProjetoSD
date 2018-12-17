@@ -72,16 +72,26 @@ public class UploadAction extends ActionSupport implements SessionAware {
 		OAuthRequest request = new OAuthRequest(Verb.POST, "https://content.dropboxapi.com/2/files/upload_session/start\n", service);
 		request.addHeader("Content-Type",  "application/octet-stream");
 		request.addHeader("Authorization", "Bearer " + accessToken.getToken());
-		request.addHeader("Dropbox-API-Arg",
-						"{\"path\": \"/"+path+"\", " +
-						"\"mode\": \"add\", " +
-						"\"autorename\": true, " +
-						"\"mute\": false, " +
-						"\"strict_conflict\": false}");
-
+		request.addHeader("Dropbox-API-Arg","{" +
+							"path: "+path+"," +
+							"mode: {" +
+								".tag: update," +
+								"update:a1c10ce0dd78" +
+								"}," +
+							"autorename: true," +
+							"mute: false," +
+//							"property_groups: [" +
+//							"{" +
+//							"template_id: ptid:1a5n2i6d3OYEAAAAAAAAAYa," +
+//							"fields: [" +
+//							"{" +
+//							"name: Security Policy," +
+//							"value: Confidential" +"}]}],"+
+							"strict_conflict: false" +
+							"}");
 		Response response = request.send();
 
-		System.out.println("path: /"+path);
+		System.out.println("\"path\": \"/"+path+"\"");
 		System.out.println("\n\nSENT REQUEST FOR ADDING NEW FILE!--------------------------!-----------------");
 		System.out.println(response.getCode());
 		System.out.println("\n");
