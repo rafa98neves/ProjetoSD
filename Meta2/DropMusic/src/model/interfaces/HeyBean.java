@@ -111,6 +111,19 @@ public class HeyBean {
 		}
 	}
 
+	public static boolean ChangeInfo(String ID, String nome,String tipo,String alvo,String alteracao,String alterado){
+//		while(true) {
+//			try {
+//				server.AlterarDados(ID,nome,tipo,alvo,alteracao,alterado);
+//				return true;
+//			} catch (Exception c) {
+//				BackUp();
+//			}
+//		}
+		System.out.println("-" + ID + "-" + nome + "-" + tipo + "-" + alvo + "-" + alteracao + "-" + alterado);
+		return true;
+	}
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
