@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import Drop.ServidorMulti.DropMusic_C_I;
 
 /**
  * Description: Classe utilizada para executar a conexão com o Multicast
@@ -456,6 +455,31 @@ public class ServidorRMI extends UnicastRemoteObject implements DropMusic_S_I{
 			}
 		}
 		return false;
+	}
+
+	public boolean AddToken(String ID, String token) throws  RemoteException{
+		String protocolo = new String();
+		protocolo = "type | getToken ; user_id | " + ID + " ; token | " + token;
+		MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
+
+		String[] processar = protocolo.split(Pattern.quote(" ; "));
+		String[] aux = processar[1].split(Pattern.quote(" | "));
+		if(aux[1].compareTo("true")==0)
+			return true;
+		else
+			return false;
+	}
+
+	public String GetToken(String ID) throws RemoteException {
+		String protocolo = new String();
+		protocolo = "type | addToken ; user_id | " + ID;
+		MulticastConnection N = new MulticastConnection(protocolo);
+		protocolo = N.GetResponse();
+
+		String[] processar = protocolo.split(Pattern.quote(" ; "));
+		String[] aux = processar[1].split(Pattern.quote(" | "));
+		return aux[1];
 	}
 
 	// ============================MAIN===========================

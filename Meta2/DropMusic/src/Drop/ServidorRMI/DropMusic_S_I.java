@@ -30,4 +30,6 @@ public interface DropMusic_S_I extends Remote {
 	public String[] ShareMusic(String ID) throws RemoteException;
 	public String[] TransferMusic(String ID,String tipo, String musica) throws RemoteException;
 	public boolean GivePriv(String ID,boolean editor, String username) throws RemoteException;
+	public boolean AddToken(String ID, String token) throws  RemoteException;
+	public String GetToken(String ID) throws RemoteException;
 }

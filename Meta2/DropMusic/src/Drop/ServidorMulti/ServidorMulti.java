@@ -572,10 +572,10 @@ class ManageNewRequest extends Thread{
                     String commandText = "{call dbo.GetToken(?,?)}";
                     conn = DriverManager.getConnection(con[nome - 1]);
                     CallableStatement stmt = conn.prepareCall(commandText);
-                    stmt.setObject(1, new String(processa.get(5)));
+                    stmt.setObject(1, new String(processa.get(3)));
                     stmt.registerOutParameter(2, Types.VARCHAR);
                     stmt.execute();
-                    protocolo = "type | getToken ; token | " + processa.get(3) + stmt.getString(2) + "none";
+                    protocolo = "type | getToken ; token | " + stmt.getString(2);
                     return protocolo;
                 } catch (SQLException ex) {
                     System.out.println("SQLException: " + ex.getMessage());
@@ -583,6 +583,24 @@ class ManageNewRequest extends Thread{
                     System.out.println("VendorError: " + ex.getErrorCode());
                 }
                 break;
+			case "addToken":
+				try {
+					String commandText = "{call dbo.AddToken(?,?,?)}";
+					conn = DriverManager.getConnection(con[nome - 1]);
+					CallableStatement stmt = conn.prepareCall(commandText);
+					stmt.setObject(1, new String(processa.get(3)));
+					stmt.setObject(2, new String(processa.get(5)));
+					stmt.registerOutParameter(3, Types.VARCHAR);
+					stmt.execute();
+					if(stmt.getInt(3) >= 0) protocolo = "type | addToken ; sucesso | true";
+					else protocolo = "type | addToken ; sucesso | false";
+					return protocolo;
+				} catch (SQLException ex) {
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
+				break;
 			default:
 				protocolo = "type | error ; " + processa.get(2) +" | " + processa.get(3) + " ; function | " + processa.get(1);
 				return protocolo;
