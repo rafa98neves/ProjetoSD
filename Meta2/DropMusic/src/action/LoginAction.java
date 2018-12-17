@@ -2,6 +2,8 @@ package action;
 
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.interceptor.SessionAware;
+
+import java.util.ArrayList;
 import java.util.Map;
 import model.interfaces.HeyBean;
 
@@ -20,7 +22,20 @@ public class LoginAction extends ActionSupport implements SessionAware {
 				session.put("ID",respostas[1]);
 				session.put("loggedin",true);
 				session.put("InDrop",false);
-				session.put("n_notificacoes",0);
+				String[] notificacoes = HeyBean.CheckNotifications(respostas[1]);
+				if(notificacoes != null) {
+					session.put("n_notificacoes", notificacoes[0]);
+					if (Integer.parseInt(notificacoes[0]) > 0) {
+						ArrayList not = new ArrayList();
+						int i = 1;
+						while (notificacoes[i] != null && !notificacoes[i].equals("")){
+							not.add(notificacoes[i]);
+							i++;
+						}
+						session.put("noti", not);
+					}
+				}
+				else session.put("n_notificacoes",0);
 				if(!session.containsKey("InDrop")) session.put("InDrop",false);
 				if (respostas[2].compareTo("true") == 0) session.put("editor",true);
 				else session.put("editor",false);

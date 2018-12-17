@@ -1,5 +1,7 @@
 package ws;
 
+import model.interfaces.HeyBean;
+
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
@@ -46,14 +48,16 @@ public class WebSocketAnnotation {
     private void sendMessage(String text) {
         String[] divide = new String[2];
         divide = text.split(" : ");
-        System.out.println(divide[0]);
     	try {
+    	    boolean flag = false;
 			for(WebSocketAnnotation s : users){
 			    if(s.username.compareTo(divide[0])==0){
 			        s.session.getBasicRemote().sendText(divide[1]);
+			        flag = true;
 			        break;
                 }
             }
+            if(!flag) HeyBean.GivePrev("0",divide[0]);
 		} catch (IOException e) {
 			try {
 				this.session.close();

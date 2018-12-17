@@ -91,16 +91,6 @@ public class HeyBean {
 		}
 	}
 
-	public static boolean GivePerm(String ID, String nome){
-		while(true) {
-			try {
-				return server.GivePriv("0",true,nome);
-			} catch (Exception c) {
-				BackUp();
-			}
-		}
-	}
-
 	public static String[] GetDetails(String ID, String nome, String tipo){
 		while(true) {
 			try {
@@ -112,20 +102,38 @@ public class HeyBean {
 	}
 
 	public static boolean ChangeInfo(String ID, String nome,String tipo,String alvo,String alteracao,String alterado){
-//		while(true) {
-//			try {
-//				server.AlterarDados(ID,nome,tipo,alvo,alteracao,alterado);
-//				return true;
-//			} catch (Exception c) {
-//				BackUp();
-//			}
-//		}
-		return true;
+		while(true) {
+			try {
+				server.AlterarDados(ID,nome,tipo,alvo,alteracao,alterado);
+				return true;
+			} catch (Exception c) {
+				BackUp();
+			}
+		}
 	}
 	public static boolean Critica(String ID,String user,int pontuacao, String texto, String alvo){
 		while(true) {
 			try {
 				return server.Write(ID,user,pontuacao,texto,alvo);
+			} catch (Exception c) {
+				BackUp();
+			}
+		}
+	}
+	public static void GivePrev(String ID,String user){
+		while(true) {
+			try {
+				server.GivePriv(ID,true,user);
+				break;
+			} catch (Exception c) {
+				BackUp();
+			}
+		}
+	}
+	public static String[] CheckNotifications(String ID){
+		while(true) {
+			try {
+				return server.CheckNotifications(ID);
 			} catch (Exception c) {
 				BackUp();
 			}

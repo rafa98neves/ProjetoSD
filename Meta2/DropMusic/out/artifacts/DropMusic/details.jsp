@@ -52,9 +52,13 @@
                                         <s:set var="index2" value="%{#index2 + 1}"></s:set>
                                     </c:when>
                                     <c:otherwise>
-                                        <s:textfield name="info%{#index}" placeholder="${item}" />
-                                        <s:set var="index" value="%{#index + 1}"></s:set>
-                                        <br></br>
+                                        <c:choose>
+                                            <c:when test="${item != ' '}">
+                                                <s:textfield name="info%{#index}" placeholder="${item}" />
+                                                <s:set var="index" value="%{#index + 1}"></s:set>
+                                                <br></br>
+                                            </c:when>
+                                        </c:choose>
                                     </c:otherwise>
                                 </c:choose>
                             </c:forEach>

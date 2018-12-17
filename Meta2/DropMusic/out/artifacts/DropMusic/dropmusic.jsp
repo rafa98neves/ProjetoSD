@@ -108,7 +108,7 @@
 			Dar permissões: <p><input type="text" placeholder="nome do utilizador" id="Sendto"></p>
 		</c:when>
 	</c:choose>
-	<li><p><a href="index.jsp"><span style="color:black">Notificações[${session.n_notificacoes}]</span></a></p>
+	<li><p><a href="Notifications.jsp"><span style="color:black">Notificações[${session.n_notificacoes}]</span></a></p>
 	<li><p><a href="index.jsp"><span style="color:black">Log out</span></a></p>
 	<c:choose>
 	<c:when test="${session.InDrop == false}">
